@@ -1,10 +1,15 @@
 import React from 'react';
-import ContentWrapper from '../Layout/ContentWrapper';
-import SpecieList from './SpeciesListView/SpecieList/SpecieList';
+import ContentWrapper from '../../../Layout/ContentWrapper';
+import SpecieList from './SpeciesList/SpeciesList'
 import { Tabs, Tab } from 'react-bootstrap';
-let config = require("../../config/config");
-let api = require("../Scripts/database_api.js");
 
+import firebase from 'firebase';
+
+
+const userData = {
+    zooName: 'AkongoFakeZoo',
+    userId: 'Gwen'
+}
 
 class SpeciesListScreen extends React.Component {
     constructor(props) {
@@ -14,43 +19,45 @@ class SpeciesListScreen extends React.Component {
         };
     }
 
-readSpecieFromDatabase() {
-        let userData = JSON.parse(localStorage.getItem('user'))
 
-        let collection = (userData.zooName + '-species')
-        // Fonction magique que je ne comprend pas 
+    readSpecieFromDatabase() {
+
         var self = this;
-        // Selection de la référence de la base de donnée
-      
-        firebase.firestore().collection(collection).get().then(function (querySnapshot) {
-            querySnapshot.forEach(function (doc) {
-                let newSpeciesList = self.state.speciesList
-                newSpeciesList.push(doc.data())
-                self.setState({
-                    speciesList: newSpeciesList
-                })
-            });
-        });
-        
 
+        let reference = (userData.zooName + '/speciesData/');
+        firebase.database().ref(reference).once('value').
+            then(function (result) {
+                let data = result.val()
+                self.setState({
+                    speciesList: data
+                })
+            })
     }
+
     componentWillMount() {
         this.readSpecieFromDatabase();
     }
     render() {
-          
+
         return (
             <ContentWrapper>
                 <h3>Mes animaux</h3>
-                {/* START row */}
-                <div className="row">
-                <SpecieList speciesList={this.state.speciesList} />
-                </div>
+                    <div className="row" style={styles.widgetList}>
+                        <SpecieList speciesList={this.state.speciesList} />
+                    </div>
                 {/* END panel tab */}
             </ContentWrapper>
         );
     }
-
 }
 
 export default SpeciesListScreen;
+
+const styles={
+    widgetList:{
+        flex: 1,
+        display : 'flex',
+        flexDirection: 'row',
+        flexWrap: 'wrap'
+    }
+}

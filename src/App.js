@@ -13,6 +13,8 @@ import React, { Component } from 'react';
 import { BrowserRouter } from 'react-router-dom';
 import $ from 'jquery';
 
+import { initDatabase } from './config/config'
+
 // App Routes
 import Routes from './Routes';
 
@@ -28,7 +30,7 @@ $.ajaxPrefilter(o => o.async = true);
 
 class App extends Component {
   render() {
-
+    initDatabase()
     // specify base href from env varible 'WP_BASE_HREF'
     // use only if application isn't served from the root
     // for development it is forced to root only

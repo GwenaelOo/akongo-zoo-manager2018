@@ -1,24 +1,15 @@
 import React from 'react';
 import ContentWrapper from '../../../Layout/ContentWrapper';
-import { Panel, FormControl, FormGroup, InputGroup, DropdownButton, MenuItem } from 'react-bootstrap';
-import { Row, Col, Card, CardHeader, CardTitle, CardBody, Button, ButtonGroup, ButtonToolbar, ButtonDropdown, DropdownToggle, DropdownMenu, DropdownItem, Pagination, PaginationItem, PaginationLink } from 'reactstrap';
+import { Grid, Row, Col, Panel, Button, FormControl, FormGroup, InputGroup, DropdownButton, MenuItem } from 'react-bootstrap';
 
 // Ajout des composants du formulaire
 import TextInput from '../../../customComponents/TextInput/TextInput';
 import IUCNSelector from '../../../customComponents/IUCNSelector/IUCNSelector';
-import DropzonePhoto from '../../../customComponents/Dropzone/DropzonePhoto';
+//import DropzonePhoto from '../../../customComponents/Dropzone/DropzonePhoto';
 import swal from 'sweetalert'
 import { Typeahead } from 'react-bootstrap-typeahead';
 import firebase from 'firebase';
-import {addNewSpecieToDatabase} from '../../../../database/database'
-
-// Create a single card with header text as attribute
-const CardWithHeader = props => (
-    <Card className="card-default">
-        <CardHeader><CardTitle tag="h3">{props.header}</CardTitle></CardHeader>
-        <CardBody>{props.children}</CardBody>
-    </Card>
-)
+import database from '../../../../database/database'
 
 const userId = "gwen"
 const specieData = {}
@@ -101,13 +92,11 @@ class SpecieScreen extends React.Component {
 
     handleReturnedUrl(returnedUrl, photoId) {
 
-        console.log(photoId)
-
-        if (photoId === 'PhotoProfil') {
+        if (photoId === 'photoProfil') {
 
         let photoName = ('Specie' + photoId)
         this.setState({
-            SpeciePhotoProfil: returnedUrl
+            [photoName]: returnedUrl
              });
         }
 
@@ -182,8 +171,7 @@ class SpecieScreen extends React.Component {
                 //database.editNewSpecieToDatabase2(specieData);
             }
             else {
-                
-                addNewSpecieToDatabase(specieData);
+                //database.addNewSpecieToDatabase2(specieData);
             }
 
             //database.updateFoodDataBase(specieData.SpecieFood);
@@ -284,9 +272,9 @@ class SpecieScreen extends React.Component {
     componentWillMount(){
         //this.getLogLenght();
         //this.initFoodList();
-    //     if (this.props.location.state.SpecieId !== null){
-    //     //this.readSpecieFromFirebase(this.props.location.state.SpecieId);
-    //    } 
+        if (this.props.location.state.SpecieId !== null){
+        //this.readSpecieFromFirebase(this.props.location.state.SpecieId);
+       } 
     }
 
     render()   
@@ -310,8 +298,8 @@ class SpecieScreen extends React.Component {
         return (
            
             <ContentWrapper>
+                <h3>Ajouter/Modifier une espèce</h3>
                 <Panel>
-                 <CardWithHeader header="Ajouter/Modifier une espèce">
                     <form className="form-horizontal" onSubmit={this.handleSubmit}>
                         <fieldset>
                             <legend> Informations générales</legend>     
@@ -454,7 +442,7 @@ class SpecieScreen extends React.Component {
                             </fieldset>
                         </fieldset>
 
-                        <fieldset>
+                        {/* <fieldset>
                             <legend> Ajout des photos</legend>
                             <FormGroup>
                                 <div className="row" >
@@ -488,9 +476,8 @@ class SpecieScreen extends React.Component {
                                     
                                 </div>            
                             </FormGroup>
-                        </fieldset>
+                        </fieldset> */}
                     </form>
-                    </CardWithHeader>
                 </Panel>
 
                 <Panel style={{"display":"flex"}}>

@@ -4,6 +4,33 @@ const Menu = [
         translate: 'sidebar.heading.HEADER'
     },
     {
+        name: 'Akongo',
+        icon: 'icon-speedometer',
+        translate: 'sidebar.nav.DASHBOARD',
+        label: { value: 3, color: 'success' },
+        submenu: [{
+                name: 'Ecran espèce',
+                path: 'SpecieScreen'
+            },{
+                name: 'Ecran liste espèce',
+                path: 'SpecieListScreen'
+            },{
+                name: 'Ecran Animation',
+                path: 'AnimationScreen'
+            },{
+                name: 'Ecran Evement',
+                path: 'EventScreen'
+            },{
+                name: 'Ecran Service',
+                path: 'ServiceScreen'
+            },
+        ]
+    },
+    {
+        heading: 'Main Navigation',
+        translate: 'sidebar.heading.HEADER'
+    },
+    {
         name: 'Dashboard',
         icon: 'icon-speedometer',
         translate: 'sidebar.nav.DASHBOARD',

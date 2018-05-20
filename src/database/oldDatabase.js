@@ -1,8 +1,7 @@
 import firebase from 'firebase';
 import swal from 'sweetalert';
-// récupération config
 
-var config = require("../../config/config");
+
 const nav = require("../Nav/Nav");
 
 // Init dataBase

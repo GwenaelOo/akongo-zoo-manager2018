@@ -2,9 +2,18 @@ import React from 'react';
 import { withRouter, Switch, Route, Redirect } from 'react-router-dom';
 import { TransitionGroup, CSSTransition } from 'react-transition-group';
 
+
+ 
 import Base from './components/Layout/Base';
 import BasePage from './components/Layout/BasePage';
 // import BaseHorizontal from './components/Layout/BaseHorizontal';
+// Lot Species 
+import SpecieScreen from './components/Screens/SpecieScreens/SpecieScreen/SpecieScreen'
+import SpecieListScreen from './components/Screens/SpecieScreens/SpeciesListScreen/SpeciesListScreen'
+
+import AnimationScreen from './components/Screens/AnimationsScreens/AnimationScreen/AnimationScreen'
+import ServiceScreen from './components/Screens/ServicesScreens/ServiceScreen/ServiceScreen'
+import EventScreen from './components/Screens/EventsScreens/EventScreen/EventScreen'
 
 import DashboardV1 from './components/Dashboard/DashboardV1';
 import DashboardV2 from './components/Dashboard/DashboardV2';
@@ -126,18 +135,18 @@ const Routes = ({ location }) => {
     //      'rag-zoomBackDown'
     const animationName = 'rag-fadeIn'
 
-    if(listofPages.indexOf(location.pathname) > -1) {
+    if (listofPages.indexOf(location.pathname) > -1) {
         return (
             // Page Layout component wrapper
             <BasePage>
                 <Switch location={location}>
-                    <Route path="/login" component={Login}/>
-                    <Route path="/register" component={Register}/>
-                    <Route path="/recover" component={Recover}/>
-                    <Route path="/lock" component={Lock}/>
-                    <Route path="/notfound" component={NotFound}/>
-                    <Route path="/error500" component={Error500}/>
-                    <Route path="/maintenance" component={Maintenance}/>
+                    <Route path="/login" component={Login} />
+                    <Route path="/register" component={Register} />
+                    <Route path="/recover" component={Recover} />
+                    <Route path="/lock" component={Lock} />
+                    <Route path="/notfound" component={NotFound} />
+                    <Route path="/error500" component={Error500} />
+                    <Route path="/maintenance" component={Maintenance} />
                 </Switch>
             </BasePage>
         )
@@ -147,102 +156,111 @@ const Routes = ({ location }) => {
             // Layout component wrapper
             // Use <BaseHorizontal> to change layout
             <Base>
-              <TransitionGroup>
-                <CSSTransition key={currentKey} timeout={timeout} classNames={animationName} exit={false}>
-                    <div>
-                        <Switch location={location}>
+                <TransitionGroup>
+                    <CSSTransition key={currentKey} timeout={timeout} classNames={animationName} exit={false}>
+                        <div>
+                            <Switch location={location}>
 
-                            {/*Dashboard*/}
-                            <Route path="/dashboard" component={DashboardV1}/>
-                            <Route path="/dashboardv2" component={DashboardV2}/>
-                            <Route path="/dashboardv3" component={DashboardV3}/>
+                                {/*Akongo*/}
+                                <Route path="/SpecieScreen" component={SpecieScreen} />
+                                <Route path="/SpecieListScreen" component={SpecieListScreen} />
 
-                            {/*Widgets*/}
-                            <Route path="/widgets" component={Widgets}/>
+                                <Route path="/AnimationScreen" component={AnimationScreen} />
+                                <Route path="/EventScreen" component={EventScreen} />
+                                <Route path="/ServiceScreen" component={ServiceScreen} />
+                                
 
-                            {/*Elements*/}
-                            <Route path="/buttons" component={Buttons}/>
-                            <Route path="/notifications" component={Notifications}/>
-                            <Route path="/sweetalert" component={SweetAlert}/>
-                            <Route path="/carousel" component={BsCarousel}/>
-                            <Route path="/spinners" component={Spinner}/>
-                            <Route path="/animations" component={Animation}/>
-                            <Route path="/dropdown" component={DropdownAnimation}/>
-                            <Route path="/nestable" component={Nestable}/>
-                            <Route path="/sortable" component={Sortable}/>
-                            <Route path="/cards" component={Cards}/>
-                            <Route path="/grid" component={Grid}/>
-                            <Route path="/grid-masonry" component={GridMasonry}/>
-                            <Route path="/typography" component={Typography}/>
-                            <Route path="/icons-font" component={FontIcons}/>
-                            <Route path="/icons-weather" component={WeatherIcons}/>
-                            <Route path="/colors" component={Colors}/>
+                                {/*Dashboard*/}
+                                <Route path="/dashboard" component={DashboardV1} />
+                                <Route path="/dashboardv2" component={DashboardV2} />
+                                <Route path="/dashboardv3" component={DashboardV3} />
 
-                            {/*Forms*/}
-                            <Route path="/form-standard" component={FormStandard}/>
-                            <Route path="/form-extended" component={FormExtended}/>
-                            <Route path="/form-validation" component={FormValidation}/>
-                            <Route path="/form-wizard" component={FormWizard}/>
-                            <Route path="/form-upload" component={FormUpload}/>
-                            <Route path="/form-cropper" component={FormCropper}/>
+                                {/*Widgets*/}
+                                <Route path="/widgets" component={Widgets} />
 
-                            {/*Charts*/}
-                            <Route path="/chart-flot" component={ChartFlot}/>
-                            <Route path="/chart-radial" component={ChartRadial}/>
-                            <Route path="/chart-chartjs" component={ChartChartJS}/>
-                            <Route path="/chart-morris" component={ChartMorris}/>
-                            <Route path="/chart-chartist" component={ChartChartist}/>
+                                {/*Elements*/}
+                                <Route path="/buttons" component={Buttons} />
+                                <Route path="/notifications" component={Notifications} />
+                                <Route path="/sweetalert" component={SweetAlert} />
+                                <Route path="/carousel" component={BsCarousel} />
+                                <Route path="/spinners" component={Spinner} />
+                                <Route path="/animations" component={Animation} />
+                                <Route path="/dropdown" component={DropdownAnimation} />
+                                <Route path="/nestable" component={Nestable} />
+                                <Route path="/sortable" component={Sortable} />
+                                <Route path="/cards" component={Cards} />
+                                <Route path="/grid" component={Grid} />
+                                <Route path="/grid-masonry" component={GridMasonry} />
+                                <Route path="/typography" component={Typography} />
+                                <Route path="/icons-font" component={FontIcons} />
+                                <Route path="/icons-weather" component={WeatherIcons} />
+                                <Route path="/colors" component={Colors} />
 
-                            {/*Table*/}
-                            <Route path="/table-standard" component={TableStandard}/>
-                            <Route path="/table-extended" component={TableExtended}/>
-                            <Route path="/table-datatable" component={Datatable}/>
-                            <Route path="/table-datagrid" component={DataGrid}/>
+                                {/*Forms*/}
+                                <Route path="/form-standard" component={FormStandard} />
+                                <Route path="/form-extended" component={FormExtended} />
+                                <Route path="/form-validation" component={FormValidation} />
+                                <Route path="/form-wizard" component={FormWizard} />
+                                <Route path="/form-upload" component={FormUpload} />
+                                <Route path="/form-cropper" component={FormCropper} />
 
-                            {/*Maps*/}
-                            <Route path="/map-google" component={MapsGoogle}/>
-                            <Route path="/map-vector" component={MapsVector}/>
+                                {/*Charts*/}
+                                <Route path="/chart-flot" component={ChartFlot} />
+                                <Route path="/chart-radial" component={ChartRadial} />
+                                <Route path="/chart-chartjs" component={ChartChartJS} />
+                                <Route path="/chart-morris" component={ChartMorris} />
+                                <Route path="/chart-chartist" component={ChartChartist} />
 
-                            {/*Extras*/}
-                            <Route path="/mailbox" component={Mailbox}/>
-                            <Route path="/timeline" component={Timeline}/>
-                            <Route path="/calendar" component={Calendar}/>
-                            <Route path="/invoice" component={Invoice}/>
-                            <Route path="/search" component={Search}/>
-                            <Route path="/todo" component={Todo}/>
-                            <Route path="/profile" component={Profile}/>
-                            <Route path="/ecommerce-orders" component={EcommerceOrder}/>
-                            <Route path="/ecommerce-order-view" component={EcommerceOrderView}/>
-                            <Route path="/ecommerce-products" component={EcommerceProduct}/>
-                            <Route path="/ecommerce-product-view" component={EcommerceProductView}/>
-                            <Route path="/ecommerce-checkout" component={EcommerceCheckout}/>
-                            <Route path="/blog-list" component={BlogList}/>
-                            <Route path="/blog-post" component={BlogPost}/>
-                            <Route path="/blog-articles" component={BlogArticle}/>
-                            <Route path="/blog-article-view" component={BlogArticleView}/>
-                            <Route path="/forum-categories" component={ForumCategories}/>
-                            <Route path="/forum-topics" component={ForumTopic}/>
-                            <Route path="/forum-discussion" component={ForumDiscussion}/>
-                            <Route path="/bug-tracker" component={BugTracker}/>
-                            <Route path="/contact-details" component={ContactDetails}/>
-                            <Route path="/contacts" component={Contacts}/>
-                            <Route path="/faq" component={Faq}/>
-                            <Route path="/file-manager" component={FileManager}/>
-                            <Route path="/followers" component={Followers}/>
-                            <Route path="/help-center" component={HelpCenter}/>
-                            <Route path="/plans" component={Plans}/>
-                            <Route path="/project-details" component={ProjectDetails}/>
-                            <Route path="/projects" component={Projects}/>
-                            <Route path="/settings" component={Settings}/>
-                            <Route path="/social-board" component={SocialBoard}/>
-                            <Route path="/team-viewer" component={TeamViewer}/>
-                            <Route path="/vote-links" component={VoteLinks}/>
+                                {/*Table*/}
+                                <Route path="/table-standard" component={TableStandard} />
+                                <Route path="/table-extended" component={TableExtended} />
+                                <Route path="/table-datatable" component={Datatable} />
+                                <Route path="/table-datagrid" component={DataGrid} />
 
-                            <Redirect to="/dashboard"/>
-                        </Switch>
-                    </div>
-                </CSSTransition>
-              </TransitionGroup>
+                                {/*Maps*/}
+                                <Route path="/map-google" component={MapsGoogle} />
+                                <Route path="/map-vector" component={MapsVector} />
+
+                                {/*Extras*/}
+                                <Route path="/mailbox" component={Mailbox} />
+                                <Route path="/timeline" component={Timeline} />
+                                <Route path="/calendar" component={Calendar} />
+                                <Route path="/invoice" component={Invoice} />
+                                <Route path="/search" component={Search} />
+                                <Route path="/todo" component={Todo} />
+                                <Route path="/profile" component={Profile} />
+                                <Route path="/ecommerce-orders" component={EcommerceOrder} />
+                                <Route path="/ecommerce-order-view" component={EcommerceOrderView} />
+                                <Route path="/ecommerce-products" component={EcommerceProduct} />
+                                <Route path="/ecommerce-product-view" component={EcommerceProductView} />
+                                <Route path="/ecommerce-checkout" component={EcommerceCheckout} />
+                                <Route path="/blog-list" component={BlogList} />
+                                <Route path="/blog-post" component={BlogPost} />
+                                <Route path="/blog-articles" component={BlogArticle} />
+                                <Route path="/blog-article-view" component={BlogArticleView} />
+                                <Route path="/forum-categories" component={ForumCategories} />
+                                <Route path="/forum-topics" component={ForumTopic} />
+                                <Route path="/forum-discussion" component={ForumDiscussion} />
+                                <Route path="/bug-tracker" component={BugTracker} />
+                                <Route path="/contact-details" component={ContactDetails} />
+                                <Route path="/contacts" component={Contacts} />
+                                <Route path="/faq" component={Faq} />
+                                <Route path="/file-manager" component={FileManager} />
+                                <Route path="/followers" component={Followers} />
+                                <Route path="/help-center" component={HelpCenter} />
+                                <Route path="/plans" component={Plans} />
+                                <Route path="/project-details" component={ProjectDetails} />
+                                <Route path="/projects" component={Projects} />
+                                <Route path="/settings" component={Settings} />
+                                <Route path="/social-board" component={SocialBoard} />
+                                <Route path="/team-viewer" component={TeamViewer} />
+                                <Route path="/vote-links" component={VoteLinks} />
+
+                                <Redirect to="/dashboard" />
+                            </Switch>
+                        </div>
+                    </CSSTransition>
+                </TransitionGroup>
             </Base>
         )
     }
