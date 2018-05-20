@@ -30,7 +30,7 @@ class AnimationScreen extends React.Component {
         this.state = {
             animationId: '',
             animationName: '',
-            animationPhotoProfil: '',
+            animationProfilePicture: '',
             animationPhotos: [],
             animationDescription: '',
             logId: 0,
@@ -49,7 +49,7 @@ class AnimationScreen extends React.Component {
         let animationData = {
             animationName: this.state.animationName,
             animatioId: this.state.animationId,
-            animationPhotoProfil: this.state.animationPhotoProfil,
+            animationProfilePicture: this.state.animationProfilePicture,
             animationPhotos: this.state.animationPhotos,
             animationDescription: this.state.animationDescription,
         }
@@ -65,7 +65,7 @@ class AnimationScreen extends React.Component {
 
             let photoName = ('animation' + photoId)
             this.setState({
-                animationPhotoProfil: returnedUrl
+                animationProfilePicture: returnedUrl
             });
         }
 
@@ -116,7 +116,7 @@ class AnimationScreen extends React.Component {
         let animationData = {
             dataVersion : this.state.dataVersion + 1,
             animationId: this.state.animationId,
-            animationPhotoProfil: this.state.animationPhotoProfil,
+            animationProfilePicture: this.state.animationProfilePicture,
             animationPhotos: this.state.animationPhotos,
             animationDescription: this.state.animationDescription,
             animationName: this.state.animationName,
@@ -144,7 +144,7 @@ class AnimationScreen extends React.Component {
     //         self.setState({
     //             dataVersion: data.dataVersion,
     //             animationId: data.animationId,
-    //             animationPhotoProfil: data.animationPhotoProfil,
+    //             animationProfilePicture: data.animationProfilePicture,
     //             animationPhotos: data.animationPhotos,
     //             animationDescription: data.animationDescription,
     //             EditMode: true,
@@ -255,7 +255,7 @@ class AnimationScreen extends React.Component {
 
                                     <div className="col-md-4" >
                                     <label htmlFor="userName">Photo Principale</label>
-                                            <DropzonePhoto animationName={this.state.animationName} background={this.state.animationPhotoProfil} id="PhotoProfil" methodToReturnUrl={this.handleReturnedUrl} />
+                                            <DropzonePhoto animationName={this.state.animationName} background={this.state.animationProfilePicture} id="PhotoProfil" methodToReturnUrl={this.handleReturnedUrl} />
                                     </div>
                                 </div>
                             </fieldset>

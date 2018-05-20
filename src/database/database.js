@@ -96,13 +96,15 @@ export function addNewAnimationToDatabase(animationData) {
     let animationUID = animationData.animationName.toUpperCase().replace(/ /g, "") + (Math.floor(Date.now() / 1000))
     let reference = (userData.zooName + '/animationsData/' + animationUID);
 
-    if (animationData.animationPhotoProfil === '') {
-        animationData.animationPhotoProfil = 'http://thedroideffect.com/wp-content/themes/thedroideffect/images/missing-image-640x360.png'
+    if (animationData.animationProfilePicture === '') {
+        animationData.animationProfilePicture = 'http://thedroideffect.com/wp-content/themes/thedroideffect/images/missing-image-640x360.png'
     }
 
     firebase.database().ref(reference).set({
         dataVersion: 1,
         animationId: animationUID,
+        animationProfilePicture: animationData.animationProfilePicture,
+        animationPhotos: animationData.animationPhotos,
         animationName: animationData.animationName,
         dataType: 'animation',
         zooName: userData.zooName,
@@ -163,6 +165,9 @@ export function addNewEventToDatabase(eventData) {
         dataVersion: 1,
         eventId: eventUID,
         eventName: eventData.eventName,
+        eventProfilePicture: eventData.eventProfilePicture,
+        eventPhotos: eventData.eventPhotos,
+    
         dataType: 'event',
         zooName: userData.zooName,
     })
@@ -224,6 +229,8 @@ export function addNewServiceToDatabase(serviceData) {
     firebase.database().ref(reference).set({
         dataVersion: 1,
         serviceId: serviceUID,
+        serviceProfilePicture: serviceData.serviceProfilePicture,
+        servicePhotos: serviceData.servicePhotos,
         serviceName: serviceData.serviceName,
         dataType: 'service',
         zooName: userData.zooName,
