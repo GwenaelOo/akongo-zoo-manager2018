@@ -13,31 +13,38 @@ class SpecieWidget extends React.Component {
 
         return (
             <div className="col-xl-4">
-            {/* START card- */}
-            <div className="card">
-                <img className="img-fluid" src={this.props.specieData.specieProfilePicture} alt="Demo" />
-                <div className="card-body">
-                    <div className="row text-center">
-                        <div className="col-4">
-                            <p>Comments</p>
-                            <h3 className="m-0 text-primary">700</h3>
-                        </div>
-                        <div className="col-4">
-                            <p>Nom</p>
-                            <h3 className="m-0 text-primary">{this.props.specieData.specieName}</h3>
-                        </div>
-                        <div className="col-4">
-                            <p>Shots</p>
-                            <h3 className="m-0 text-primary">300</h3>
+                {/* START card- */}
+
+                <div className="card">
+                    <Link to={{
+                        pathname: "SpecieScreen",
+                        state: { SpecieId: this.props.specieData.SpecieId }
+                    }}>
+                        <img className="img-fluid" src={this.props.specieData.specieProfilePicture} alt="Demo" />
+                    </Link>
+                    <div className="card-body">
+                        <div className="row text-center">
+                            <div className="col-4">
+                                <p>Comments</p>
+                                <h3 className="m-0 text-primary">700</h3>
+                            </div>
+                            <div className="col-4">
+                                <p>Nom</p>
+                                <h3 className="m-0 text-primary">{this.props.specieData.specieName}</h3>
+                            </div>
+                            <div className="col-4">
+                                <p>Shots</p>
+                                <h3 className="m-0 text-primary">300</h3>
+                            </div>
                         </div>
                     </div>
                 </div>
+
             </div>
-            {/* END card- */}
-        </div>
         );
     }
 
 }
 
 export default SpecieWidget;
+

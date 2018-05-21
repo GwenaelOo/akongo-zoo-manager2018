@@ -29,7 +29,7 @@ class SpecieList extends React.Component {
         }
 
         return (
-            <div>
+            <div style={styles.widgetList}>
 
                 {
                     list.map(function (specie) { return <SpecieWidget specieData={specie} key={specie.specieId} />; })
@@ -40,6 +40,15 @@ class SpecieList extends React.Component {
         );
     }
 
+}
+
+const styles={
+    widgetList:{
+        flex: 1,
+        display : 'flex',
+        flexDirection: 'row',
+        flexWrap: 'wrap'
+    }
 }
 
 export default SpecieList;

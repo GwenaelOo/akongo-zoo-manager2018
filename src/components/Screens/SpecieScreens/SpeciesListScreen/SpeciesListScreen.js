@@ -42,7 +42,7 @@ class SpeciesListScreen extends React.Component {
         return (
             <ContentWrapper>
                 <h3>Mes animaux</h3>
-                    <div className="row" style={styles.widgetList}>
+                    <div className="row">
                         <SpecieList speciesList={this.state.speciesList} />
                     </div>
                 {/* END panel tab */}
@@ -53,11 +53,3 @@ class SpeciesListScreen extends React.Component {
 
 export default SpeciesListScreen;
 
-const styles={
-    widgetList:{
-        flex: 1,
-        display : 'flex',
-        flexDirection: 'row',
-        flexWrap: 'wrap'
-    }
-}
