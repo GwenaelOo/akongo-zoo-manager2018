@@ -9,13 +9,12 @@ class DropzonePhoto extends React.Component {
         
         this.state = {
             files: [],
-            background: '',
+            background: this.props.background,
             returnedURL: ''
         }  
     }
 
     componentWillReceiveProps(nextProps) {
-        
         
         if (nextProps.background !== this.state.background) {
             this.setState({ background: nextProps.background });

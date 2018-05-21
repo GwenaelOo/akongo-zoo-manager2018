@@ -29,9 +29,9 @@ class ServiceScreen extends React.Component {
         this.state = {
             serviceId: '',
             serviceName: '',
-            servicePhotoProfil: '',
-            servicePhotos: [],
-            serviceDescription: '',
+            serviceProfilePicture: '',
+            serviceProfilePicture: 'https://www.cmsabirmingham.org/stuff/2017/01/default-placeholder.png',
+            servicePhotos: [{ photoURL: 'https://www.cmsabirmingham.org/stuff/2017/01/default-placeholder.png' }],
             logId: 0,
             dataVersion: 0,
             EditMode: false,
@@ -48,7 +48,7 @@ class ServiceScreen extends React.Component {
         let serviceData = {
             serviceName: this.state.serviceName,
             serviceId: this.state.serviceId,
-            servicePhotoProfil: this.state.servicePhotoProfil,
+            serviceProfilePicture: this.state.serviceProfilePicture,
             servicePhotos: this.state.servicePhotos,
             serviceDescription: this.state.serviceDescription,
         }
@@ -64,19 +64,21 @@ class ServiceScreen extends React.Component {
 
             let photoName = ('service' + photoId)
             this.setState({
-                servicePhotoProfil: returnedUrl
+                serviceProfilePicture: returnedUrl
             });
+
+            return
         }
 
         console.log(this.state.servicePhotos)
 
-        let photoUID = this.state.servicePhotos.length + 1
+        let photoUID = photoId
         let photosArray = this.state.servicePhotos
 
         console.log(photosArray.length)
 
         let newObject = {
-            photoId: 99,
+            photoId: photoId,
             photoURL: returnedUrl
         }
 
@@ -84,6 +86,7 @@ class ServiceScreen extends React.Component {
 
         this.setState({
             servicePhotos: photosArray
+
         });
 
         console.log(this.state.servicePhotos)
@@ -113,9 +116,9 @@ class ServiceScreen extends React.Component {
 
     handleClick() {
         let serviceData = {
-            dataVersion : this.state.dataVersion + 1,
+            dataVersion: this.state.dataVersion + 1,
             serviceId: this.state.serviceId,
-            servicePhotoProfil: this.state.servicePhotoProfil,
+            serviceProfilePicture: this.state.serviceProfilePicture,
             servicePhotos: this.state.servicePhotos,
             serviceDescription: this.state.serviceDescription,
             serviceName: this.state.serviceName,
@@ -139,11 +142,11 @@ class ServiceScreen extends React.Component {
     //     return firebase.database().ref('/users/' + userId).once('value').then(function (snapshot) {
     //         let data = snapshot.data()
 
-        
+
     //         self.setState({
     //             dataVersion: data.dataVersion,
     //             serviceId: data.serviceId,
-    //             servicePhotoProfil: data.servicePhotoProfil,
+    //             serviceProfilePicture: data.serviceProfilePicture,
     //             servicePhotos: data.servicePhotos,
     //             serviceDescription: data.serviceDescription,
     //             EditMode: true,
@@ -224,7 +227,18 @@ class ServiceScreen extends React.Component {
                 <span className="btn-label"><i className="fa fa-trash-o"></i></span> Supprimer l'espèce
             </Button>
         );
-        console.log(this.state.logId)
+
+        // Creation de la partie ajout photo
+
+        var rows = [];
+        for (var i = 0; i < this.state.servicePhotos.length; i++) {
+            rows.push(
+                <div className="col-md-3">
+                    <DropzonePhoto serviceName={this.state.serviceName} background={this.state.servicePhotos[i].photoURL} id={"Photo" + i} methodToReturnUrl={this.handleReturnedUrl} />
+                </div>
+            );
+        }
+
         return (
 
             <ContentWrapper>
@@ -241,20 +255,20 @@ class ServiceScreen extends React.Component {
                                         </Col>
                                     </FormGroup>
                                 </fieldset>
-                          
-                                <div style={{display: 'flex', flex: 1, flexDirection: 'row', justifyContent: 'space-between'}}>
-                                    <div className="col-md-7" >
+
+                                <div style={{ display: 'flex', flex: 1, flexDirection: 'row-reverse', justifyContent: 'space-between' }}>
+                                    <div className="col-md-8" >
 
                                         <label htmlFor="userName">Description du service</label>
                                         <Panel>
-                                            <textarea name="serviceDescription" rows="10" className="form-control note-editor" value={this.state.serviceDescription} onChange={this.handleChange}>
+                                            <textarea name="serviceDescription" rows="11" className="form-control note-editor" value={this.state.serviceDescription} onChange={this.handleChange}>
                                             </textarea>
                                         </Panel>
                                     </div>
 
                                     <div className="col-md-4" >
-                                    <label htmlFor="userName">Photo Principale</label>
-                                            <DropzonePhoto serviceName={this.state.serviceName} background={this.state.servicePhotoProfil} id="PhotoProfil" methodToReturnUrl={this.handleReturnedUrl} />
+                                        <label htmlFor="userName">Photo Principale</label>
+                                        <DropzonePhoto serviceName={this.state.serviceName} background={this.state.serviceProfilePicture} id="PhotoProfil" methodToReturnUrl={this.handleReturnedUrl} />
                                     </div>
                                 </div>
                             </fieldset>
@@ -262,32 +276,10 @@ class ServiceScreen extends React.Component {
                             <fieldset>
                                 <legend> Ajout des photos</legend>
                                 <FormGroup>
-                                    <div className="row" >
-                                        <div className="col-md-1" >
+                                    <div className="col-md-12" >
+                                        <div className="row" style={{ display: 'flex', flexDirection: "row", flexWrap: 'wrap', justifyContent: 'flex-start' }}>
+                                            {rows}
                                         </div>
-
-                                    
-                                        <div className="col-md-1" >
-                                        </div>
-
-                                        <div className="col-md-4">
-                                            <div className="row">
-                                                <div className="col-md-6">
-                                                    <DropzonePhoto serviceName={this.state.serviceName} background={this.state.servicePhoto1} id="Photo1" methodToReturnUrl={this.handleReturnedUrl} />
-                                                </div>
-                                                <div className="col-md-6">
-                                                    <DropzonePhoto serviceName={this.state.serviceName} background={this.state.servicePhoto2} id="Photo2" methodToReturnUrl={this.handleReturnedUrl} />
-                                                </div>
-                                                <div className="col-md-6">
-                                                    <DropzonePhoto serviceName={this.state.serviceName} background={this.state.servicePhoto3} id="Photo3" methodToReturnUrl={this.handleReturnedUrl} />
-                                                </div>
-                                                <div className="col-md-6">
-                                                    <DropzonePhoto serviceName={this.state.serviceName} background={this.state.servicePhoto4} id="Photo4" methodToReturnUrl={this.handleReturnedUrl} />
-                                                </div>
-                                            </div>
-                                        </div>
-
-
                                     </div>
                                 </FormGroup>
                             </fieldset>

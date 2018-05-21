@@ -30,8 +30,8 @@ class EventScreen extends React.Component {
         this.state = {
             eventId: '',
             eventName: '',
-            eventPhotoProfil: '',
-            eventPhotos: [],
+            eventProfilePicture: 'https://www.cmsabirmingham.org/stuff/2017/01/default-placeholder.png',
+            eventPhotos: [{ photoURL: 'https://www.cmsabirmingham.org/stuff/2017/01/default-placeholder.png' }],
             eventDescription: '',
             logId: 0,
             dataVersion: 0,
@@ -49,7 +49,7 @@ class EventScreen extends React.Component {
         let eventData = {
             eventName: this.state.eventName,
             eventId: this.state.eventId,
-            eventPhotoProfil: this.state.eventPhotoProfil,
+            eventProfilePicture: this.state.eventProfilePicture,
             eventPhotos: this.state.eventPhotos,
             eventDescription: this.state.eventDescription,
         }
@@ -65,19 +65,21 @@ class EventScreen extends React.Component {
 
             let photoName = ('event' + photoId)
             this.setState({
-                eventPhotoProfil: returnedUrl
+                eventProfilePicture: returnedUrl
             });
+
+            return
         }
 
         console.log(this.state.eventPhotos)
 
-        let photoUID = this.state.eventPhotos.length + 1
+        let photoUID = photoId
         let photosArray = this.state.eventPhotos
 
         console.log(photosArray.length)
 
         let newObject = {
-            photoId: 99,
+            photoId: photoId,
             photoURL: returnedUrl
         }
 
@@ -85,6 +87,7 @@ class EventScreen extends React.Component {
 
         this.setState({
             eventPhotos: photosArray
+
         });
 
         console.log(this.state.eventPhotos)
@@ -114,9 +117,9 @@ class EventScreen extends React.Component {
 
     handleClick() {
         let eventData = {
-            dataVersion : this.state.dataVersion + 1,
+            dataVersion: this.state.dataVersion + 1,
             eventId: this.state.eventId,
-            eventPhotoProfil: this.state.eventPhotoProfil,
+            eventProfilePicture: this.state.eventProfilePicture,
             eventPhotos: this.state.eventPhotos,
             eventDescription: this.state.eventDescription,
             eventName: this.state.eventName,
@@ -140,11 +143,11 @@ class EventScreen extends React.Component {
     //     return firebase.database().ref('/users/' + userId).once('value').then(function (snapshot) {
     //         let data = snapshot.data()
 
-        
+
     //         self.setState({
     //             dataVersion: data.dataVersion,
     //             eventId: data.eventId,
-    //             eventPhotoProfil: data.eventPhotoProfil,
+    //             eventProfilePicture: data.eventProfilePicture,
     //             eventPhotos: data.eventPhotos,
     //             eventDescription: data.eventDescription,
     //             EditMode: true,
@@ -225,7 +228,19 @@ class EventScreen extends React.Component {
                 <span className="btn-label"><i className="fa fa-trash-o"></i></span> Supprimer l'espèce
             </Button>
         );
-        console.log(this.state.logId)
+
+        // Creation de la partie ajout photo
+
+        var rows = [];
+        for (var i = 0; i < this.state.eventPhotos.length; i++) {
+            rows.push(
+                <div className="col-md-3">
+                    <DropzonePhoto eventName={this.state.eventName} background={this.state.eventPhotos[i].photoURL} id={"Photo" + i} methodToReturnUrl={this.handleReturnedUrl} />
+                </div>
+            );
+        }
+
+
         return (
 
             <ContentWrapper>
@@ -233,7 +248,6 @@ class EventScreen extends React.Component {
                     <CardWithHeader header="Ajouter/Modifier une event">
                         <form className="form-horizontal" onSubmit={this.handleSubmit}>
                             <fieldset>
-                                <legend> Informations générales</legend>
                                 <fieldset>
                                     <FormGroup>
                                         <label className="col-sm-2 control-label">Nom de l'event</label>
@@ -242,20 +256,20 @@ class EventScreen extends React.Component {
                                         </Col>
                                     </FormGroup>
                                 </fieldset>
-                          
-                                <div style={{display: 'flex', flex: 1, flexDirection: 'row', justifyContent: 'space-between'}}>
-                                    <div className="col-md-7" >
+
+                                <div style={{ display: 'flex', flex: 1, flexDirection: 'row-reverse', justifyContent: 'space-between' }}>
+                                    <div className="col-md-8" >
 
                                         <label htmlFor="userName">Description du event</label>
                                         <Panel>
-                                            <textarea name="eventDescription" rows="10" className="form-control note-editor" value={this.state.eventDescription} onChange={this.handleChange}>
+                                            <textarea name="eventDescription" rows="11" className="form-control note-editor" value={this.state.eventDescription} onChange={this.handleChange}>
                                             </textarea>
                                         </Panel>
                                     </div>
 
                                     <div className="col-md-4" >
-                                    <label htmlFor="userName">Photo Principale</label>
-                                            <DropzonePhoto eventName={this.state.eventName} background={this.state.eventPhotoProfil} id="PhotoProfil" methodToReturnUrl={this.handleReturnedUrl} />
+                                        <label htmlFor="userName">Photo Principale</label>
+                                        <DropzonePhoto eventName={this.state.eventName} background={this.state.eventProfilePicture} id="PhotoProfil" methodToReturnUrl={this.handleReturnedUrl} />
                                     </div>
                                 </div>
                             </fieldset>
@@ -263,32 +277,10 @@ class EventScreen extends React.Component {
                             <fieldset>
                                 <legend> Ajout des photos</legend>
                                 <FormGroup>
-                                    <div className="row" >
-                                        <div className="col-md-1" >
+                                    <div className="col-md-12" >
+                                        <div className="row" style={{ display: 'flex', flexDirection: "row", flexWrap: 'wrap', justifyContent: 'flex-start' }}>
+                                            {rows}
                                         </div>
-
-                                    
-                                        <div className="col-md-1" >
-                                        </div>
-
-                                        <div className="col-md-4">
-                                            <div className="row">
-                                                <div className="col-md-6">
-                                                    <DropzonePhoto eventName={this.state.eventName} background={this.state.eventPhoto1} id="Photo1" methodToReturnUrl={this.handleReturnedUrl} />
-                                                </div>
-                                                <div className="col-md-6">
-                                                    <DropzonePhoto eventName={this.state.eventName} background={this.state.eventPhoto2} id="Photo2" methodToReturnUrl={this.handleReturnedUrl} />
-                                                </div>
-                                                <div className="col-md-6">
-                                                    <DropzonePhoto eventName={this.state.eventName} background={this.state.eventPhoto3} id="Photo3" methodToReturnUrl={this.handleReturnedUrl} />
-                                                </div>
-                                                <div className="col-md-6">
-                                                    <DropzonePhoto eventName={this.state.eventName} background={this.state.eventPhoto4} id="Photo4" methodToReturnUrl={this.handleReturnedUrl} />
-                                                </div>
-                                            </div>
-                                        </div>
-
-
                                     </div>
                                 </FormGroup>
                             </fieldset>

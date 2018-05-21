@@ -18,8 +18,8 @@ export function addNewSpecieToDatabase(specieData) {
     let specieUID = specieData.SpecieName.toUpperCase().replace(/ /g, "") + (Math.floor(Date.now() / 1000))
     let reference = (userData.zooName + '/speciesData/' + specieUID);
 
-    if (specieData.SpeciePhotoProfil === '') {
-        specieData.SpeciePhotoProfil = 'http://thedroideffect.com/wp-content/themes/thedroideffect/images/missing-image-640x360.png'
+    if (specieData.SpecieProfilePicture === '') {
+        specieData.SpecieProfilePicture = 'http://thedroideffect.com/wp-content/themes/thedroideffect/images/missing-image-640x360.png'
     }
 
     firebase.database().ref(reference).set({
@@ -37,7 +37,7 @@ export function addNewSpecieToDatabase(specieData) {
         specieWeight: specieData.SpecieWeight,
         specieLifeExpectancy: specieData.SpecieLifeExpectancy,
         specieFood: specieData.SpecieFood,
-        specieProfilePicture: specieData.SpeciePhotoProfil,
+        specieProfilePicture: specieData.SpecieProfilePicture,
         speciePhotos: specieData.SpeciePhotos,
         specieCreatedBy: userData.userId,
         specieCreationDate: Date(),
@@ -154,11 +154,13 @@ export function addNewEventToDatabase(eventData) {
     // Ajout dans firebase 
     // ********************
 
+    console.log(eventData.eventName)
+
     let eventUID = eventData.eventName.toUpperCase().replace(/ /g, "") + (Math.floor(Date.now() / 1000))
     let reference = (userData.zooName + '/eventsData/' + eventUID);
 
-    if (eventData.eventPhotoProfil === '') {
-        eventData.eventPhotoProfil = 'http://thedroideffect.com/wp-content/themes/thedroideffect/images/missing-image-640x360.png'
+    if (eventData.eventProfilePicture === '') {
+        eventData.eventProfilePicture = 'http://thedroideffect.com/wp-content/themes/thedroideffect/images/missing-image-640x360.png'
     }
 
     firebase.database().ref(reference).set({
@@ -219,11 +221,13 @@ export function addNewServiceToDatabase(serviceData) {
     // Ajout dans firebase 
     // ********************
 
+    console.log(serviceData.serviceName)
+
     let serviceUID = serviceData.serviceName.toUpperCase().replace(/ /g, "") + (Math.floor(Date.now() / 1000))
     let reference = (userData.zooName + '/servicesData/' + serviceUID);
 
-    if (serviceData.servicePhotoProfil === '') {
-        serviceData.servicePhotoProfil = 'http://thedroideffect.com/wp-content/themes/thedroideffect/images/missing-image-640x360.png'
+    if (serviceData.serviceProfilePicture === '') {
+        serviceData.serviceProfilePicture = 'http://thedroideffect.com/wp-content/themes/thedroideffect/images/missing-image-640x360.png'
     }
 
     firebase.database().ref(reference).set({

@@ -30,8 +30,8 @@ class AnimationScreen extends React.Component {
         this.state = {
             animationId: '',
             animationName: '',
-            animationProfilePicture: '',
-            animationPhotos: [],
+            animationProfilePicture: 'https://www.cmsabirmingham.org/stuff/2017/01/default-placeholder.png',
+            animationPhotos: [{ photoURL: 'https://www.cmsabirmingham.org/stuff/2017/01/default-placeholder.png' }],
             animationDescription: '',
             logId: 0,
             dataVersion: 0,
@@ -41,15 +41,16 @@ class AnimationScreen extends React.Component {
         this.handleReturnedUrl = this.handleReturnedUrl.bind(this);
     }
 
-    handleChange(event) {
+    handleChange(animation) {
 
-        let name = event.target.name
-        this.setState({ [name]: event.target.value });
+        let name = animation.target.name
+        this.setState({ [name]: animation.target.value });
 
         let animationData = {
             animationName: this.state.animationName,
             animatioId: this.state.animationId,
             animationProfilePicture: this.state.animationProfilePicture,
+            animationPhotos: this.state.animationPhotos,
             animationPhotos: this.state.animationPhotos,
             animationDescription: this.state.animationDescription,
         }
@@ -67,17 +68,19 @@ class AnimationScreen extends React.Component {
             this.setState({
                 animationProfilePicture: returnedUrl
             });
+
+            return
         }
 
         console.log(this.state.animationPhotos)
 
-        let photoUID = this.state.animationPhotos.length + 1
+        let photoUID = photoId
         let photosArray = this.state.animationPhotos
 
         console.log(photosArray.length)
 
         let newObject = {
-            photoId: 99,
+            photoId: photoId,
             photoURL: returnedUrl
         }
 
@@ -85,6 +88,7 @@ class AnimationScreen extends React.Component {
 
         this.setState({
             animationPhotos: photosArray
+
         });
 
         console.log(this.state.animationPhotos)
@@ -114,7 +118,7 @@ class AnimationScreen extends React.Component {
 
     handleClick() {
         let animationData = {
-            dataVersion : this.state.dataVersion + 1,
+            dataVersion: this.state.dataVersion + 1,
             animationId: this.state.animationId,
             animationProfilePicture: this.state.animationProfilePicture,
             animationPhotos: this.state.animationPhotos,
@@ -140,7 +144,7 @@ class AnimationScreen extends React.Component {
     //     return firebase.database().ref('/users/' + userId).once('value').then(function (snapshot) {
     //         let data = snapshot.data()
 
-        
+
     //         self.setState({
     //             dataVersion: data.dataVersion,
     //             animationId: data.animationId,
@@ -225,7 +229,19 @@ class AnimationScreen extends React.Component {
                 <span className="btn-label"><i className="fa fa-trash-o"></i></span> Supprimer l'espèce
             </Button>
         );
-        console.log(this.state.logId)
+
+
+        var rows = [];
+        for (var i = 0; i < this.state.animationPhotos.length; i++) {
+            rows.push(
+                <div className="col-md-3">
+                    <DropzonePhoto animationName={this.state.animationName} background={this.state.animationPhotos[i].photoURL} id={"Photo" + i} methodToReturnUrl={this.handleReturnedUrl} />
+                </div>
+            );
+        }
+
+        
+
         return (
 
             <ContentWrapper>
@@ -233,7 +249,6 @@ class AnimationScreen extends React.Component {
                     <CardWithHeader header="Ajouter/Modifier une Animation">
                         <form className="form-horizontal" onSubmit={this.handleSubmit}>
                             <fieldset>
-                                <legend> Informations générales</legend>
                                 <fieldset>
                                     <FormGroup>
                                         <label className="col-sm-2 control-label">Nom de l'animation</label>
@@ -242,20 +257,20 @@ class AnimationScreen extends React.Component {
                                         </Col>
                                     </FormGroup>
                                 </fieldset>
-                          
-                                <div style={{display: 'flex', flex: 1, flexDirection: 'row', justifyContent: 'space-between'}}>
-                                    <div className="col-md-7" >
+
+                                <div style={{ display: 'flex', flex: 1, flexDirection: 'row-reverse', justifyContent: 'space-between' }}>
+                                    <div className="col-md-8" >
 
                                         <label htmlFor="userName">Description du animation</label>
                                         <Panel>
-                                            <textarea name="animationDescription" rows="10" className="form-control note-editor" value={this.state.animationDescription} onChange={this.handleChange}>
+                                            <textarea name="animationDescription" rows="11" className="form-control note-editor" value={this.state.animationDescription} onChange={this.handleChange}>
                                             </textarea>
                                         </Panel>
                                     </div>
 
                                     <div className="col-md-4" >
-                                    <label htmlFor="userName">Photo Principale</label>
-                                            <DropzonePhoto animationName={this.state.animationName} background={this.state.animationProfilePicture} id="PhotoProfil" methodToReturnUrl={this.handleReturnedUrl} />
+                                        <label htmlFor="userName">Photo Principale</label>
+                                        <DropzonePhoto animationName={this.state.animationName} background={this.state.animationProfilePicture} id="PhotoProfil" methodToReturnUrl={this.handleReturnedUrl} />
                                     </div>
                                 </div>
                             </fieldset>
@@ -263,32 +278,10 @@ class AnimationScreen extends React.Component {
                             <fieldset>
                                 <legend> Ajout des photos</legend>
                                 <FormGroup>
-                                    <div className="row" >
-                                        <div className="col-md-1" >
+                                <div className="col-md-12" >
+                                        <div className="row" style={{ display: 'flex', flexDirection: "row", flexWrap: 'wrap', justifyContent: 'flex-start' }}>
+                                            {rows}
                                         </div>
-
-                                    
-                                        <div className="col-md-1" >
-                                        </div>
-
-                                        <div className="col-md-4">
-                                            <div className="row">
-                                                <div className="col-md-6">
-                                                    <DropzonePhoto animationName={this.state.animationName} background={this.state.animationPhoto1} id="Photo1" methodToReturnUrl={this.handleReturnedUrl} />
-                                                </div>
-                                                <div className="col-md-6">
-                                                    <DropzonePhoto animationName={this.state.animationName} background={this.state.animationPhoto2} id="Photo2" methodToReturnUrl={this.handleReturnedUrl} />
-                                                </div>
-                                                <div className="col-md-6">
-                                                    <DropzonePhoto animationName={this.state.animationName} background={this.state.animationPhoto3} id="Photo3" methodToReturnUrl={this.handleReturnedUrl} />
-                                                </div>
-                                                <div className="col-md-6">
-                                                    <DropzonePhoto animationName={this.state.animationName} background={this.state.animationPhoto4} id="Photo4" methodToReturnUrl={this.handleReturnedUrl} />
-                                                </div>
-                                            </div>
-                                        </div>
-
-
                                     </div>
                                 </FormGroup>
                             </fieldset>
