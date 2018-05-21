@@ -120,7 +120,7 @@ class EventScreen extends React.Component {
             dataVersion: this.state.dataVersion + 1,
             eventId: this.state.eventId,
             eventProfilePicture: this.state.eventProfilePicture,
-            eventPhotos: this.state.eventPhotos,
+            eventPhotos: this.state.eventPhotos.slice(1),
             eventDescription: this.state.eventDescription,
             eventName: this.state.eventName,
             log: this.state.logId + 1

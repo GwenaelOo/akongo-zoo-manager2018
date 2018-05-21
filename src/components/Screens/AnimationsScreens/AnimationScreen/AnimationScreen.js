@@ -59,8 +59,6 @@ class AnimationScreen extends React.Component {
 
     handleReturnedUrl(returnedUrl, photoId) {
 
-        console.log(photoId)
-
         if (photoId === 'PhotoProfil') {
 
             let photoName = ('animation' + photoId)
@@ -90,7 +88,7 @@ class AnimationScreen extends React.Component {
 
         });
 
-        console.log(this.state.animationPhotos)
+        console.log(this.state.animationPhotos.slice(1))
     }
 
     handleDelete() {
@@ -120,7 +118,7 @@ class AnimationScreen extends React.Component {
             dataVersion: this.state.dataVersion + 1,
             animationId: this.state.animationId,
             animationProfilePicture: this.state.animationProfilePicture,
-            animationPhotos: this.state.animationPhotos,
+            animationPhotos: this.state.animationPhotos.slice(1),
             animationDescription: this.state.animationDescription,
             animationName: this.state.animationName,
             log: this.state.logId + 1
@@ -234,7 +232,7 @@ class AnimationScreen extends React.Component {
         for (var i = 0; i < this.state.animationPhotos.length; i++) {
             rows.push(
                 <div className="col-md-3">
-                    <DropzonePhoto animationName={this.state.animationName} background={this.state.animationPhotos[i].photoURL} id={"Photo" + i} methodToReturnUrl={this.handleReturnedUrl} />
+                    <DropzonePhoto animationName={this.state.animationName} background={this.state.animationPhotos[i].photoURL} id={i} methodToReturnUrl={this.handleReturnedUrl} />
                 </div>
             );
         }
@@ -275,7 +273,7 @@ class AnimationScreen extends React.Component {
                             </fieldset>
 
                             <fieldset>
-                                <legend> Ajout des photos</legend>
+                                <legend> Ajout de photos</legend>
                                 <FormGroup>
                                 <div className="col-md-12" >
                                         <div className="row" style={{ display: 'flex', flexDirection: "row", flexWrap: 'wrap', justifyContent: 'flex-start' }}>

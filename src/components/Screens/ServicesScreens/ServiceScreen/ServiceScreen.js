@@ -119,7 +119,7 @@ class ServiceScreen extends React.Component {
             dataVersion: this.state.dataVersion + 1,
             serviceId: this.state.serviceId,
             serviceProfilePicture: this.state.serviceProfilePicture,
-            servicePhotos: this.state.servicePhotos,
+            servicePhotos: this.state.servicePhotos.slice(1),
             serviceDescription: this.state.serviceDescription,
             serviceName: this.state.serviceName,
             log: this.state.logId + 1
