@@ -105,7 +105,7 @@ export function addNewAnimalToDatabase(animalData, specieId) {
         .then(function (snapshot) {
             console.log('snapshot')
             let data = snapshot.val()
-            if (data.specieAnimals !== undefined ){
+            if (data.specieAnimals != undefined ){
                 list = data.specieAnimals
             } else {
                 list = []
