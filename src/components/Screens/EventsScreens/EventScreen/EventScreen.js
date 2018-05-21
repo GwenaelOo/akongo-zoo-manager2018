@@ -268,7 +268,7 @@ class EventScreen extends React.Component {
                                     </div>
 
                                     <div className="col-md-4" >
-                                        <label htmlFor="userName">Photo Principale</label>
+                                        <label htmlFor="userName">Photo de profile</label>
                                         <DropzonePhoto eventName={this.state.eventName} background={this.state.eventProfilePicture} id="PhotoProfil" methodToReturnUrl={this.handleReturnedUrl} />
                                     </div>
                                 </div>

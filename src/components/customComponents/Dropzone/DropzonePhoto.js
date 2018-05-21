@@ -65,9 +65,9 @@ class DropzonePhoto extends React.Component {
 
         let style = {
             'backgroundImage': 'url(' + this.state.background + ')',
-            'height': '200px',
-            'width': '200px',
-            'backgroundSize': '200px 200px',
+            'height': '300px',
+            'width': '300px',
+            'backgroundSize': '300px 300px',
             'borderRadius': '10px',
             'margin': '10px 10px 10px 10px'
         }

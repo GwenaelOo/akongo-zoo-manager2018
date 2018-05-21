@@ -19,7 +19,6 @@ class SpeciesListScreen extends React.Component {
         };
     }
 
-
     readSpecieFromDatabase() {
 
         var self = this;

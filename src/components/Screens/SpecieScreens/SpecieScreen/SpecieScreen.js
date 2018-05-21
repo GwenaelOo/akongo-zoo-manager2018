@@ -10,7 +10,7 @@ import DropzonePhoto from '../../../customComponents/Dropzone/DropzonePhoto';
 import swal from 'sweetalert'
 import { Typeahead } from 'react-bootstrap-typeahead';
 import firebase from 'firebase';
-import {addNewSpecieToDatabase} from '../../../../database/database'
+import { addNewSpecieToDatabase } from '../../../../database/database'
 
 // Create a single card with header text as attribute
 const CardWithHeader = props => (
@@ -22,65 +22,73 @@ const CardWithHeader = props => (
 
 const userId = "gwen"
 const specieData = {}
+const userData = {
+    zooName: 'AkongoFakeZoo',
+    userId: 'Gwen'
+}
+
+
 
 
 class SpecieScreen extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { 
-            SpecieId: '',
-            SpecieName: '',
-            SpecieLatinName: '',
-            SpecieEnglishName: '',
-            SpecieClass: '',
-            SpecieOrder: '',
-            SpecieFamilly: '',
-            SpecieIUCNClassification: '',
-            SpecieDescription: '',
-            SpecieGestation: '',
-            SpecieWeight: '',
-            SpecieLifeExpectancy: '',
-            SpecieFood: [],
-            SpeciePhotoProfil: '',
-            SpeciePhotos: [],
-            SpeciePhoto1: '',
-            SpeciePhoto2: '',
-            SpeciePhoto3: '',
-            SpeciePhoto4: '',
+        this.state = {
+            specieId: '',
+            specieName: '',
+            specieLatinName: '',
+            specieEnglishName: '',
+            specieClass: '',
+            specieOrder: '',
+            specieFamilly: '',
+            specieIUCNClassification: '',
+            specieDescription: '',
+            specieGestation: '',
+            specieWeight: '',
+            specieLifeExpectancy: '',
+            specieFood: [],
+            specieProfilePicture: 'https://www.cmsabirmingham.org/stuff/2017/01/default-placeholder.png',
+            speciePhotos: [{ photoURL: 'https://www.cmsabirmingham.org/stuff/2017/01/default-placeholder.png' }],
+            specieEnclosure: 'img/bg1.jpg',
+            speciePhoto1: '',
+            speciePhoto2: '',
+            speciePhoto3: '',
+            speciePhoto4: '',
             logId: 0,
             EditMode: false,
             zooFoodList: ['chargement']
         };
+        this.readSpecieFromFirebase = this.readSpecieFromFirebase.bind(this);
         this.handleChange = this.handleChange.bind(this);
         this.handleReturnedUrl = this.handleReturnedUrl.bind(this);
     }
 
-    handleChange(event) {
+    handleChange(specie) {
 
-        let name = event.target.name
-        this.setState({ [name]: event.target.value });
+        let name = specie.target.name
+        this.setState({ [name]: specie.target.value });
 
         let specieData = {
-            SpecieId: this.state.SpecieId,
-            SpecieName: this.state.SpecieName,
-            SpecieLatinName: this.state.SpecieLatinName,
-            SpecieEnglishName: this.state.SpecieEnglishName,
-            SpecieClass: this.state.SpecieClass,
-            SpecieOrder: this.state.SpecieOrder,
-            SpecieFood: this.state.SpecieFood,
-            SpecieFamilly: this.state.SpecieFamilly,
-            SpecieIUCNClassification: this.state.SpecieIUCNClassification,
-            SpecieDescription: this.state.SpecieDescription,
-            SpecieGestation: this.state.SpecieGestation,
-            SpecieWeight: this.state.SpecieWeight,
-            SpecieLifeExpectancy: this.state.SpecieLifeExpectancy,
-            SpeciePhotoProfil: this.state.SpeciePhotoProfil,
-            SpeciePhotos: this.state.SpeciePhotos,
-            SpeciePhoto1: this.state.SpeciePhoto1,
-            SpeciePhoto2: this.state.SpeciePhoto2,
-            SpeciePhoto3: this.state.SpeciePhoto3,
-            SpeciePhoto4: this.state.SpeciePhoto4,
-        }   
+            specieId: this.state.specieId,
+            specieName: this.state.specieName,
+            specieLatinName: this.state.specieLatinName,
+            specieEnglishName: this.state.specieEnglishName,
+            specieClass: this.state.specieClass,
+            specieOrder: this.state.specieOrder,
+            specieFood: this.state.specieFood,
+            specieFamilly: this.state.specieFamilly,
+            specieIUCNClassification: this.state.specieIUCNClassification,
+            specieDescription: this.state.specieDescription,
+            specieGestation: this.state.specieGestation,
+            specieWeight: this.state.specieWeight,
+            specieLifeExpectancy: this.state.specieLifeExpectancy,
+            speciePhotoProfil: this.state.speciePhotoProfil,
+            speciePhotos: this.state.speciePhotos,
+            speciePhoto1: this.state.speciePhoto1,
+            speciePhoto2: this.state.speciePhoto2,
+            speciePhoto3: this.state.speciePhoto3,
+            speciePhoto4: this.state.speciePhoto4,
+        }
 
         console.log(specieData)
     }
@@ -91,11 +99,11 @@ class SpecieScreen extends React.Component {
         this.setState({ [name]: selected.target.value });
 
         let specieData = {
-    
-            SpecieFood: this.state.SpecieFood,        
+
+            specieFood: this.state.specieFood,
         }
 
-        
+
         console.log(specieData)
     }
 
@@ -103,43 +111,46 @@ class SpecieScreen extends React.Component {
 
         console.log(photoId)
 
-        if (photoId === 'PhotoProfil') {
+        if (photoId === 'ProfilePicture') {
 
-        let photoName = ('Specie' + photoId)
-        this.setState({
-            SpeciePhotoProfil: returnedUrl
-             });
+            let photoName = ('specie' + photoId)
+            this.setState({
+                specieProfilePicture: returnedUrl
+            });
+
+            return
         }
 
-        console.log(this.state.SpeciePhotos)
+        console.log(this.state.speciePhotos)
 
-        let photoUID = this.state.SpeciePhotos.length + 1
-        let photosArray = this.state.SpeciePhotos
+        let photoUID = photoId
+        let photosArray = this.state.speciePhotos
 
         console.log(photosArray.length)
-    
+
         let newObject = {
-                photoId: 99,
-                photoURL : returnedUrl
-            }
+            photoId: photoId,
+            photoURL: returnedUrl
+        }
 
         photosArray.push(newObject)
 
-         this.setState({
-             SpeciePhotos: photosArray
-         });
+        this.setState({
+            speciePhotos: photosArray
 
-         console.log(this.state.SpeciePhotos)
+        });
+
+        console.log(this.state.speciePhotos)
     }
 
-    handleDelete(){
+    handleDelete() {
 
         let specieData = {
             SpecieId: this.state.SpecieId,
             SpecieName: this.state.SpecieName,
             log: this.state.logId
         }
-        
+
         swal({
             title: "Êtes-vous sûr ?",
             text: "La suppression est irréversible, vous ne serez plus en mesure de récupérer ces données!",
@@ -150,88 +161,83 @@ class SpecieScreen extends React.Component {
             closeOnConfirm: false
         },
             function () {
-               // database.deleteSpecieFromDatabase(specieData)
-            });  
+                // database.deleteSpecieFromDatabase(specieData)
+            });
     }
 
-    handleClick(){
-            let specieData = {
-                SpecieId: this.state.SpecieId,
-                SpecieName: this.state.SpecieName,
-                SpecieLatinName: this.state.SpecieLatinName,
-                SpecieEnglishName: this.state.SpecieEnglishName,
-                SpecieClass: this.state.SpecieClass,
-                SpecieOrder: this.state.SpecieOrder,
-                SpecieFamilly: this.state.SpecieFamilly,
-                SpecieIUCNClassification: this.state.SpecieIUCNClassification,
-                SpecieDescription: this.state.SpecieDescription,
-                SpecieGestation: this.state.SpecieGestation,
-                SpecieWeight: this.state.SpecieWeight,
-                SpecieLifeExpectancy: this.state.SpecieLifeExpectancy,
-                SpecieFood: this.state.SpecieFood,
-                SpeciePhotoProfil: this.state.SpeciePhotoProfil,
-                SpeciePhotos: this.state.SpeciePhotos,
-                SpeciePhoto1: this.state.SpeciePhoto1,
-                SpeciePhoto2: this.state.SpeciePhoto2,
-                SpeciePhoto3: this.state.SpeciePhoto3,
-                SpeciePhoto4: this.state.SpeciePhoto4,
-                log: this.state.logId + 1
-            }
-
-            if (this.state.EditMode === true) {
-                //database.editNewSpecieToDatabase2(specieData);
-            }
-            else {
-                
-                addNewSpecieToDatabase(specieData);
-            }
-
-            //database.updateFoodDataBase(specieData.SpecieFood);
+    handleClick() {
+        let specieData = {
+            specieId: this.state.specieId,
+            specieName: this.state.specieName,
+            specieLatinName: this.state.specieLatinName,
+            specieEnglishName: this.state.specieEnglishName,
+            specieClass: this.state.specieClass,
+            specieOrder: this.state.specieOrder,
+            specieFamilly: this.state.specieFamilly,
+            specieIUCNClassification: this.state.specieIUCNClassification,
+            specieDescription: this.state.specieDescription,
+            specieGestation: this.state.specieGestation,
+            specieWeight: this.state.specieWeight,
+            specieLifeExpectancy: this.state.specieLifeExpectancy,
+            specieFood: this.state.specieFood,
+            speciePhotoProfil: this.state.speciePhotoProfil,
+            speciePhotos: this.state.speciePhotos,
+            log: this.state.logId + 1
         }
-    
-        readSpecieFromFirebase(specieId) {
-            let userData = JSON.parse(localStorage.getItem('user'))
-            var self = this
-           
-            let reference = (userData.zooName + '/speciesData/' + specieData.specieId);
 
-            return firebase.database().ref('/users/' + userId).once('value').then(function (snapshot) {
-                 let data = snapshot.data()
+        if (this.state.EditMode === true) {
+            //database.editNewSpecieToDatabase2(specieData);
+        }
+        else {
 
-                  let foodList = []
-                  data.SpecieFood.forEach(function (foodItem) {
-                      if (foodItem.customOption === true) {
-                          foodList.push(foodItem.SpecieFood);
-                      } else {
-                          foodList.push(foodItem);
-                      }
-                  })
+            addNewSpecieToDatabase(specieData);
+        }
 
-                  self.setState({
-                      dataVersion: data.dataVersion,
-                      SpecieId: data.specieId,
-                      SpecieName: data.specieName,
-                      SpecieLatinName: data.specieLatinName,
-                      SpecieEnglishName: data.specieEnglishName,
-                      SpecieClass: data.specieClass,
-                      SpecieOrder: data.specieOrder,
-                      SpecieFamilly: data.specieFamilly,
-                      SpecieIUCNClassification: data.specieIUCNClassification,
-                      SpecieDescription: data.specieDescription,
-                      SpecieGestation: data.specieGestation,
-                      SpecieWeight: data.specieWeight,
-                      SpecieFood: foodList,
-                      SpecieLifeExpectancy: data.specieLifeExpectancy,
-                      SpeciePhotoProfil: data.speciePhotoProfil,
-                      SpeciePhoto1: data.speciePhoto1,
-                      SpeciePhoto2: data.speciePhoto2,
-                      SpeciePhoto3: data.speciePhoto3,
-                      SpeciePhoto4: data.speciePhoto4,
-                      EditMode: true,
-                  });
+        //database.updateFoodDataBase(specieData.SpecieFood);
+    }
+
+    readSpecieFromFirebase(specieId) {
+        //let userData = JSON.parse(localStorage.getItem('user'))
+
+        let self = this
+
+        let reference = (userData.zooName + '/speciesData/' + specieId);
+
+        return firebase.database().ref(reference).once('value')
+            .then(function (snapshot) {
+                let data = snapshot.val()
+
+                // let foodList = []
+                // data.SpecieFood.forEach(function (foodItem) {
+                //     if (foodItem.customOption === true) {
+                //         foodList.push(foodItem.SpecieFood);
+                //     } else {
+                //         foodList.push(foodItem);
+                //     }
+                // })
+
+                self.setState({
+                    dataVersion: data.dataVersion,
+                    specieId: data.specieId,
+                    specieName: data.specieName,
+                    specieLatinName: data.specieLatinName,
+                    specieEnglishName: data.specieEnglishName,
+                    specieClass: data.specieClass,
+                    specieOrder: data.specieOrder,
+                    specieFamilly: data.specieFamilly,
+                    specieIUCNClassification: data.specieIUCNClassification,
+                    specieDescription: data.specieDescription,
+                    specieGestation: data.specieGestation,
+                    specieWeight: data.specieWeight,
+                    //specieFood: foodList,
+                    specieLifeExpectancy: data.specieLifeExpectancy,
+                    specieProfilePicture: data.specieProfilePicture,
+                    speciePhotos: data.speciePhotos,
+                    EditMode: true,
+                });
             })
 
-        }
+    }
 
     // getLogLenght(){
     //     let userData = JSON.parse(localStorage.getItem('user'))
@@ -242,7 +248,7 @@ class SpecieScreen extends React.Component {
     //         querySnapshot.forEach(function (doc) {
     //             logLenght.push(doc.data())
     //         });
-           
+
     //         let logId = logLenght.length;
     //         console.log(logId)
     //         self.setState({
@@ -251,7 +257,7 @@ class SpecieScreen extends React.Component {
 
     //     })
     // }
-    
+
     // initFoodList() {
     //     let userData = JSON.parse(localStorage.getItem('user'))
     //     // Fonction magique que je ne comprend pas 
@@ -269,10 +275,10 @@ class SpecieScreen extends React.Component {
 
     //             });
     //         }).then(function (snapshot) {
-            
+
     //         self.setState({
     //             zooFoodList: foodList,
-               
+
     //         });
     //     }, function (error) {
     //         // The Promise was rejected.
@@ -281,16 +287,16 @@ class SpecieScreen extends React.Component {
     // }
 
 
-    componentWillMount(){
+    componentWillMount() {
         //this.getLogLenght();
         //this.initFoodList();
-    //     if (this.props.location.state.SpecieId !== null){
-    //     //this.readSpecieFromFirebase(this.props.location.state.SpecieId);
-    //    } 
+        let requestedData = this.props.location.state.specieId
+        if (requestedData !== null) {
+            this.readSpecieFromFirebase(this.props.location.state.specieId);
+        }
     }
 
-    render()   
-    {
+    render() {
         const innerIcon = <em className="fa fa-check"></em>;
         const innerButton = <Button>Before</Button>;
         const innerDropdown = (
@@ -302,207 +308,278 @@ class SpecieScreen extends React.Component {
         const innerCheckbox = <input type="checkbox" aria-label="..." />;
 
         const deleteButton = (
-            <Button bsClass="btn btn-labeled btn-danger mr" onClick={() => { this.handleDelete() }}>
-                <span className="btn-label"><i className="fa fa-trash-o"></i></span> Supprimer l'espèce
+            <Button color="danger" className="btn-labeled" bsSize="large" onClick={() => { this.handleClick() }}>
+                <span className="btn-label"><i className="fa fa-trash"></i></span> Supprimer l'espèce
             </Button>
+
+        );
+
+        var rows = [];
+        for (var i = 0; i < this.state.speciePhotos.length; i++) {
+            rows.push(
+                <div className="col-md-3">
+                    <DropzonePhoto specieName={this.state.specieName} background={this.state.speciePhotos[i].photoURL} id={"Photo" + i} methodToReturnUrl={this.handleReturnedUrl} />
+                </div>
             );
-        console.log(this.state.logId)
+        }
+
         return (
-           
+
             <ContentWrapper>
                 <Panel>
-                 <CardWithHeader header="Ajouter/Modifier une espèce">
-                    <form className="form-horizontal" onSubmit={this.handleSubmit}>
-                        <fieldset>
-                            <legend> Informations générales</legend>     
-                        <fieldset>
-                            <FormGroup>
-                                    <label className="col-sm-2 control-label">Nom de l'espèce</label>
-                            <Col sm={10}>
-                                    <FormControl type="text" name="SpecieName" placeholder="Ex. Gorilles" value={this.state.SpecieName} onChange={this.handleChange} className="form-control" />
-                            </Col>
-                            </FormGroup>
-                        </fieldset>
-
+                    <CardWithHeader header="">
+                        <form className="form-horizontal" onSubmit={this.handleSubmit}>
+                            <legend>Ajouter/Modifier une espèce</legend>
                             <fieldset>
-                                <FormGroup>
-                                    <label className="col-sm-2 control-label">Nom Latin</label>
-                                    <Col sm={10}>
-                                        <FormControl type="text" name="SpecieLatinName" placeholder="Ex. gorilla gorilla" className="form-control" value={this.state.SpecieLatinName} onChange={this.handleChange} />
-                                    </Col>
-                                </FormGroup>
-                            </fieldset>
-                            
-                            <fieldset>
-                                <FormGroup>
-                                    <label className="col-sm-2 control-label">Nom Anglais</label>
-                                    <Col sm={10}>
-                                        <FormControl type="text" name="SpecieEnglishName" placeholder="Ex. Gorilla" className="form-control" value={this.state.SpecieEnglishName} onChange={this.handleChange} />
-                                    </Col>
-                                </FormGroup>
-                            </fieldset>
+                                <div style={{ display: 'flex', flexDirection: 'row' }}>
+                                    <div className="col-md-6" >
+                                        <div className="col-md-12" >
+                                            <fieldset>
+                                                <FormGroup>
+                                                    <label className="col-sm-12 control-label">Nom de l'espèce</label>
+                                                    <Col sm={10}>
+                                                        <FormControl type="text" name="specieName" placeholder="Ex. Gorilles" value={this.state.specieName} onChange={this.handleChange} className="form-control" />
+                                                    </Col>
+                                                </FormGroup>
+                                            </fieldset>
 
-                            <fieldset>
-                                <FormGroup>
-                                    <label className="col-sm-2 control-label">Classe </label>
-                                    <Col sm={10}>
-                                        <FormControl type="text" name="SpecieClass" placeholder="Ex. Mammifères" className="form-control" value={this.state.SpecieClass} onChange={this.handleChange} />
-                                    </Col>
-                                </FormGroup>
-                            </fieldset>
+                                            <fieldset>
+                                                <FormGroup>
+                                                    <label className="col-sm-12 control-label">Nom Latin</label>
+                                                    <Col sm={10}>
+                                                        <FormControl type="text" name="specieLatinName" placeholder="Ex. gorilla gorilla" className="form-control" value={this.state.specieLatinName} onChange={this.handleChange} />
+                                                    </Col>
+                                                </FormGroup>
+                                            </fieldset>
 
-                            <fieldset>
-                                <FormGroup>
-                                    <label className="col-sm-2 control-label">Ordre </label>
-                                    <Col sm={10}>
-                                        <FormControl type="text" name="SpecieOrder" placeholder="Ex. Primates" className="form-control" value={this.state.SpecieOrder} onChange={this.handleChange} />
-                                    </Col>
-                                </FormGroup>
-                            </fieldset>
+                                            <fieldset>
+                                                <FormGroup>
+                                                    <label className="col-sm-12 control-label">Nom Anglais</label>
+                                                    <Col sm={10}>
+                                                        <FormControl type="text" name="specieEnglishName" placeholder="Ex. Gorilla" className="form-control" value={this.state.specieEnglishName} onChange={this.handleChange} />
+                                                    </Col>
+                                                </FormGroup>
+                                            </fieldset>
 
-
-                            <fieldset>
-                                <FormGroup>
-                                    <label className="col-sm-2 control-label">Famille </label>
-                                    <Col sm={10}>
-                                        <FormControl type="text" name="SpecieFamilly" placeholder="Ex. hominidés" value="" className="form-control" value={this.state.SpecieFamilly} onChange={this.handleChange} />
-                                    </Col>
-                                </FormGroup>
-                            </fieldset>
-                        </fieldset>
-
-                        <fieldset>
-                            <legend>Niveau de menace</legend>
-                           
-                            <div className="row">
-                                <div className="col-md-4">
-                                    <div>
-                                        <label htmlFor="userName">Classification IUCN</label>
-                                        <FormControl componentClass="select" className="form-control" value={this.state.SpecieIUCNClassification} onChange={this.handleChange}>
-                                            <option></option>
-                                            <option>Préoccupation mineure (LC)</option>
-                                            <option>Espèce quasi menacée (NT)</option>
-                                            <option>Espèce vulnérable (VU)</option>
-                                            <option>Espèce en danger (EN)</option>
-                                            <option>En danger critique d'extinction (CR)</option>
-                                            <option>Éteint à l'état sauvage (EW)</option>
-                                            <option>Éteint (EX)</option>
-                                            <option>Données insuffisantes (DD)</option>
-                                            <option>Non-Évalué (NE)</option>
-                                        </FormControl>
-                                    </div>
-                                </div>
-                                <div className="col-md-8">
-                                    <label htmlFor="userName">Description des menaces</label>
-                                    <Panel>
-                                        <textarea name="SpecieDescription" rows="10" className="form-control note-editor" value={this.state.SpecieDescription} onChange={this.handleChange}>
-                                        </textarea>
-                                    </Panel>
-                                </div>
-                            </div>
-                        </fieldset>
-
-                        <fieldset>
-                            <legend> Informations Biologiques</legend>
-                            <fieldset>
-                                <FormGroup>
-                                    <label className="col-sm-2 control-label">Durée de la gestation</label>
-                                    <Col sm={10}>
-                                        <FormControl type="text" name="SpecieGestation" placeholder="Ex. 23 semaines" className="form-control" value={this.state.SpecieGestation} onChange={this.handleChange} />
-                                    </Col>
-                                </FormGroup>
-                            </fieldset>
-
-                            <fieldset>
-                                <FormGroup>
-                                    <label className="col-sm-2 control-label">Poid en kg</label>
-                                    <Col sm={10}>
-                                        <FormControl type="text" name="SpecieWeight" placeholder="Ex. 23 kg" className="form-control" value={this.state.SpecieWeight} onChange={this.handleChange} />
-                                    </Col>
-                                </FormGroup>
-                            </fieldset>
-
-                            <fieldset>
-                                <FormGroup>
-                                    <label className="col-sm-2 control-label">Esperance de vie</label>
-                                    <Col sm={10}>
-                                        <FormControl type="text" name="SpecieLifeExpectancy" placeholder="Ex. 12 ans" className="form-control" value={this.state.SpecieLifeExpectancy} onChange={this.handleChange} />
-                                    </Col>
-                                </FormGroup>
-                            </fieldset>
-
-                            <fieldset>
-                                <FormGroup>
-                                    <label className="col-sm-2 control-label">Nouriture</label>
-                                    <Col sm={10}>
-                                        <Typeahead
-                                            allowNew
-                                            onChange={(selected) => {
-                                                this.setState({ SpecieFood : selected });
-                                            }}
-                                            name="SpecieFood"
-                                            labelKey="SpecieFood"
-                                            multiple  
-                                            options={this.state.zooFoodList}
-                                            defaultSelected={this.state.SpecieFood}
-                                            
-                                            placeholder="Choose a state..."
-                                            
-                                        />
-                                    </Col>
-                                </FormGroup>
-                            </fieldset>
-                        </fieldset>
-
-                        <fieldset>
-                            <legend> Ajout des photos</legend>
-                            <FormGroup>
-                                <div className="row" >
-                                    <div className="col-md-1" >
-                                    </div>
-
-                                    <div className="col-md-4" >
-                                        <DropzonePhoto specieName={this.state.SpecieName} background={this.state.SpeciePhotoProfil} id="PhotoProfil" methodToReturnUrl={this.handleReturnedUrl} />
-                                    </div>
-
-                                    <div className="col-md-1" >
-                                    </div>
-
-                                    <div className="col-md-4">
-                                        <div className="row">
-                                            <div className="col-md-6">
-                                                <DropzonePhoto specieName={this.state.SpecieName} background={this.state.SpeciePhoto1} id="Photo1" methodToReturnUrl={this.handleReturnedUrl} />
-                                            </div>
-                                            <div className="col-md-6">
-                                                <DropzonePhoto specieName={this.state.SpecieName} background={this.state.SpeciePhoto2} id="Photo2" methodToReturnUrl={this.handleReturnedUrl} />
-                                            </div>
-                                            <div className="col-md-6">
-                                                <DropzonePhoto specieName={this.state.SpecieName} background={this.state.SpeciePhoto3} id="Photo3" methodToReturnUrl={this.handleReturnedUrl} />
-                                            </div>
-                                            <div className="col-md-6">
-                                                <DropzonePhoto specieName={this.state.SpecieName} background={this.state.SpeciePhoto4} id="Photo4" methodToReturnUrl={this.handleReturnedUrl} />
-                                            </div>
                                         </div>
                                     </div>
 
-                                    
-                                </div>            
-                            </FormGroup>
-                        </fieldset>
-                    </form>
+
+                                    <div className="col-md-6" >
+                                        <label htmlFor="userName">Photo de profile</label>
+                                        <DropzonePhoto eventName={this.state.eventName} background={this.state.specieProfilePicture} id="ProfilePicture" methodToReturnUrl={this.handleReturnedUrl} />
+                                    </div>
+
+                                </div>
+                                <div style={{ display: 'flex', flexDirection: 'row' }}>
+                                    <div className="col-md-6">
+                                        <div className="col-md-12" >
+                                            <fieldset>
+                                                <FormGroup>
+                                                    <label className="col-sm-12 control-label">Classe </label>
+                                                    <Col sm={10}>
+                                                        <FormControl type="text" name="specieClass" placeholder="Ex. Mammifères" className="form-control" value={this.state.specieClass} onChange={this.handleChange} />
+                                                    </Col>
+                                                </FormGroup>
+                                            </fieldset>
+                                        </div>
+                                        <div className="col-md-12" >
+                                            <fieldset>
+                                                <FormGroup>
+                                                    <label className="col-sm-12 control-label">Ordre </label>
+                                                    <Col sm={10}>
+                                                        <FormControl type="text" name="specieOrder" placeholder="Ex. Primates" className="form-control" value={this.state.specieOrder} onChange={this.handleChange} />
+                                                    </Col>
+                                                </FormGroup>
+                                            </fieldset>
+                                        </div>
+                                        <div className="col-md-12" >
+                                            <fieldset>
+                                                <FormGroup>
+                                                    <label className="col-sm-12 control-label">Famille </label>
+                                                    <Col sm={10}>
+                                                        <FormControl type="text" name="specieFamilly" placeholder="Ex. hominidés" value="" className="form-control" value={this.state.specieFamilly} onChange={this.handleChange} />
+                                                    </Col>
+                                                </FormGroup>
+                                            </fieldset>
+                                        </div>
+                                    </div>
+
+
+                                    <div className="col-md-6">
+                                        <label htmlFor="userName">Description de l'espèce</label>
+                                        <Panel>
+                                            <textarea name="specieDescription" rows="12" className="form-control note-editor" value={this.state.specieDescription} onChange={this.handleChange}>
+                                            </textarea>
+                                        </Panel>
+                                    </div>
+                                </div>
+
+                            </fieldset>
+
+                            <fieldset>
+                                <legend>Niveau de menace</legend>
+
+                                <div style={{ display: 'flex', flexDirection: 'row' }}>
+                                    <div className="col-md-6">
+                                        <div className="col-md-12" >
+                                            <div>
+                                                <label htmlFor="userName">Classification IUCN</label>
+                                                <FormControl componentClass="select" className="form-control" value={this.state.specieIUCNClassification} onChange={this.handleChange}>
+                                                    <option></option>
+                                                    <option>Préoccupation mineure (LC)</option>
+                                                    <option>Espèce quasi menacée (NT)</option>
+                                                    <option>Espèce vulnérable (VU)</option>
+                                                    <option>Espèce en danger (EN)</option>
+                                                    <option>En danger critique d'extinction (CR)</option>
+                                                    <option>Éteint à l'état sauvage (EW)</option>
+                                                    <option>Éteint (EX)</option>
+                                                    <option>Données insuffisantes (DD)</option>
+                                                    <option>Non-Évalué (NE)</option>
+                                                </FormControl>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="col-md-6">
+                                        <label htmlFor="userName">Description des menaces</label>
+                                        <Panel>
+                                            <textarea name="specieDescription" rows="10" className="form-control note-editor" value={this.state.specieDescription} onChange={this.handleChange}>
+                                            </textarea>
+                                        </Panel>
+                                    </div>
+                                </div>
+                            </fieldset>
+
+                            <div style={{ display: 'flex', flexDirection: 'row' }}>
+                                <div className="col-md-6">
+                                    <div className="col-md-12" >
+                                        <fieldset>
+                                            <legend> Informations Biologiques</legend>
+                                            <fieldset>
+                                                <FormGroup>
+                                                    <label className="col-sm-12 control-label">Durée de la gestation</label>
+                                                    <Col sm={10}>
+                                                        <FormControl type="text" name="specieGestation" placeholder="Ex. 23 semaines" className="form-control" value={this.state.specieGestation} onChange={this.handleChange} />
+                                                    </Col>
+                                                </FormGroup>
+                                            </fieldset>
+
+                                            <fieldset>
+                                                <FormGroup>
+                                                    <label className="col-sm-12 control-label">Poid en kg</label>
+                                                    <Col sm={10}>
+                                                        <FormControl type="text" name="specieWeight" placeholder="Ex. 23 kg" className="form-control" value={this.state.specieWeight} onChange={this.handleChange} />
+                                                    </Col>
+                                                </FormGroup>
+                                            </fieldset>
+
+                                            <fieldset>
+                                                <FormGroup>
+                                                    <label className="col-sm-12 control-label">Esperance de vie</label>
+                                                    <Col sm={10}>
+                                                        <FormControl type="text" name="specieLifeExpectancy" placeholder="Ex. 12 ans" className="form-control" value={this.state.specieLifeExpectancy} onChange={this.handleChange} />
+                                                    </Col>
+                                                </FormGroup>
+                                            </fieldset>
+
+                                            <fieldset>
+                                                <FormGroup>
+                                                    <label className="col-sm-12 control-label">Nouriture</label>
+                                                    <Col sm={10}>
+                                                        <Typeahead
+                                                            allowNew
+                                                            onChange={(selected) => {
+                                                                this.setState({ specieFood: selected });
+                                                            }}
+                                                            name="specieFood"
+                                                            labelKey="specieFood"
+                                                            multiple
+                                                            options={this.state.zooFoodList}
+                                                            defaultSelected={this.state.specieFood}
+
+                                                            placeholder="Choose a state..."
+
+                                                        />
+                                                    </Col>
+                                                </FormGroup>
+                                            </fieldset>
+
+                                        </fieldset>
+                                    </div>
+                                </div>
+                                <div className="col-md-6">
+                                    <div className="col-md-12" >
+                                        <fieldset>
+                                            <legend> Choix de l'enclos</legend>
+                                            <fieldset>
+                                            <div>
+                                                <FormControl componentClass="select" className="form-control" value={this.state.specieIUCNClassification} onChange={this.handleChange}>
+                                                    <option></option>
+                                                    <option>Enclos A</option>
+                                                    <option>Enclos B</option>
+                                                    <option>Enclos C</option>
+                                                </FormControl>
+                                            </div>
+                                            </fieldset>
+
+                                            {/* START widget */}
+                                            <div className="card">
+                                                <div className="row row-flush">
+                                                    <div className="col-8">
+                                                        <img className="img-fluid" src={this.state.specieEnclosure} alt="Demo" />
+                                                    </div>
+                                                    <div className="col-4 bg-info d-flex align-items-center justify-content-center">
+                                                        <div className="text-center">
+                                                            <div className="text-lg mt-0">11&deg;</div>
+                                                            <p>La foret de bambou</p>
+                                                            <em className="fa fa-sun-o fa-2x"></em>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            {/* END widget */}
+                                        </fieldset>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <fieldset>
+                                <legend> Gallerie de l'espèce </legend>
+                                <FormGroup>
+                                    <div className="col-md-12" >
+                                        <div className="row" style={{ display: 'flex', flexDirection: "row", flexWrap: 'wrap', justifyContent: 'flex-start' }}>
+                                            {rows}
+                                        </div>
+                                    </div>
+                                </FormGroup>
+                            </fieldset>
+                            <fieldset>
+                                <legend> Gestion des individus </legend>
+                                <FormGroup>
+                                    <div className="col-md-12" >
+                                        <div className="row" style={{ display: 'flex', flexDirection: "row", flexWrap: 'wrap', justifyContent: 'flex-start' }}>
+                                            {rows}
+                                        </div>
+                                    </div>
+                                </FormGroup>
+                            </fieldset>
+                        </form>
                     </CardWithHeader>
                 </Panel>
 
-                <Panel style={{"display":"flex"}}>
-                    <Button bsClass="btn btn-labeled btn-success mr" bsSize="large" onClick={() => { this.handleClick() }}>
+
+                <CardWithHeader header="Validation" >
+
+                    <Button color="success" className="btn-labeled" bsSize="large" style={{ marginRight: 20 }} onClick={() => { this.handleClick() }}>
                         <span className="btn-label"><i className="fa fa-check"></i></span> Valider l'espèce
-                    </Button>
-                   
+                        </Button>
+
                     {this.state.EditMode ? deleteButton : null}
-                   
-                    
-                </Panel>
-            </ContentWrapper>
+
+                </CardWithHeader>
+
+            </ContentWrapper >
         );
     }
 }

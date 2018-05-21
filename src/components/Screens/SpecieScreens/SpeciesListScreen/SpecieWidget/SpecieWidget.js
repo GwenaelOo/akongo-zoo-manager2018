@@ -9,8 +9,6 @@ class SpecieWidget extends React.Component {
 
     }
     render() {
-        console.log(this.props.specieData)
-
         return (
             <div className="col-xl-4">
                 {/* START card- */}
@@ -18,7 +16,7 @@ class SpecieWidget extends React.Component {
                 <div className="card">
                     <Link to={{
                         pathname: "SpecieScreen",
-                        state: { SpecieId: this.props.specieData.SpecieId }
+                        state: { specieId: this.props.specieData.specieId }
                     }}>
                         <img className="img-fluid" src={this.props.specieData.specieProfilePicture} alt="Demo" />
                     </Link>
