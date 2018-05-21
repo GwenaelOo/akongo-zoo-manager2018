@@ -85,13 +85,126 @@ export function addNewSpecieToDatabase(specieData) {
 
 }
 
+export function addNewAnimalToDatabase(animalData, specieId) {
+
+    // ********************
+    // Ajout dans firebase 
+    // ********************
+
+    let list
+
+    console.log(specieId)
+   
+    let categorie = '/speciesData/'
+    let id = specieId
+
+    let reference = userData.zooName + categorie + id
+    console.log(reference)
+
+    firebase.database().ref(reference).once('value')
+        .then(function (snapshot) {
+            console.log('snapshot')
+            let data = snapshot.val()
+            if (data.specieAnimals !== undefined ){
+                list = data.specieAnimals
+            } else {
+                list = []
+            }
+
+        })
+        .then(function () {
+            console.log('vieux array')
+            
+
+
+            let animalUID = animalData.animalName.toUpperCase().replace(/ /g, "") + (Math.floor(Date.now() / 1000))
+            //let reference = (userData.zooName + '/speciesData/'+ eval(specieId) + '/speciesAnimal');
+
+
+            if (animalData.animalProfilePicture === '') {
+                animalData.animalProfilePicture = 'http://thedroideffect.com/wp-content/themes/thedroideffect/images/missing-image-640x360.png'
+            }
+
+            let newAnimal = {
+                dataVersion: 1,
+                animalId: animalUID,
+                animalName: animalData.animalName,
+                animalLatinName: animalData.animalLatinName,
+                animalEnglishName: animalData.animalEnglishName,
+                animalClass: animalData.animalClass,
+                animalOrder: animalData.animalOrder,
+                animalFamilly: animalData.animalFamilly,
+                animalIUCNClassification: animalData.animalIUCNClassification,
+                animalDescription: animalData.animalDescription,
+                animalGestation: animalData.animalGestation,
+                animalWeight: animalData.animalWeight,
+                animalLifeExpectancy: animalData.animalLifeExpectancy,
+                animalFood: animalData.animalFood,
+                animalProfilePicture: animalData.animalProfilePicture,
+                animalPhotos: animalData.animalPhotos,
+                animalCreatedBy: userData.userId,
+                animalCreationDate: Date(),
+                dataType: 'animal',
+                zooName: userData.zooName,
+            }
+
+           list.push(newAnimal)
+       
+
+            console.log('nouveau array')
+           
+            firebase.database().ref(reference).update({
+                specieAnimals: list
+            })
+        })
+
+
+        // ********************
+        // Ecriture du log
+        // ********************
+
+        //  .then(function () {
+        //      firebase.firestore()
+        //          .collection(userData.zooName + '-log')
+        //          .doc("log-" + Date.now())
+        //          .set({
+        //              action: "create",
+        //              dataType: 'animal',
+        //              elementId: animalData.animalId,
+        //              elementName: animalData.animalName,
+        //              actionMadeById: userData.userId,
+        //              actionMadeByName: userData.firstname,
+        //              actionDate: Date(),
+        //              actionTimestamp: Date.now(),
+        //              zooName: userData.zooName
+        //          })
+        //  })
+        .catch(function (error) {
+            console.error("Error writing document: ", error);
+        }).then(function () {
+            swal({
+                title: "Good job!",
+                text: "L'espèce " + animalData.animalName + " a été ajoutée à votre Zoo",
+                type: "success",
+                showCancelButton: false
+            }, function () {
+                // Redirect the user
+                window.location.href = nav.akongoURL + 'animalsList';
+            })
+        })
+        .catch(function (error) {
+            console.error("Error writing document: ", error);
+        });
+
+
+}
+
 export function addNewAnimationToDatabase(animationData) {
 
     // ********************
     // Ajout dans firebase 
     // ********************
 
-    console.log(animationData)
 
     let animationUID = animationData.animationName.toUpperCase().replace(/ /g, "") + (Math.floor(Date.now() / 1000))
     let reference = (userData.zooName + '/animationsData/' + animationUID);
@@ -171,7 +284,7 @@ export function addNewEventToDatabase(eventData) {
         eventDescription: eventData.eventDescription,
         eventProfilePicture: eventData.eventProfilePicture,
         eventPhotos: eventData.eventPhotos,
-    
+
         dataType: 'event',
         zooName: userData.zooName,
     })

@@ -72,8 +72,6 @@ class DropzonePhoto extends React.Component {
             'margin': '10px 10px 10px 10px'
         }
         
-
-
         return (
             <section>
                 <div className="dropzone">
