@@ -23,7 +23,6 @@ const CardWithHeader = props => (
 const userId = "gwen"
 const animationData = {}
 
-
 class AnimationScreen extends React.Component {
     constructor(props) {
         super(props);

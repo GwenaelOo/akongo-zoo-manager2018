@@ -104,6 +104,7 @@ export function addNewAnimationToDatabase(animationData) {
         dataVersion: 1,
         animationId: animationUID,
         animationProfilePicture: animationData.animationProfilePicture,
+        animationDescription: animationData.animationDescription,
         animationPhotos: animationData.animationPhotos,
         animationName: animationData.animationName,
         dataType: 'animation',
@@ -167,6 +168,7 @@ export function addNewEventToDatabase(eventData) {
         dataVersion: 1,
         eventId: eventUID,
         eventName: eventData.eventName,
+        eventDescription: eventData.eventDescription,
         eventProfilePicture: eventData.eventProfilePicture,
         eventPhotos: eventData.eventPhotos,
     
@@ -234,6 +236,7 @@ export function addNewServiceToDatabase(serviceData) {
         dataVersion: 1,
         serviceId: serviceUID,
         serviceProfilePicture: serviceData.serviceProfilePicture,
+        serviceDescription: serviceData.serviceDescription,
         servicePhotos: serviceData.servicePhotos,
         serviceName: serviceData.serviceName,
         dataType: 'service',
