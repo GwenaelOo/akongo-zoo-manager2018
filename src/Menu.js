@@ -23,6 +23,12 @@ const Menu = [
             },{
                 name: 'Ecran Service',
                 path: 'ServiceScreen'
+            },{
+                name: 'Ecran Enclos',
+                path: 'EnclosureScreen'
+            },{
+                name: 'Ecran Dons',
+                path: 'Donation Screen'
             },
         ]
     },

@@ -17,6 +17,8 @@ import EventScreen from './components/Screens/EventsScreens/EventScreen/EventScr
 
 import AnimalScreen from './components/Screens/AnimalScreens/AnimalScreen/AnimalScreen'
 
+import EnclosureScreen from './components/Screens/EnclosureScreens/EnclosureScreen/EnclosureScreen'
+
 import DashboardV1 from './components/Dashboard/DashboardV1';
 import DashboardV2 from './components/Dashboard/DashboardV2';
 import DashboardV3 from './components/Dashboard/DashboardV3';
@@ -172,6 +174,8 @@ const Routes = ({ location }) => {
                                 <Route path="/ServiceScreen" component={ServiceScreen} />
 
                                 <Route path="/AnimalScreen" component={AnimalScreen} />
+
+                                <Route path="/EnclosureScreen" component={EnclosureScreen} />
                                 
 
                                 {/*Dashboard*/}

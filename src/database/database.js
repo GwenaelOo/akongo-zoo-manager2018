@@ -7,8 +7,6 @@ const userData = {
     userId: 'Gwen'
 }
 
-
-
 export function addNewSpecieToDatabase(specieData) {
 
     // ********************
@@ -83,6 +81,51 @@ export function addNewSpecieToDatabase(specieData) {
         });
 
 
+}
+
+
+export function addNewEnclosureToDatabase(enclosureData) {
+
+    // ********************
+    // Ajout dans firebase 
+    // ********************
+
+    let enclosureUID = enclosureData.enclosureName.toUpperCase().replace(/ /g, "") + (Math.floor(Date.now() / 1000))
+    let reference = (userData.zooName + '/enclosuresData/' + enclosureUID);
+
+    if (enclosureData.enclosureProfilePicture === '') {
+        enclosureData.enclosureProfilePicture = 'http://thedroideffect.com/wp-content/themes/thedroideffect/images/missing-image-640x360.png'
+    }
+
+    firebase.database().ref(reference).set({
+        dataVersion: 1,
+        enclosureId: enclosureUID,
+        enclosureName: enclosureData.enclosureName,
+        enclosureSpeciesList: enclosureData.enclosureSpeciesList,
+        enclosureDescription: enclosureData.enclosureDescription,
+        enclosurePhotoProfile: enclosureData.enclosurePhotoProfile,
+        enclosurePhotos: enclosureData.enclosurePhotos,
+        enclosureCreatedBy: userData.userId,
+        enclosureCreationDate: Date(),
+        dataType: 'enclosure',
+        zooName: userData.zooName,
+    })
+        .catch(function (error) {
+            console.error("Error writing document: ", error);
+        }).then(function () {
+            swal({
+                title: "Good job!",
+                text: "L'enclos " + enclosureData.enclosureName + " a été ajoutée à votre Zoo",
+                type: "success",
+                showCancelButton: false
+            }, function () {
+                // Redirect the user
+                window.location.href = nav.akongoURL + 'enclosuresList';
+            })
+        })
+        .catch(function (error) {
+            console.error("Error writing document: ", error);
+        });
 }
 
 export function editSpecieInDatabase(specieData) {
@@ -169,7 +212,7 @@ export function addNewAnimalToDatabase(animalData, specieId) {
     let list
 
     console.log(specieId)
-   
+
     let categorie = '/speciesData/'
     let id = specieId
 
@@ -180,7 +223,7 @@ export function addNewAnimalToDatabase(animalData, specieId) {
         .then(function (snapshot) {
             console.log('snapshot')
             let data = snapshot.val()
-            if (data.specieAnimals != undefined ){
+            if (data.specieAnimals != undefined) {
                 list = data.specieAnimals
             } else {
                 list = []
@@ -189,7 +232,7 @@ export function addNewAnimalToDatabase(animalData, specieId) {
         })
         .then(function () {
             console.log('vieux array')
-            
+
 
 
             let animalUID = animalData.animalName.toUpperCase().replace(/ /g, "") + (Math.floor(Date.now() / 1000))
@@ -223,11 +266,11 @@ export function addNewAnimalToDatabase(animalData, specieId) {
                 zooName: userData.zooName,
             }
 
-           list.push(newAnimal)
-       
+            list.push(newAnimal)
+
 
             console.log('nouveau array')
-           
+
             firebase.database().ref(reference).update({
                 specieAnimals: list
             })
