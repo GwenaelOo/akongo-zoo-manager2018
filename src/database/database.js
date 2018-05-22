@@ -233,7 +233,7 @@ export function addNewAnimalToDatabase(animalData, specieId) {
         .then(function () {
             console.log('vieux array')
 
-
+            console.log(list)
 
             let animalUID = animalData.animalName.toUpperCase().replace(/ /g, "") + (Math.floor(Date.now() / 1000))
             //let reference = (userData.zooName + '/speciesData/'+ eval(specieId) + '/speciesAnimal');
@@ -247,17 +247,9 @@ export function addNewAnimalToDatabase(animalData, specieId) {
                 dataVersion: 1,
                 animalId: animalUID,
                 animalName: animalData.animalName,
-                animalLatinName: animalData.animalLatinName,
-                animalEnglishName: animalData.animalEnglishName,
-                animalClass: animalData.animalClass,
-                animalOrder: animalData.animalOrder,
-                animalFamilly: animalData.animalFamilly,
-                animalIUCNClassification: animalData.animalIUCNClassification,
-                animalDescription: animalData.animalDescription,
-                animalGestation: animalData.animalGestation,
-                animalWeight: animalData.animalWeight,
-                animalLifeExpectancy: animalData.animalLifeExpectancy,
-                animalFood: animalData.animalFood,
+                animalAge: animalData.animalAge,
+                animalSex: animalData.animalSex,
+                animalBiography: animalData.animalBiography,
                 animalProfilePicture: animalData.animalProfilePicture,
                 animalPhotos: animalData.animalPhotos,
                 animalCreatedBy: userData.userId,
@@ -268,8 +260,9 @@ export function addNewAnimalToDatabase(animalData, specieId) {
 
             list.push(newAnimal)
 
-
             console.log('nouveau array')
+            console.log(list)
+            console.log(reference)
 
             firebase.database().ref(reference).update({
                 specieAnimals: list

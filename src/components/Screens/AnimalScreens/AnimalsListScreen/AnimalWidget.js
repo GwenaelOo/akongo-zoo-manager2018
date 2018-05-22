@@ -8,13 +8,13 @@ class AnimalWidget extends React.Component {
         return (
             <div className="col-xl-4">
                 <div className="card">
-                    <div className="card-body text-center bg-center" style={{ opacity: 0.9, backgroundImage: `url(${this.props.animalEnclosurePhoto})` }}>
+                    <div className="card-body text-center bg-center" style={{ opacity: 0.9, backgroundImage: `url(${this.props.animalData.animalEnclosurePhoto})` }}>
                         <div className="row">
                             <div className="col-12 text-white">
-                                <img className="img-thumbnail circle thumb128" src={this.props.animalProfilePicture} alt="Demo" />
-                                <h3 className="m-0">Chris</h3>
+                                <img className="img-thumbnail circle thumb128" src={this.props.animalData.animalProfilePicture} alt="Demo" />
+                                <h3 className="m-0">{this.props.animalData.animalName}</h3>
                                 <p className="m-0">
-                                    <em className="fa fa-twitter fa-fw"></em>{this.props.animalProfilePicture}</p>
+                                    <em className="fa fa-twitter fa-fw"></em>{this.props.animalData.animalProfilePicture}</p>
                             </div>
                         </div>
                     </div>
@@ -46,7 +46,7 @@ class AnimalWidget extends React.Component {
                             <em className="fa fa-fw fa-user text-muted"></em>Following</a>
                         <a className="list-group-item" href="">
                             <span className="badge badge-primary float-right">300</span>
-                            <em className="fa fa-fw fa-folder-open-o text-muted"></em>Photos</a>
+                            <em className="fa fa-fw fa-folder-open-o text-muted"></em></a>
                     </div>
                 </div>
             </div>

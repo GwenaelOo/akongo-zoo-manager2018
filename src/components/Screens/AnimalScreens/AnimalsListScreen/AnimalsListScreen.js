@@ -22,8 +22,10 @@ class AnimalListScreen extends React.Component {
                 animalId: animals[animal].animalId
             };
 
-            list.push(animalData);
+            console.log(animalData)
 
+            list.push(animalData);
+            
         }
 
         return (

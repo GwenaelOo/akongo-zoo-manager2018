@@ -205,6 +205,26 @@ class SpecieScreen extends React.Component {
         //database.updateFoodDataBase(specieData.SpecieFood);
     }
 
+    readEnclosureList() {
+        let self = this
+
+        let reference = (userData.zooName + '/enclosureData/');
+
+        return firebase.database().ref(reference).once('value')
+            .then(function (snapshot) {
+                let data = snapshot.val()
+                if ( data != null){
+                    for (let enclosure in data) {
+
+                    }
+                    self.setState({
+                        enclosureList: data.enclosureList
+                    });
+                }
+            })
+
+    }
+
     readSpecieFromFirebase(specieId) {
         //let userData = JSON.parse(localStorage.getItem('user'))
 
@@ -300,6 +320,7 @@ class SpecieScreen extends React.Component {
     initPage() {
         if (this.props.location.state != undefined) {
             this.readSpecieFromFirebase(this.props.location.state.specieId);
+            this.readEnclosureList();
         }
     }
 
@@ -560,6 +581,11 @@ class SpecieScreen extends React.Component {
                                                 </div>
                                             </div>
                                             {/* END widget */}
+
+                                            <Button color="danger" className="btn-labeled" bsSize="large" onClick={() => { this.handleClick() }}>
+                                                <span className="btn-label"><i className="fa fa-trash"></i></span> Supprimer l'espèce
+                                            </Button>
+
                                         </fieldset>
                                     </div>
                                 </div>
