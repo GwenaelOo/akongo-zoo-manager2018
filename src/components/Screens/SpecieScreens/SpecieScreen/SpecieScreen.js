@@ -11,8 +11,20 @@ import DropzonePhoto from '../../../customComponents/Dropzone/DropzonePhoto';
 import swal from 'sweetalert'
 import { Typeahead } from 'react-bootstrap-typeahead';
 import firebase from 'firebase';
-import { addNewSpecieToDatabase } from '../../../../database/database'
+import { addNewSpecieToDatabase, editSpecieInDatabase } from '../../../../database/database'
 import AnimalListScreen from '../../AnimalScreens/AnimalsListScreen/AnimalsListScreen';
+import Select from 'react-select';
+
+const STATES = [
+    { value: 'australian-capital-territory', label: 'Australian Capital Territory', className: 'State-ACT' },
+    { value: 'new-south-wales', label: 'New South Wales', className: 'State-NSW' },
+    { value: 'victoria', label: 'Victoria', className: 'State-Vic' },
+    { value: 'queensland', label: 'Queensland', className: 'State-Qld' },
+    { value: 'western-australia', label: 'Western Australia', className: 'State-WA' },
+    { value: 'south-australia', label: 'South Australia', className: 'State-SA' },
+    { value: 'tasmania', label: 'Tasmania', className: 'State-Tas' },
+    { value: 'northern-territory', label: 'Northern Territory', className: 'State-NT' },
+]
 
 // Create a single card with header text as attribute
 const CardWithHeader = props => (
@@ -52,10 +64,7 @@ class SpecieScreen extends React.Component {
             specieProfilePicture: 'https://www.cmsabirmingham.org/stuff/2017/01/default-placeholder.png',
             speciePhotos: [{ photoURL: 'https://www.cmsabirmingham.org/stuff/2017/01/default-placeholder.png' }],
             specieEnclosurePhoto: 'img/bg1.jpg',
-            speciePhoto1: '',
-            speciePhoto2: '',
-            speciePhoto3: '',
-            speciePhoto4: '',
+            specieAnimals: [],
             logId: 0,
             EditMode: false,
             zooFoodList: ['chargement']
@@ -79,6 +88,7 @@ class SpecieScreen extends React.Component {
             specieOrder: this.state.specieOrder,
             specieFood: this.state.specieFood,
             specieFamilly: this.state.specieFamilly,
+            specieAnimals: this.state.specieAnimals,
             specieIUCNClassification: this.state.specieIUCNClassification,
             specieDescription: this.state.specieDescription,
             specieGestation: this.state.specieGestation,
@@ -86,10 +96,6 @@ class SpecieScreen extends React.Component {
             specieLifeExpectancy: this.state.specieLifeExpectancy,
             speciePhotoProfil: this.state.speciePhotoProfil,
             speciePhotos: this.state.speciePhotos,
-            speciePhoto1: this.state.speciePhoto1,
-            speciePhoto2: this.state.speciePhoto2,
-            speciePhoto3: this.state.speciePhoto3,
-            speciePhoto4: this.state.speciePhoto4,
         }
 
         console.log(specieData)
@@ -182,16 +188,17 @@ class SpecieScreen extends React.Component {
             specieWeight: this.state.specieWeight,
             specieLifeExpectancy: this.state.specieLifeExpectancy,
             specieFood: this.state.specieFood,
-            speciePhotoProfil: this.state.speciePhotoProfil,
+            specieProfilePicture: this.state.specieProfilePicture,
             speciePhotos: this.state.speciePhotos,
+            specieEnclosurePhoto: this.state.specieEnclosurePhoto,
+            specieAnimals: this.state.specieAnimals,
             log: this.state.logId + 1
         }
 
         if (this.state.EditMode === true) {
-            //database.editNewSpecieToDatabase2(specieData);
+            editSpecieInDatabase(specieData);
         }
         else {
-
             addNewSpecieToDatabase(specieData);
         }
 
@@ -234,6 +241,8 @@ class SpecieScreen extends React.Component {
                     //specieFood: foodList,
                     specieLifeExpectancy: data.specieLifeExpectancy,
                     specieProfilePicture: data.specieProfilePicture,
+                    //specieEnclosurePhoto: data.specieEnclosurePhoto,
+                    specieAnimals: data.specieAnimals,
                     speciePhotos: data.speciePhotos,
                     EditMode: true,
                 });
@@ -288,14 +297,18 @@ class SpecieScreen extends React.Component {
     //     });
     // }
 
+    initPage() {
+        if (this.props.location.state != undefined) {
+            this.readSpecieFromFirebase(this.props.location.state.specieId);
+        }
+    }
+
 
     componentWillMount() {
         //this.getLogLenght();
         //this.initFoodList();
-        let requestedData = this.props.location.state.specieId
-        if (requestedData !== null) {
-            this.readSpecieFromFirebase(this.props.location.state.specieId);
-        }
+        this.initPage()
+
     }
 
     render() {
@@ -568,7 +581,7 @@ class SpecieScreen extends React.Component {
                                 <legend> Gestion des individus </legend>
                                 <Link to={{
                                     pathname: "AnimalScreen",
-                                    state: { specieId: this.state.specieId}
+                                    state: { specieId: this.state.specieId }
                                 }}>
                                     <Button color="success" className="btn-labeled" bsSize="large" style={{ marginRight: 20 }}>
                                         <span className="btn-label"><i className="fa fa-check"></i></span> Ajouter un individu
@@ -578,7 +591,7 @@ class SpecieScreen extends React.Component {
                                 <FormGroup>
                                     <div className="col-md-12" >
                                         <div className="row" style={{ display: 'flex', flexDirection: "row", flexWrap: 'wrap', justifyContent: 'flex-start' }}>
-                                            <AnimalListScreen animalsList={this.state.animalsList} />
+                                            <AnimalListScreen animalsList={this.state.specieAnimals} />
                                         </div>
                                     </div>
                                 </FormGroup>

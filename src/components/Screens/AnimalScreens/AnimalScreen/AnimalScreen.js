@@ -34,27 +34,14 @@ class AnimalScreen extends React.Component {
             specieId: this.props.location.state.specieId,
             animalId: '',
             animalName: '',
-            animalLatinName: '',
-            animalEnglishName: '',
-            animalClass: '',
-            animalOrder: '',
-            animalFamilly: '',
-            animalIUCNClassification: '',
-            animalDescription: '',
-            animalGestation: '',
-            animalWeight: '',
-            animalLifeExpectancy: '',
-            animalFood: [],
+            animalAge: '',
+            animalSex: '',
+            animalBiography: '',
+            animalPhotoEnclosure: 'img/bg1.jpg',
             animalProfilePicture: 'https://www.cmsabirmingham.org/stuff/2017/01/default-placeholder.png',
             animalPhotos: [{ photoURL: 'https://www.cmsabirmingham.org/stuff/2017/01/default-placeholder.png' }],
-            animalEnclosurePhoto: 'img/bg1.jpg',
-            animalPhoto1: '',
-            animalPhoto2: '',
-            animalPhoto3: '',
-            animalPhoto4: '',
             logId: 0,
             EditMode: false,
-            zooFoodList: ['chargement']
         };
         this.readAnimalFromFirebase = this.readAnimalFromFirebase.bind(this);
         this.handleChange = this.handleChange.bind(this);
@@ -69,23 +56,11 @@ class AnimalScreen extends React.Component {
         let animalData = {
             animalId: this.state.animalId,
             animalName: this.state.animalName,
-            animalLatinName: this.state.animalLatinName,
-            animalEnglishName: this.state.animalEnglishName,
-            animalClass: this.state.animalClass,
-            animalOrder: this.state.animalOrder,
-            animalFood: this.state.animalFood,
-            animalFamilly: this.state.animalFamilly,
-            animalIUCNClassification: this.state.animalIUCNClassification,
-            animalDescription: this.state.animalDescription,
-            animalGestation: this.state.animalGestation,
-            animalWeight: this.state.animalWeight,
-            animalLifeExpectancy: this.state.animalLifeExpectancy,
-            animalPhotoProfil: this.state.animalPhotoProfil,
+            animalAge: this.state.animalAge,
+            animalSex: this.state.animalSex,
+            animalBiography: this.state.animalBiography,
+            animalProfilePicture: this.state.animalProfilePicture,
             animalPhotos: this.state.animalPhotos,
-            animalPhoto1: this.state.animalPhoto1,
-            animalPhoto2: this.state.animalPhoto2,
-            animalPhoto3: this.state.animalPhoto3,
-            animalPhoto4: this.state.animalPhoto4,
         }
 
         console.log(animalData)
@@ -123,8 +98,6 @@ class AnimalScreen extends React.Component {
 
         let photoUID = photoId
         let photosArray = this.state.animalPhotos
-
-        console.log(photosArray.length)
 
         let newObject = {
             photoId: photoId,
@@ -167,17 +140,9 @@ class AnimalScreen extends React.Component {
         let animalData = {
             animalId: this.state.animalId,
             animalName: this.state.animalName,
-            animalLatinName: this.state.animalLatinName,
-            animalEnglishName: this.state.animalEnglishName,
-            animalClass: this.state.animalClass,
-            animalOrder: this.state.animalOrder,
-            animalFamilly: this.state.animalFamilly,
-            animalIUCNClassification: this.state.animalIUCNClassification,
-            animalDescription: this.state.animalDescription,
-            animalGestation: this.state.animalGestation,
-            animalWeight: this.state.animalWeight,
-            animalLifeExpectancy: this.state.animalLifeExpectancy,
-            animalFood: this.state.animalFood,
+            animalAge: this.state.animalAge,
+            animalSex: this.state.animalSex,
+            animalBiography: this.state.animalBiography,
             animalProfilePicture: this.state.animalProfilePicture,
             animalPhotos: this.state.animalPhotos,
             log: this.state.logId + 1
@@ -218,17 +183,9 @@ class AnimalScreen extends React.Component {
                     dataVersion: data.dataVersion,
                     animalId: data.animalId,
                     animalName: data.animalName,
-                    animalLatinName: data.animalLatinName,
-                    animalEnglishName: data.animalEnglishName,
-                    animalClass: data.animalClass,
-                    animalOrder: data.animalOrder,
-                    animalFamilly: data.animalFamilly,
-                    animalIUCNClassification: data.animalIUCNClassification,
-                    animalDescription: data.animalDescription,
-                    animalGestation: data.animalGestation,
-                    animalWeight: data.animalWeight,
-                    //animalFood: foodList,
-                    animalLifeExpectancy: data.animalLifeExpectancy,
+                    animalAge: data.animalAge,
+                    animalSex: data.animalSex,
+                    animalBiography: data.animalBiography,
                     animalProfilePicture: data.animalProfilePicture,
                     animalPhotos: data.animalPhotos,
                     EditMode: true,
@@ -284,14 +241,19 @@ class AnimalScreen extends React.Component {
     //     });
     // }
 
+    initPage() {
+        // if ( this.props.location.state != undefined) {
+        //     this.readSpecieFromFirebase(this.props.location.state.animalId);
+        // }
+    }
+
 
     componentWillMount() {
         //this.getLogLenght();
         //this.initFoodList();
-        // let requestedData = this.props.location.state.animalId
-        // if (requestedData !== null) {
-        //     this.readAnimalFromFirebase(this.props.location.state.animalId);
-        // }
+
+        this.initPage()
+
     }
 
     render() {
@@ -341,7 +303,7 @@ class AnimalScreen extends React.Component {
                                         <div className="col-md-12" >
                                             <fieldset>
                                                 <FormGroup>
-                                                    <label className="col-sm-12 control-label">Nom de l'espèce</label>
+                                                    <label className="col-sm-12 control-label">Nom de l'individu</label>
                                                     <Col sm={10}>
                                                         <FormControl type="text" name="animalName" placeholder="Ex. Gorilles" value={this.state.animalName} onChange={this.handleChange} className="form-control" />
                                                     </Col>
@@ -350,18 +312,18 @@ class AnimalScreen extends React.Component {
 
                                             <fieldset>
                                                 <FormGroup>
-                                                    <label className="col-sm-12 control-label">Nom Latin</label>
+                                                    <label className="col-sm-12 control-label">Age</label>
                                                     <Col sm={10}>
-                                                        <FormControl type="text" name="animalLatinName" placeholder="Ex. gorilla gorilla" className="form-control" value={this.state.animalLatinName} onChange={this.handleChange} />
+                                                        <FormControl type="text" name="animalAge" placeholder="Ex. gorilla gorilla" className="form-control" value={this.state.animalAge} onChange={this.handleChange} />
                                                     </Col>
                                                 </FormGroup>
                                             </fieldset>
 
                                             <fieldset>
                                                 <FormGroup>
-                                                    <label className="col-sm-12 control-label">Nom Anglais</label>
+                                                    <label className="col-sm-12 control-label">Sexe</label>
                                                     <Col sm={10}>
-                                                        <FormControl type="text" name="animalEnglishName" placeholder="Ex. Gorilla" className="form-control" value={this.state.animalEnglishName} onChange={this.handleChange} />
+                                                        <FormControl type="text" name="animalSex" placeholder="Ex. Gorilla" className="form-control" value={this.state.animalSex} onChange={this.handleChange} />
                                                     </Col>
                                                 </FormGroup>
                                             </fieldset>
@@ -378,179 +340,54 @@ class AnimalScreen extends React.Component {
                                 </div>
                                 <div style={{ display: 'flex', flexDirection: 'row' }}>
                                     <div className="col-md-6">
-                                        <div className="col-md-12" >
-                                            <fieldset>
-                                                <FormGroup>
-                                                    <label className="col-sm-12 control-label">Classe </label>
-                                                    <Col sm={10}>
-                                                        <FormControl type="text" name="animalClass" placeholder="Ex. Mammifères" className="form-control" value={this.state.animalClass} onChange={this.handleChange} />
-                                                    </Col>
-                                                </FormGroup>
-                                            </fieldset>
-                                        </div>
-                                        <div className="col-md-12" >
-                                            <fieldset>
-                                                <FormGroup>
-                                                    <label className="col-sm-12 control-label">Ordre </label>
-                                                    <Col sm={10}>
-                                                        <FormControl type="text" name="animalOrder" placeholder="Ex. Primates" className="form-control" value={this.state.animalOrder} onChange={this.handleChange} />
-                                                    </Col>
-                                                </FormGroup>
-                                            </fieldset>
-                                        </div>
-                                        <div className="col-md-12" >
-                                            <fieldset>
-                                                <FormGroup>
-                                                    <label className="col-sm-12 control-label">Famille </label>
-                                                    <Col sm={10}>
-                                                        <FormControl type="text" name="animalFamilly" placeholder="Ex. hominidés" value="" className="form-control" value={this.state.animalFamilly} onChange={this.handleChange} />
-                                                    </Col>
-                                                </FormGroup>
-                                            </fieldset>
-                                        </div>
-                                    </div>
-
-
-                                    <div className="col-md-6">
-                                        <label htmlFor="userName">Description de l'espèce</label>
+                                        <label htmlFor="userName">Biographie de l'animal</label>
                                         <Panel>
-                                            <textarea name="animalDescription" rows="12" className="form-control note-editor" value={this.state.animalDescription} onChange={this.handleChange}>
+                                            <textarea name="animalBiography" rows="12" className="form-control note-editor" value={this.state.animalBiography} onChange={this.handleChange}>
                                             </textarea>
                                         </Panel>
                                     </div>
-                                </div>
 
-                            </fieldset>
 
-                            <fieldset>
-                                <legend>Niveau de menace</legend>
-
-                                <div style={{ display: 'flex', flexDirection: 'row' }}>
                                     <div className="col-md-6">
                                         <div className="col-md-12" >
-                                            <div>
-                                                <label htmlFor="userName">Classification IUCN</label>
-                                                <FormControl componentClass="select" className="form-control" value={this.state.animalIUCNClassification} onChange={this.handleChange}>
-                                                    <option></option>
-                                                    <option>Préoccupation mineure (LC)</option>
-                                                    <option>Espèce quasi menacée (NT)</option>
-                                                    <option>Espèce vulnérable (VU)</option>
-                                                    <option>Espèce en danger (EN)</option>
-                                                    <option>En danger critique d'extinction (CR)</option>
-                                                    <option>Éteint à l'état sauvage (EW)</option>
-                                                    <option>Éteint (EX)</option>
-                                                    <option>Données insuffisantes (DD)</option>
-                                                    <option>Non-Évalué (NE)</option>
-                                                </FormControl>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="col-md-6">
-                                        <label htmlFor="userName">Description des menaces</label>
-                                        <Panel>
-                                            <textarea name="animalDescription" rows="10" className="form-control note-editor" value={this.state.animalDescription} onChange={this.handleChange}>
-                                            </textarea>
-                                        </Panel>
-                                    </div>
-                                </div>
-                            </fieldset>
-
-                            <div style={{ display: 'flex', flexDirection: 'row' }}>
-                                <div className="col-md-6">
-                                    <div className="col-md-12" >
-                                        <fieldset>
-                                            <legend> Informations Biologiques</legend>
                                             <fieldset>
-                                                <FormGroup>
-                                                    <label className="col-sm-12 control-label">Durée de la gestation</label>
-                                                    <Col sm={10}>
-                                                        <FormControl type="text" name="animalGestation" placeholder="Ex. 23 semaines" className="form-control" value={this.state.animalGestation} onChange={this.handleChange} />
-                                                    </Col>
-                                                </FormGroup>
-                                            </fieldset>
-
-                                            <fieldset>
-                                                <FormGroup>
-                                                    <label className="col-sm-12 control-label">Poid en kg</label>
-                                                    <Col sm={10}>
-                                                        <FormControl type="text" name="animalWeight" placeholder="Ex. 23 kg" className="form-control" value={this.state.animalWeight} onChange={this.handleChange} />
-                                                    </Col>
-                                                </FormGroup>
-                                            </fieldset>
-
-                                            <fieldset>
-                                                <FormGroup>
-                                                    <label className="col-sm-12 control-label">Esperance de vie</label>
-                                                    <Col sm={10}>
-                                                        <FormControl type="text" name="animalLifeExpectancy" placeholder="Ex. 12 ans" className="form-control" value={this.state.animalLifeExpectancy} onChange={this.handleChange} />
-                                                    </Col>
-                                                </FormGroup>
-                                            </fieldset>
-
-                                            <fieldset>
-                                                <FormGroup>
-                                                    <label className="col-sm-12 control-label">Nouriture</label>
-                                                    <Col sm={10}>
-                                                        <Typeahead
-                                                            allowNew
-                                                            onChange={(selected) => {
-                                                                this.setState({ animalFood: selected });
-                                                            }}
-                                                            name="animalFood"
-                                                            labelKey="animalFood"
-                                                            multiple
-                                                            options={this.state.zooFoodList}
-                                                            defaultSelected={this.state.animalFood}
-
-                                                            placeholder="Choose a state..."
-
-                                                        />
-                                                    </Col>
-                                                </FormGroup>
-                                            </fieldset>
-
-                                        </fieldset>
-                                    </div>
-                                </div>
-                                <div className="col-md-6">
-                                    <div className="col-md-12" >
-                                        <fieldset>
-                                            <legend> Choix de l'enclos</legend>
-                                            <fieldset>
-                                                <div>
-                                                    <FormControl componentClass="select" className="form-control" value={this.state.animalIUCNClassification} onChange={this.handleChange}>
-                                                        <option></option>
-                                                        <option>Enclos A</option>
-                                                        <option>Enclos B</option>
-                                                        <option>Enclos C</option>
-                                                    </FormControl>
-                                                </div>
-                                            </fieldset>
-
-                                            {/* START widget */}
-                                            <div className="card">
-                                                <div className="row row-flush">
-                                                    <div className="col-8">
-                                                        <img className="img-fluid" src={this.state.animalEnclosurePhoto} alt="Demo" />
+                                                <legend> Choix de l'enclos</legend>
+                                                <fieldset>
+                                                    <div>
+                                                        <FormControl componentClass="select" className="form-control" value={this.state.specieIUCNClassification} onChange={this.handleChange}>
+                                                            <option></option>
+                                                            <option>Enclos A</option>
+                                                            <option>Enclos B</option>
+                                                            <option>Enclos C</option>
+                                                        </FormControl>
                                                     </div>
-                                                    <div className="col-4 bg-info d-flex align-items-center justify-content-center">
-                                                        <div className="text-center">
-                                                            <div className="text-lg mt-0">11&deg;</div>
-                                                            <p>La foret de bambou</p>
-                                                            <em className="fa fa-sun-o fa-2x"></em>
+                                                </fieldset>
+
+                                                {/* START widget */}
+                                                <div className="card">
+                                                    <div className="row row-flush">
+                                                        <div className="col-8">
+                                                            <img className="img-fluid" src={this.state.animalPhotoEnclosure} alt="Demo" />
+                                                        </div>
+                                                        <div className="col-4 bg-info d-flex align-items-center justify-content-center">
+                                                            <div className="text-center">
+                                                                <div className="text-lg mt-0">11&deg;</div>
+                                                                <p>La foret de bambou</p>
+                                                                <em className="fa fa-sun-o fa-2x"></em>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                            {/* END widget */}
-                                        </fieldset>
+                                                {/* END widget */}
+                                            </fieldset>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
 
+                            </fieldset>
 
                             <fieldset>
-                                <legend> Gallerie de l'espèce </legend>
+                                <legend> Gallerie de l'individu </legend>
                                 <FormGroup>
                                     <div className="col-md-12" >
                                         <div className="row" style={{ display: 'flex', flexDirection: "row", flexWrap: 'wrap', justifyContent: 'flex-start' }}>
@@ -567,7 +404,7 @@ class AnimalScreen extends React.Component {
                 <CardWithHeader header="Validation" >
 
                     <Button color="success" className="btn-labeled" bsSize="large" style={{ marginRight: 20 }} onClick={() => { this.handleClick() }}>
-                        <span className="btn-label"><i className="fa fa-check"></i></span> Valider l'espèce
+                        <span className="btn-label"><i className="fa fa-check"></i></span> Valider l'individu
                         </Button>
 
                     {this.state.EditMode ? deleteButton : null}

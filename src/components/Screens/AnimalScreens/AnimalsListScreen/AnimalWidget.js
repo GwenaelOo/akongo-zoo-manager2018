@@ -11,10 +11,10 @@ class AnimalWidget extends React.Component {
                     <div className="card-body text-center bg-center" style={{ opacity: 0.9, backgroundImage: `url(${this.props.animalEnclosurePhoto})` }}>
                         <div className="row">
                             <div className="col-12 text-white">
-                                <img className="img-thumbnail circle thumb128" src="img/user/06.jpg" alt="Demo" />
+                                <img className="img-thumbnail circle thumb128" src={this.props.animalProfilePicture} alt="Demo" />
                                 <h3 className="m-0">Chris</h3>
                                 <p className="m-0">
-                                    <em className="fa fa-twitter fa-fw"></em>@chris</p>
+                                    <em className="fa fa-twitter fa-fw"></em>{this.props.animalProfilePicture}</p>
                             </div>
                         </div>
                     </div>

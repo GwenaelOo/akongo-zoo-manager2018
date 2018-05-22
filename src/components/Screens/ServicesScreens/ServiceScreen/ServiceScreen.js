@@ -246,7 +246,6 @@ class ServiceScreen extends React.Component {
                     <CardWithHeader header="Ajouter/Modifier une service">
                         <form className="form-horizontal" onSubmit={this.handleSubmit}>
                             <fieldset>
-                                <legend> Informations générales</legend>
                                 <fieldset>
                                     <FormGroup>
                                         <label className="col-sm-2 control-label">Nom du service</label>
