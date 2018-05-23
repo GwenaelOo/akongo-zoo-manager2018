@@ -34,6 +34,8 @@ export function addNewSpecieToDatabase(specieData) {
         specieGestation: specieData.specieGestation,
         specieWeight: specieData.specieWeight,
         specieLifeExpectancy: specieData.specieLifeExpectancy,
+        specieEnclosureId: specieData.specieEnclosureId,
+        specieEnclosurePhoto: specieData.specieEnclosurePhoto,
         specieFood: specieData.specieFood,
         specieProfilePicture: specieData.specieProfilePicture,
         speciePhotos: specieData.speciePhotos,
@@ -83,6 +85,43 @@ export function addNewSpecieToDatabase(specieData) {
 
 }
 
+export function saveDonationSetupToDatabase(donationData) {
+
+    // ********************
+    // Ajout dans firebase 
+    // ********************
+
+    let reference = (userData.zooName + '/donationData/');
+
+    firebase.database().ref(reference).set({
+        dataVersion: 1,
+        donationURL: donationData.donationURL,
+        donationCreatedBy: userData.userId,
+        donationCreationDate: Date(),
+        dataType: 'donation',
+        zooName: userData.zooName,
+    })
+
+
+        .catch(function (error) {
+            console.error("Error writing document: ", error);
+        }).then(function () {
+            swal({
+                title: "Good job!",
+                text: "La configuration du don a été correctement réalisée",
+                type: "success",
+                showCancelButton: false
+            }, function () {
+                // Redirect the user
+                window.location.href = nav.akongoURL + 'speciesList';
+            })
+        })
+        .catch(function (error) {
+            console.error("Error writing document: ", error);
+        });
+
+
+}
 
 export function addNewEnclosureToDatabase(enclosureData) {
 
@@ -155,6 +194,8 @@ export function editSpecieInDatabase(specieData) {
         specieWeight: specieData.specieWeight,
         specieLifeExpectancy: specieData.specieLifeExpectancy,
         specieFood: specieData.specieFood,
+        specieEnclosureId: specieData.specieEnclosureId,
+        specieEnclosurePhoto: specieData.specieEnclosurePhoto,
         specieProfilePicture: specieData.specieProfilePicture,
         speciePhotos: specieData.speciePhotos,
         specieCreatedBy: userData.userId,
@@ -250,8 +291,13 @@ export function addNewAnimalToDatabase(animalData, specieId) {
                 animalAge: animalData.animalAge,
                 animalSex: animalData.animalSex,
                 animalBiography: animalData.animalBiography,
+                animalSpecieName: animalData.animalSpecieName,
                 animalProfilePicture: animalData.animalProfilePicture,
+                animalPhotoEnclosure: animalData.animalPhotoEnclosure,
                 animalPhotos: animalData.animalPhotos,
+                animalSponsors: animalData.animalSponsors,
+                animalPopularity: animalData.animalPopularity,
+                specieId: specieId,
                 animalCreatedBy: userData.userId,
                 animalCreationDate: Date(),
                 dataType: 'animal',
@@ -269,27 +315,6 @@ export function addNewAnimalToDatabase(animalData, specieId) {
             })
         })
 
-
-        // ********************
-        // Ecriture du log
-        // ********************
-
-        //  .then(function () {
-        //      firebase.firestore()
-        //          .collection(userData.zooName + '-log')
-        //          .doc("log-" + Date.now())
-        //          .set({
-        //              action: "create",
-        //              dataType: 'animal',
-        //              elementId: animalData.animalId,
-        //              elementName: animalData.animalName,
-        //              actionMadeById: userData.userId,
-        //              actionMadeByName: userData.firstname,
-        //              actionDate: Date(),
-        //              actionTimestamp: Date.now(),
-        //              zooName: userData.zooName
-        //          })
-        //  })
         .catch(function (error) {
             console.error("Error writing document: ", error);
         }).then(function () {

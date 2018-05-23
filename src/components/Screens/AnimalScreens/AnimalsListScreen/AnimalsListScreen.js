@@ -19,10 +19,14 @@ class AnimalListScreen extends React.Component {
             let animalData = {
                 animalName: animals[animal].animalName,
                 animalProfilePicture: animals[animal].animalProfilePicture,
-                animalId: animals[animal].animalId
+                animalPhotoEnclosure : animals[animal].animalPhotoEnclosure,
+                animalEnclosureId : animals[animal].animalEnclosureId,
+                animalId: animals[animal].animalId,
+                animalPhotos: animals[animal].animalPhotos,
+                animalPopularity: animals[animal].animalPopularity,
+                animalSponsors: animals[animal].animalSponsors,
             };
 
-            console.log(animalData)
 
             list.push(animalData);
             

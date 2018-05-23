@@ -63,7 +63,8 @@ class SpecieScreen extends React.Component {
             specieFood: [],
             specieProfilePicture: 'https://www.cmsabirmingham.org/stuff/2017/01/default-placeholder.png',
             speciePhotos: [{ photoURL: 'https://www.cmsabirmingham.org/stuff/2017/01/default-placeholder.png' }],
-            specieEnclosurePhoto: 'img/bg1.jpg',
+            specieEnclosureId: '',
+            specieEnclosurePhoto: 'https://www.cmsabirmingham.org/stuff/2017/01/default-placeholder.png',
             specieAnimals: [],
             logId: 0,
             EditMode: false,
@@ -94,6 +95,8 @@ class SpecieScreen extends React.Component {
             specieGestation: this.state.specieGestation,
             specieWeight: this.state.specieWeight,
             specieLifeExpectancy: this.state.specieLifeExpectancy,
+            specieEnclosureId: this.state.specieEnclosureId,
+            specieEnclosurePhoto: this.state.specieEnclosurePhoto,
             speciePhotoProfil: this.state.speciePhotoProfil,
             speciePhotos: this.state.speciePhotos,
         }
@@ -188,6 +191,8 @@ class SpecieScreen extends React.Component {
             specieWeight: this.state.specieWeight,
             specieLifeExpectancy: this.state.specieLifeExpectancy,
             specieFood: this.state.specieFood,
+            specieEnclosureId: this.state.specieEnclosureId,
+            specieEnclosurePhoto: this.state.specieEnclosurePhoto,
             specieProfilePicture: this.state.specieProfilePicture,
             speciePhotos: this.state.speciePhotos,
             specieEnclosurePhoto: this.state.specieEnclosurePhoto,
@@ -607,7 +612,10 @@ class SpecieScreen extends React.Component {
                                 <legend> Gestion des individus </legend>
                                 <Link to={{
                                     pathname: "AnimalScreen",
-                                    state: { specieId: this.state.specieId }
+                                    state: { 
+                                        specieId: this.state.specieId,
+                                        specieName: this.state.specieName
+                                     }
                                 }}>
                                     <Button color="success" className="btn-labeled" bsSize="large" style={{ marginRight: 20 }}>
                                         <span className="btn-label"><i className="fa fa-check"></i></span> Ajouter un individu

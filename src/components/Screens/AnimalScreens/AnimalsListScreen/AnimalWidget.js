@@ -8,13 +8,13 @@ class AnimalWidget extends React.Component {
         return (
             <div className="col-xl-4">
                 <div className="card">
-                    <div className="card-body text-center bg-center" style={{ opacity: 0.9, backgroundImage: `url(${this.props.animalData.animalEnclosurePhoto})` }}>
+                    <div className="card-body text-center bg-center" style={{ opacity: 0.7, backgroundImage: `url(${this.props.animalData.animalPhotoEnclosure})` }}>
                         <div className="row">
                             <div className="col-12 text-white">
                                 <img className="img-thumbnail circle thumb128" src={this.props.animalData.animalProfilePicture} alt="Demo" />
                                 <h3 className="m-0">{this.props.animalData.animalName}</h3>
                                 <p className="m-0">
-                                    <em className="fa fa-twitter fa-fw"></em>{this.props.animalData.animalProfilePicture}</p>
+                                    <em className="fa fa-twitter fa-fw"></em></p>
                             </div>
                         </div>
                     </div>
@@ -39,14 +39,14 @@ class AnimalWidget extends React.Component {
                     </div>
                     <div className="list-group">
                         <a className="list-group-item" href="">
-                            <span className="badge badge-primary float-right">15</span>
-                            <em className="fa fa-fw fa-clock-o text-muted"></em>Recent Activity</a>
+                            <span className="badge badge-primary float-right">{this.props.animalData.animalPhotos.length}</span>
+                            <em className="fa fa-fw fa-image text-muted"></em> Photos dans la gallerie de l'individu</a>
                         <a className="list-group-item" href="">
-                            <span className="badge badge-primary float-right">100</span>
-                            <em className="fa fa-fw fa-user text-muted"></em>Following</a>
+                            <span className="badge badge-primary float-right">{this.props.animalData.animalPopularity.length}</span>
+                            <em className="fa fa-fw fa-image text-muted"></em> Popularité de l'animal</a>
                         <a className="list-group-item" href="">
-                            <span className="badge badge-primary float-right">300</span>
-                            <em className="fa fa-fw fa-folder-open-o text-muted"></em></a>
+                            <span className="badge badge-primary float-right">{this.props.animalData.animalSponsors.length}</span>
+                            <em className="fa fa-fw fa-image text-muted"></em> Parrains de l'animal</a>
                     </div>
                 </div>
             </div>
