@@ -1,16 +1,13 @@
 import React from 'react';
-import ContentWrapper from '../../../Layout/ContentWrapper';
+import ContentWrapper from '../../Layout/ContentWrapper';
 import { Panel, FormControl, FormGroup, InputGroup, DropdownButton, MenuItem } from 'react-bootstrap';
 import { Row, Col, Card, CardHeader, CardTitle, CardBody, Button, ButtonGroup, ButtonToolbar, ButtonDropdown, DropdownToggle, DropdownMenu, DropdownItem, Pagination, PaginationItem, PaginationLink } from 'reactstrap';
 
 // Ajout des composants du formulaire
-import TextInput from '../../../customComponents/TextInput/TextInput';
-import IUCNSelector from '../../../customComponents/IUCNSelector/IUCNSelector';
-import DropzonePhoto from '../../../customComponents/Dropzone/DropzonePhoto';
 import swal from 'sweetalert'
 import { Typeahead } from 'react-bootstrap-typeahead';
 import firebase from 'firebase';
-import { saveDonationSetupToDatabase } from '../../../../database/database'
+import { saveDonationSetupToDatabase } from '../../../database/database'
 
 // Create a single card with header text as attribute
 const CardWithHeader = props => (
@@ -158,9 +155,9 @@ class DonationScreen extends React.Component {
                         <form className="form-horizontal" onSubmit={this.handleSubmit}>
                             <fieldset>
                                 <FormGroup>
-                                    <label className="col-sm-2 control-label">Nom de l'donation</label>
+                                    <label className="col-sm-8 control-label">URL de la page Hello Asso de la fondation</label>
                                     <Col sm={10}>
-                                        <FormControl type="text" name="donationName" placeholder="Ex. Vol des perroquets" value={this.state.donationName} onChange={this.handleChange} className="form-control" />
+                                        <FormControl type="text" name="donationName" placeholder="HTTP:// ..." value={this.state.donationName} onChange={this.handleChange} className="form-control" />
                                     </Col>
                                 </FormGroup>
                             </fieldset>
@@ -168,15 +165,15 @@ class DonationScreen extends React.Component {
                     </CardWithHeader>
                 </Panel>
 
-                <Panel style={{ "display": "flex" }}>
-                    <Button bsClass="btn btn-labeled btn-success mr" bsSize="large" onClick={() => { this.handleClick() }}>
-                        <span className="btn-label"><i className="fa fa-check"></i></span> Valider l'espèce
+                <CardWithHeader header="Validation" >
+
+                    <Button color="success" className="btn-labeled" bsSize="large" style={{ marginRight: 20 }} onClick={() => { this.handleClick() }}>
+                        <span className="btn-label"><i className="fa fa-check"></i></span> Valider la configuration du don
                     </Button>
 
                     {this.state.EditMode ? deleteButton : null}
 
-
-                </Panel>
+                </CardWithHeader>
             </ContentWrapper>
         );
     }

@@ -28,7 +28,7 @@ const Menu = [
                 path: 'EnclosureScreen'
             },{
                 name: 'Ecran Dons',
-                path: 'Donation Screen'
+                path: 'DonationScreen'
             },
         ]
     },
