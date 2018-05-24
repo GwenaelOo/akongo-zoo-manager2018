@@ -15,16 +15,6 @@ import { addNewSpecieToDatabase, editSpecieInDatabase } from '../../../../databa
 import AnimalListScreen from '../../AnimalScreens/AnimalsListScreen/AnimalsListScreen';
 import Select from 'react-select';
 
-const STATES = [
-    { value: 'australian-capital-territory', label: 'Australian Capital Territory', className: 'State-ACT' },
-    { value: 'new-south-wales', label: 'New South Wales', className: 'State-NSW' },
-    { value: 'victoria', label: 'Victoria', className: 'State-Vic' },
-    { value: 'queensland', label: 'Queensland', className: 'State-Qld' },
-    { value: 'western-australia', label: 'Western Australia', className: 'State-WA' },
-    { value: 'south-australia', label: 'South Australia', className: 'State-SA' },
-    { value: 'tasmania', label: 'Tasmania', className: 'State-Tas' },
-    { value: 'northern-territory', label: 'Northern Territory', className: 'State-NT' },
-]
 
 // Create a single card with header text as attribute
 const CardWithHeader = props => (
@@ -40,9 +30,6 @@ const userData = {
     zooName: 'AkongoFakeZoo',
     userId: 'Gwen'
 }
-
-
-
 
 class SpecieScreen extends React.Component {
     constructor(props) {
@@ -63,6 +50,7 @@ class SpecieScreen extends React.Component {
             specieFood: [],
             specieProfilePicture: 'https://www.cmsabirmingham.org/stuff/2017/01/default-placeholder.png',
             speciePhotos: [{ photoURL: 'https://www.cmsabirmingham.org/stuff/2017/01/default-placeholder.png' }],
+            enclosureList: [],
             specieEnclosureId: '',
             specieEnclosurePhoto: 'https://www.cmsabirmingham.org/stuff/2017/01/default-placeholder.png',
             specieAnimals: [],
@@ -266,7 +254,7 @@ class SpecieScreen extends React.Component {
                     //specieFood: foodList,
                     specieLifeExpectancy: data.specieLifeExpectancy,
                     specieProfilePicture: data.specieProfilePicture,
-                    //specieEnclosurePhoto: data.specieEnclosurePhoto,
+                    specieEnclosurePhoto: data.specieEnclosurePhoto,
                     specieAnimals: data.specieAnimals,
                     speciePhotos: data.speciePhotos,
                     EditMode: true,
@@ -274,53 +262,6 @@ class SpecieScreen extends React.Component {
             })
 
     }
-
-    // getLogLenght(){
-    //     let userData = JSON.parse(localStorage.getItem('user'))
-    //     var self = this
-    //     let collection = (userData.zooName + '-log')
-    //     firebase.firestore().collection(collection).get().then(function (querySnapshot) {
-    //         let logLenght = []
-    //         querySnapshot.forEach(function (doc) {
-    //             logLenght.push(doc.data())
-    //         });
-
-    //         let logId = logLenght.length;
-    //         console.log(logId)
-    //         self.setState({
-    //             logId: logId
-    //         });
-
-    //     })
-    // }
-
-    // initFoodList() {
-    //     let userData = JSON.parse(localStorage.getItem('user'))
-    //     // Fonction magique que je ne comprend pas 
-    //     var self = this;
-    //     // Selection de la référence de la base de donnée
-
-    //     let foodList = []
-
-    //     var query = firebase.database().ref(userData.zooName + "/Lists/FoodList").orderByKey();
-    //     query.once("value")
-    //         .then(function (snapshot) {
-    //             snapshot.forEach(function (childSnapshot) {
-    //                 var childData = childSnapshot.val();
-    //                 foodList.push(childData);
-
-    //             });
-    //         }).then(function (snapshot) {
-
-    //         self.setState({
-    //             zooFoodList: foodList,
-
-    //         });
-    //     }, function (error) {
-    //         // The Promise was rejected.
-    //         console.error(error);
-    //     });
-    // }
 
     initPage() {
         if (this.props.location.state != undefined) {
@@ -331,8 +272,7 @@ class SpecieScreen extends React.Component {
 
 
     componentWillMount() {
-        //this.getLogLenght();
-        //this.initFoodList();
+      
         this.initPage()
 
     }

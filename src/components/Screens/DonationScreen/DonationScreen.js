@@ -148,7 +148,6 @@ class DonationScreen extends React.Component {
 
 
         return (
-
             <ContentWrapper>
                 <Panel>
                     <CardWithHeader header="Ajouter/Modifier une donation">
@@ -164,15 +163,12 @@ class DonationScreen extends React.Component {
                         </form>
                     </CardWithHeader>
                 </Panel>
-
                 <CardWithHeader header="Validation" >
-
                     <Button color="success" className="btn-labeled" bsSize="large" style={{ marginRight: 20 }} onClick={() => { this.handleClick() }}>
                         <span className="btn-label"><i className="fa fa-check"></i></span> Valider la configuration du don
                     </Button>
 
                     {this.state.EditMode ? deleteButton : null}
-
                 </CardWithHeader>
             </ContentWrapper>
         );
