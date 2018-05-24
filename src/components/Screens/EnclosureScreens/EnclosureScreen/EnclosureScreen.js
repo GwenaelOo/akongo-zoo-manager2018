@@ -9,7 +9,7 @@ import DropzonePhoto from '../../../customComponents/Dropzone/DropzonePhoto';
 import swal from 'sweetalert'
 import { Typeahead } from 'react-bootstrap-typeahead';
 import firebase from 'firebase';
-import { addNewenclosureToDatabase } from '../../../../database/database'
+import { addNewEnclosureToDatabase, editEnclosureInDatabase } from '../../../../database/database'
 import SpecieList from '../../SpecieScreens/SpeciesListScreen/SpeciesList/SpeciesList';
 
 // Create a single card with header text as attribute
@@ -31,12 +31,15 @@ class EnclosureScreen extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            dataVersion : 0,
+            dataVersion: 0,
             enclosureId: '',
             enclosureName: '',
             enclosureSpeciesList: '',
+            enclosureWishListURL: '',
+            enclosureWishListStatus: '',
+            enclosureWishListDescription: '',
             enclosureDescription: '',
-            enclosurePhotoProfile: 'https://www.cmsabirmingham.org/stuff/2017/01/default-placeholder.png',
+            enclosureProfilePicture: 'https://www.cmsabirmingham.org/stuff/2017/01/default-placeholder.png',
             enclosurePhotos: [{ photoURL: 'https://www.cmsabirmingham.org/stuff/2017/01/default-placeholder.png' }],
             logId: 0,
             EditMode: false,
@@ -53,10 +56,11 @@ class EnclosureScreen extends React.Component {
         let enclosureData = {
             enclosureId: this.state.enclosureId,
             enclosureName: this.state.enclosureName,
-            enclosureAge: this.state.enclosureAge,
             enclosureSex: this.state.enclosureSex,
-            enclosureBiography: this.state.enclosureBiography,
             enclosureProfilePicture: this.state.enclosureProfilePicture,
+            enclosureWishListStatus: this.state.enclosureWishListStatus,
+            enclosureWishListDescription: this.state.enclosureWishListDescription,
+            enclosureWishListURL: this.state.enclosureWishListURL,
             enclosurePhotos: this.state.enclosurePhotos,
         }
 
@@ -116,23 +120,26 @@ class EnclosureScreen extends React.Component {
             enclosureName: this.state.enclosureName,
             enclosureSpeciesList: this.state.enclosureSpeciesList,
             enclosureDescription: this.state.enclosureDescription,
-            enclosurePhotoProfile: this.state.enclosurePhotoProfile,
+            enclosureProfilePicture: this.state.enclosureProfilePicture,
+            enclosureWishListStatus: this.state.enclosureWishListStatus,
+            enclosureWishListURL: this.state.enclosureWishListURL,
+            enclosureWishListDescription: this.state.enclosureWishListDescription,
             enclosurePhotos: this.state.enclosurePhotos,
             log: this.state.logId + 1
         }
 
         if (this.state.EditMode === true) {
-            //database.editNewenclosureToDatabase2(enclosureData);
+            editEnclosureInDatabase(enclosureData);
         }
         else {
-
-            this.addNewEnclosureToDatabase(enclosureData);
+            console.log('ajout enclos')
+            addNewEnclosureToDatabase(enclosureData);
         }
 
         //database.updateFoodDataBase(enclosureData.enclosureFood);
     }
 
-    readenclosureFromFirebase(enclosureId) {
+    readEnclosureFromFirebase(enclosureId) {
         //let userData = JSON.parse(localStorage.getItem('user'))
 
         let self = this
@@ -143,22 +150,13 @@ class EnclosureScreen extends React.Component {
             .then(function (snapshot) {
                 let data = snapshot.val()
 
-                // let foodList = []
-                // data.enclosureFood.forEach(function (foodItem) {
-                //     if (foodItem.customOption === true) {
-                //         foodList.push(foodItem.enclosureFood);
-                //     } else {
-                //         foodList.push(foodItem);
-                //     }
-                // })
-
                 self.setState({
-                    dataVersion: data.dataVersion,
+                    dataVersion: 1,
                     enclosureId: data.enclosureId,
                     enclosureName: data.enclosureName,
                     enclosureSpeciesList: data.enclosureSpeciesList,
                     enclosureDescription: data.enclosureDescription,
-                    enclosurePhotoProfile: data.enclosurePhotoProfile,
+                    enclosureProfilePicture: data.enclosureProfilePicture,
                     enclosurePhotos: data.enclosurePhotos,
                     EditMode: true,
                 });
@@ -166,57 +164,33 @@ class EnclosureScreen extends React.Component {
 
     }
 
-    // getLogLenght(){
-    //     let userData = JSON.parse(localStorage.getItem('user'))
-    //     var self = this
-    //     let collection = (userData.zooName + '-log')
-    //     firebase.firestore().collection(collection).get().then(function (querySnapshot) {
-    //         let logLenght = []
-    //         querySnapshot.forEach(function (doc) {
-    //             logLenght.push(doc.data())
-    //         });
+    getSpeciesInThisEnclosure(enclosureId) {
+        var self = this;
 
-    //         let logId = logLenght.length;
-    //         console.log(logId)
-    //         self.setState({
-    //             logId: logId
-    //         });
+        let reference = (userData.zooName + '/speciesData/');
+        firebase.database().ref(reference).once('value').
+            then(function (result) {
+                let speciesList = result.val()
 
-    //     })
-    // }
+                for (let specie in speciesList) {
+                    if (speciesList[specie].specieEnclosure.enclosureId != enclosureId)
 
-    // initFoodList() {
-    //     let userData = JSON.parse(localStorage.getItem('user'))
-    //     // Fonction magique que je ne comprend pas 
-    //     var self = this;
-    //     // Selection de la référence de la base de donnée
+                        delete speciesList[specie]
+                }
 
-    //     let foodList = []
-
-    //     var query = firebase.database().ref(userData.zooName + "/Lists/FoodList").orderByKey();
-    //     query.once("value")
-    //         .then(function (snapshot) {
-    //             snapshot.forEach(function (childSnapshot) {
-    //                 var childData = childSnapshot.val();
-    //                 foodList.push(childData);
-
-    //             });
-    //         }).then(function (snapshot) {
-
-    //         self.setState({
-    //             zooFoodList: foodList,
-
-    //         });
-    //     }, function (error) {
-    //         // The Promise was rejected.
-    //         console.error(error);
-    //     });
-    // }
+                self.setState({
+                    enclosureSpeciesList: speciesList
+                })
+            })
+    }
 
     initPage() {
-        // if ( this.props.location.state != undefined) {
-        //     this.readSpecieFromFirebase(this.props.location.state.enclosureId);
-        // }
+        if (this.props.location.state != undefined) {
+            this.readEnclosureFromFirebase(this.props.location.state.enclosureId);
+            this.getSpeciesInThisEnclosure(this.props.location.state.enclosureId);
+        }
+
+
     }
 
 
@@ -277,6 +251,18 @@ class EnclosureScreen extends React.Component {
                                                 </FormGroup>
                                             </fieldset>
                                         </div>
+
+                                        <div className="col-md-12" >
+                                            <fieldset>
+                                                <FormGroup>
+                                                    <label htmlFor="userName">Description de l'enclos</label>
+                                                    <Panel>
+                                                        <textarea name="enclosureDescription" rows="10" className="form-control note-editor" value={this.state.enclosureDescription} onChange={this.handleChange}>
+                                                        </textarea>
+                                                    </Panel>
+                                                </FormGroup>
+                                            </fieldset>
+                                        </div>
                                     </div>
 
 
@@ -286,11 +272,22 @@ class EnclosureScreen extends React.Component {
                                     </div>
 
                                 </div>
-                                <div style={{ display: 'flex', flexDirection: 'row' }}>
+                                <div style={{ display: 'flex', flexDirection: "row" }} >
+                                    <div className="col-md-6" >
+                                        <fieldset>
+                                            <FormGroup>
+                                                <label className="col-sm-12 control-label">Adresse de la wishlist</label>
+                                                <Col sm={10}>
+                                                    <FormControl type="text" name="enclosureWishListURL" placeholder="HTTP:// ..." value={this.state.enclosureWishListURL} onChange={this.handleChange} className="form-control" />
+                                                </Col>
+                                            </FormGroup>
+                                        </fieldset>
+                                    </div>
+
                                     <div className="col-md-6">
-                                        <label htmlFor="userName">Description de l'enclos</label>
+                                        <label htmlFor="userName">Description de la wishlist</label>
                                         <Panel>
-                                            <textarea name="enclosureBiography" rows="12" className="form-control note-editor" value={this.state.enclosureBiography} onChange={this.handleChange}>
+                                            <textarea name="enclosureDescription" rows="12" className="form-control note-editor" value={this.state.enclosureDescription} onChange={this.handleChange}>
                                             </textarea>
                                         </Panel>
                                     </div>
@@ -311,8 +308,8 @@ class EnclosureScreen extends React.Component {
                         </form>
 
                         <form className="form-horizontal" onSubmit={this.handleSubmit}>
-                            <legend>Espèce presensente dans l'enclos</legend>
-                            <SpecieList speciesList={this.state.speciesList} />
+                            <legend>Espèces dans l'enclos</legend>
+                            <SpecieList speciesList={this.state.enclosureSpeciesList} />
                         </form>
                     </CardWithHeader>
                 </Panel>

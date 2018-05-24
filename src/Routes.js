@@ -21,6 +21,8 @@ import EnclosureScreen from './components/Screens/EnclosureScreens/EnclosureScre
 
 import DonationScreen from './components/Screens/DonationScreen/DonationScreen'
 
+import EnclosureList from './components/Screens/EnclosureScreens/EnclosureScreen/EnclosuresListScreen/EnclosureListScreen'
+
 import DashboardV1 from './components/Dashboard/DashboardV1';
 import DashboardV2 from './components/Dashboard/DashboardV2';
 import DashboardV3 from './components/Dashboard/DashboardV3';
@@ -180,6 +182,8 @@ const Routes = ({ location }) => {
                                 <Route path="/EnclosureScreen" component={EnclosureScreen} />
 
                                 <Route path="/DonationScreen" component={DonationScreen} />
+
+                                <Route path="/EnclosureList" component={EnclosureList} />
                                 
 
                                 {/*Dashboard*/}

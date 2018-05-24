@@ -13,8 +13,8 @@ import { Typeahead } from 'react-bootstrap-typeahead';
 import firebase from 'firebase';
 import { addNewSpecieToDatabase, editSpecieInDatabase } from '../../../../database/database'
 import AnimalListScreen from '../../AnimalScreens/AnimalsListScreen/AnimalsListScreen';
-import Select from 'react-select';
 
+import Select from 'react-select'
 
 // Create a single card with header text as attribute
 const CardWithHeader = props => (
@@ -23,6 +23,19 @@ const CardWithHeader = props => (
         <CardBody>{props.children}</CardBody>
     </Card>
 )
+
+const options = [
+    { value: 'LC', label: 'Préoccupation mineure (LC)' },
+    { value: 'NT', label: 'Espèce quasi menacée (NT)' },
+    { value: 'VU', label: 'Espèce vulnérable (VU)' },
+    { value: 'EN', label: 'Espèce en danger (EN)' },
+    { value: 'CR', label: "En danger critique d'extinction (CR)" },
+    { value: 'EW', label: "Éteint à l'état sauvage (EW)" },
+    { value: 'EX', label: 'Éteint (EX)' },
+    { value: 'DD', label: 'Données insuffisantes (DD)' },
+    { value: 'NE', label: 'Non-Évalué (NE)' },
+]
+
 
 const userId = "gwen"
 const specieData = {}
@@ -43,6 +56,7 @@ class SpecieScreen extends React.Component {
             specieOrder: '',
             specieFamilly: '',
             specieIUCNClassification: '',
+            specieThreat : '',
             specieDescription: '',
             specieGestation: '',
             specieWeight: '',
@@ -50,10 +64,13 @@ class SpecieScreen extends React.Component {
             specieFood: [],
             specieProfilePicture: 'https://www.cmsabirmingham.org/stuff/2017/01/default-placeholder.png',
             speciePhotos: [{ photoURL: 'https://www.cmsabirmingham.org/stuff/2017/01/default-placeholder.png' }],
-            enclosureList: [],
-            specieEnclosureId: '',
+            enclosureList: null,
+            specieEnclosure: '',
             specieEnclosurePhoto: 'https://www.cmsabirmingham.org/stuff/2017/01/default-placeholder.png',
             specieAnimals: [],
+
+            selectedEnclosure: null,
+            IUCNList: options,
             logId: 0,
             EditMode: false,
             zooFoodList: ['chargement']
@@ -76,6 +93,7 @@ class SpecieScreen extends React.Component {
             specieClass: this.state.specieClass,
             specieOrder: this.state.specieOrder,
             specieFood: this.state.specieFood,
+            specieThreat : this.state.specieThreat,
             specieFamilly: this.state.specieFamilly,
             specieAnimals: this.state.specieAnimals,
             specieIUCNClassification: this.state.specieIUCNClassification,
@@ -83,8 +101,7 @@ class SpecieScreen extends React.Component {
             specieGestation: this.state.specieGestation,
             specieWeight: this.state.specieWeight,
             specieLifeExpectancy: this.state.specieLifeExpectancy,
-            specieEnclosureId: this.state.specieEnclosureId,
-            specieEnclosurePhoto: this.state.specieEnclosurePhoto,
+            specieEnclosure: this.state.specieEnclosure,
             speciePhotoProfil: this.state.speciePhotoProfil,
             speciePhotos: this.state.speciePhotos,
         }
@@ -142,6 +159,34 @@ class SpecieScreen extends React.Component {
         console.log(this.state.speciePhotos)
     }
 
+    handleIUCNChoice(newValue) {
+        this.setState({
+            specieIUCNClassification: newValue
+        })
+    }
+
+    handleEnclosureChoice(selectedEnclosureData) {
+
+        this.setState({
+            selectedEnclosure: selectedEnclosureData
+        })
+
+        if (selectedEnclosureData != null) {
+
+            let enclosuresData = this.state.enclosureData
+
+            for (let enclosure in enclosuresData) {
+                if (enclosuresData[enclosure].enclosureId === selectedEnclosureData.value) {
+
+                    console.log(enclosuresData[enclosure])
+                    this.setState({
+                        specieEnclosure: enclosuresData[enclosure],
+                    })
+                }
+            }
+        }
+    }
+
     handleDelete() {
 
         let specieData = {
@@ -164,6 +209,8 @@ class SpecieScreen extends React.Component {
             });
     }
 
+
+
     handleClick() {
         let specieData = {
             specieId: this.state.specieId,
@@ -173,17 +220,17 @@ class SpecieScreen extends React.Component {
             specieClass: this.state.specieClass,
             specieOrder: this.state.specieOrder,
             specieFamilly: this.state.specieFamilly,
+            specieThreat : this.state.specieThreat,
             specieIUCNClassification: this.state.specieIUCNClassification,
             specieDescription: this.state.specieDescription,
             specieGestation: this.state.specieGestation,
             specieWeight: this.state.specieWeight,
             specieLifeExpectancy: this.state.specieLifeExpectancy,
             specieFood: this.state.specieFood,
-            specieEnclosureId: this.state.specieEnclosureId,
-            specieEnclosurePhoto: this.state.specieEnclosurePhoto,
+            specieEnclosure: this.state.specieEnclosure,
             specieProfilePicture: this.state.specieProfilePicture,
             speciePhotos: this.state.speciePhotos,
-            specieEnclosurePhoto: this.state.specieEnclosurePhoto,
+            specieEnclosure: this.state.specieEnclosure,
             specieAnimals: this.state.specieAnimals,
             log: this.state.logId + 1
         }
@@ -199,23 +246,57 @@ class SpecieScreen extends React.Component {
     }
 
     readEnclosureList() {
+        let edit = this.state.EditMode
+        console.log(edit)
         let self = this
-
-        let reference = (userData.zooName + '/enclosureData/');
+        let enclosureList = []
+        let reference = (userData.zooName + '/enclosuresData/');
+        let data
+        let enclosureId = this.state.specieEnclosure.enclosureId
+    
 
         return firebase.database().ref(reference).once('value')
             .then(function (snapshot) {
-                let data = snapshot.val()
-                if ( data != null){
-                    for (let enclosure in data) {
-
+                data = snapshot.val()
+                // enregistrement de toute les données zoo
+                self.setState({
+                    enclosureData: data
+                })
+                if (data != null) {
+                    for (let item in data) {
+                        let enclosure = {
+                            value: data[item].enclosureId,
+                            label: data[item].enclosureName
+                        }
+                        enclosureList.push(enclosure)
                     }
-                    self.setState({
-                        enclosureList: data.enclosureList
-                    });
                 }
             })
 
+            //Affichage de la preselection en cas d'édition
+            .then(function () {
+                for (let item in data) {
+                    if (edit) {
+                        if (enclosureId === data[item].enclosureId) {
+                            let enclosure = {
+                                value: data[item].enclosureId,
+                                label: data[item].enclosureName
+                            }
+                            console.log(enclosure)
+                            self.setState({
+                                selectedEnclosure: enclosure
+                            })
+
+                        }
+                    }
+                }
+            })
+            //enregistrement de la liste à afficher pour la selection d'enclos
+            .then(function () {
+                self.setState({
+                    enclosuresList: enclosureList
+                })
+            })
     }
 
     readSpecieFromFirebase(specieId) {
@@ -247,6 +328,7 @@ class SpecieScreen extends React.Component {
                     specieClass: data.specieClass,
                     specieOrder: data.specieOrder,
                     specieFamilly: data.specieFamilly,
+                    specieThreat: data.specieThreat,
                     specieIUCNClassification: data.specieIUCNClassification,
                     specieDescription: data.specieDescription,
                     specieGestation: data.specieGestation,
@@ -254,30 +336,35 @@ class SpecieScreen extends React.Component {
                     //specieFood: foodList,
                     specieLifeExpectancy: data.specieLifeExpectancy,
                     specieProfilePicture: data.specieProfilePicture,
-                    specieEnclosurePhoto: data.specieEnclosurePhoto,
+                    specieEnclosure: data.specieEnclosure,
                     specieAnimals: data.specieAnimals,
                     speciePhotos: data.speciePhotos,
                     EditMode: true,
                 });
             })
-
     }
 
     initPage() {
         if (this.props.location.state != undefined) {
-            this.readSpecieFromFirebase(this.props.location.state.specieId);
+            let self = this
+            this.readSpecieFromFirebase(this.props.location.state.specieId)
+            .then(function(){
+                self.readEnclosureList();
+            })
+        } else {
             this.readEnclosureList();
         }
     }
 
 
     componentWillMount() {
-      
         this.initPage()
 
     }
 
     render() {
+
+
         const innerIcon = <em className="fa fa-check"></em>;
         const innerButton = <Button>Before</Button>;
         const innerDropdown = (
@@ -288,12 +375,35 @@ class SpecieScreen extends React.Component {
         const innerRadio = <input type="radio" aria-label="..." />;
         const innerCheckbox = <input type="checkbox" aria-label="..." />;
 
+        // Creation du bouton suppression
+
         const deleteButton = (
             <Button color="danger" className="btn-labeled" bsSize="large" onClick={() => { this.handleClick() }}>
                 <span className="btn-label"><i className="fa fa-trash"></i></span> Supprimer l'espèce
             </Button>
 
         );
+
+        // Affichge de la card enclosure
+
+        const enclosureCard = (
+
+            <div className="card">
+                <div className="row row-flush">
+                    <div className="col-8">
+                        <img className="img-fluid" src={this.state.specieEnclosure.enclosureProfilePicture} alt="Demo" />
+                    </div>
+                    <div className="col-4 bg-info d-flex align-items-center justify-content-center">
+                        <div className="text-center">
+                            <div className="text-lg mt-0">11&deg;</div>
+                            <p>{this.state.specieEnclosure.enclosureName}</p>
+                            <em className="fa fa-sun-o fa-2x"></em>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        )
 
         // Gestion des photos
 
@@ -304,14 +414,10 @@ class SpecieScreen extends React.Component {
                     <DropzonePhoto specieName={this.state.specieName} background={this.state.speciePhotos[i].photoURL} id={"Photo" + i} methodToReturnUrl={this.handleReturnedUrl} />
                 </div>
             );
-
-            // Gestion des individus
-
-
-            // }
         }
 
         return (
+
 
             <ContentWrapper>
                 <Panel>
@@ -410,28 +516,19 @@ class SpecieScreen extends React.Component {
 
                                 <div style={{ display: 'flex', flexDirection: 'row' }}>
                                     <div className="col-md-6">
-                                        <div className="col-md-12" >
-                                            <div>
-                                                <label htmlFor="userName">Classification IUCN</label>
-                                                <FormControl componentClass="select" className="form-control" value={this.state.specieIUCNClassification} onChange={this.handleChange}>
-                                                    <option></option>
-                                                    <option>Préoccupation mineure (LC)</option>
-                                                    <option>Espèce quasi menacée (NT)</option>
-                                                    <option>Espèce vulnérable (VU)</option>
-                                                    <option>Espèce en danger (EN)</option>
-                                                    <option>En danger critique d'extinction (CR)</option>
-                                                    <option>Éteint à l'état sauvage (EW)</option>
-                                                    <option>Éteint (EX)</option>
-                                                    <option>Données insuffisantes (DD)</option>
-                                                    <option>Non-Évalué (NE)</option>
-                                                </FormControl>
-                                            </div>
-                                        </div>
+                                        <label htmlFor="userName">Classification IUCN</label>
+                                        <Select
+                                            options={this.state.IUCNList}
+                                            onChange={(newValue) => this.handleIUCNChoice(newValue)}
+                                            value={this.state.specieIUCNClassification}
+                                        />
+
+
                                     </div>
                                     <div className="col-md-6">
                                         <label htmlFor="userName">Description des menaces</label>
                                         <Panel>
-                                            <textarea name="specieDescription" rows="10" className="form-control note-editor" value={this.state.specieDescription} onChange={this.handleChange}>
+                                            <textarea name="specieThreat" rows="10" className="form-control note-editor" value={this.state.specieThreat} onChange={this.handleChange}>
                                             </textarea>
                                         </Panel>
                                     </div>
@@ -500,36 +597,17 @@ class SpecieScreen extends React.Component {
                                         <fieldset>
                                             <legend> Choix de l'enclos</legend>
                                             <fieldset>
-                                                <div>
-                                                    <FormControl componentClass="select" className="form-control" value={this.state.specieIUCNClassification} onChange={this.handleChange}>
-                                                        <option></option>
-                                                        <option>Enclos A</option>
-                                                        <option>Enclos B</option>
-                                                        <option>Enclos C</option>
-                                                    </FormControl>
-                                                </div>
+
+                                                {this.state.enclosuresList ?
+                                                    <Select
+                                                        options={this.state.enclosuresList}
+                                                        onChange={(newValue) => this.handleEnclosureChoice(newValue)}
+                                                        value={this.state.selectedEnclosure}
+                                                    /> : <h3 style={{ marginTop: "20%" }}> Pas d'enclos crées pour le moment </h3>}
+
                                             </fieldset>
 
-                                            {/* START widget */}
-                                            <div className="card">
-                                                <div className="row row-flush">
-                                                    <div className="col-8">
-                                                        <img className="img-fluid" src={this.state.specieEnclosurePhoto} alt="Demo" />
-                                                    </div>
-                                                    <div className="col-4 bg-info d-flex align-items-center justify-content-center">
-                                                        <div className="text-center">
-                                                            <div className="text-lg mt-0">11&deg;</div>
-                                                            <p>La foret de bambou</p>
-                                                            <em className="fa fa-sun-o fa-2x"></em>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            {/* END widget */}
-
-                                            <Button color="danger" className="btn-labeled" bsSize="large" onClick={() => { this.handleClick() }}>
-                                                <span className="btn-label"><i className="fa fa-trash"></i></span> Supprimer l'espèce
-                                            </Button>
+                                            {this.state.selectedEnclosure ? enclosureCard : null}
 
                                         </fieldset>
                                     </div>
@@ -552,10 +630,10 @@ class SpecieScreen extends React.Component {
                                 <legend> Gestion des individus </legend>
                                 <Link to={{
                                     pathname: "AnimalScreen",
-                                    state: { 
+                                    state: {
                                         specieId: this.state.specieId,
                                         specieName: this.state.specieName
-                                     }
+                                    }
                                 }}>
                                     <Button color="success" className="btn-labeled" bsSize="large" style={{ marginRight: 20 }}>
                                         <span className="btn-label"><i className="fa fa-check"></i></span> Ajouter un individu

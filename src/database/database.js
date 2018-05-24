@@ -16,6 +16,8 @@ export function addNewSpecieToDatabase(specieData) {
     let specieUID = specieData.specieName.toUpperCase().replace(/ /g, "") + (Math.floor(Date.now() / 1000))
     let reference = (userData.zooName + '/speciesData/' + specieUID);
 
+    console.log(specieData)
+
     if (specieData.specieProfilePicture === '') {
         specieData.specieProfilePicture = 'http://thedroideffect.com/wp-content/themes/thedroideffect/images/missing-image-640x360.png'
     }
@@ -30,13 +32,90 @@ export function addNewSpecieToDatabase(specieData) {
         specieOrder: specieData.specieOrder,
         specieFamilly: specieData.specieFamilly,
         specieIUCNClassification: specieData.specieIUCNClassification,
+        specieThreat : specieData.specieThreat,
         specieDescription: specieData.specieDescription,
         specieGestation: specieData.specieGestation,
         specieWeight: specieData.specieWeight,
         specieLifeExpectancy: specieData.specieLifeExpectancy,
-        specieEnclosureId: specieData.specieEnclosureId,
-        specieEnclosurePhoto: specieData.specieEnclosurePhoto,
+        specieEnclosure: specieData.specieEnclosure,
         specieFood: specieData.specieFood,
+        specieProfilePicture: specieData.specieProfilePicture,
+        speciePhotos: specieData.speciePhotos,
+        specieCreatedBy: userData.userId,
+        specieCreationDate: Date(),
+        dataType: 'specie',
+        zooName: userData.zooName,
+    })
+
+        // ********************
+        // Ecriture du log
+        // ********************
+
+        //  .then(function () {
+        //      firebase.firestore()
+        //          .collection(userData.zooName + '-log')
+        //          .doc("log-" + Date.now())
+        //          .set({
+        //              action: "create",
+        //              dataType: 'specie',
+        //              elementId: specieData.SpecieId,
+        //              elementName: specieData.SpecieName,
+        //              actionMadeById: userData.userId,
+        //              actionMadeByName: userData.firstname,
+        //              actionDate: Date(),
+        //              actionTimestamp: Date.now(),
+        //              zooName: userData.zooName
+        //          })
+        //  })
+        .catch(function (error) {
+            console.error("Error writing document: ", error);
+        }).then(function () {
+            swal({
+                title: "Good job!",
+                text: "L'espèce " + specieData.specieName + " a été ajoutée à votre Zoo",
+                type: "success",
+                showCancelButton: false
+            }, function () {
+                // Redirect the user
+                window.location.href = nav.akongoURL + 'speciesList';
+            })
+        })
+        .catch(function (error) {
+            console.error("Error writing document: ", error);
+        });
+
+
+}
+
+export function editSpecieInDatabase(specieData) {
+
+    // ********************
+    // Ajout dans firebase 
+    // ********************
+
+    let reference = (userData.zooName + '/speciesData/' + specieData.specieId);
+
+    if (specieData.specieProfilePicture === '') {
+        specieData.specieProfilePicture = 'http://thedroideffect.com/wp-content/themes/thedroideffect/images/missing-image-640x360.png'
+    }
+
+    firebase.database().ref(reference).set({
+        dataVersion: 1,
+        specieId: specieData.specieId,
+        specieName: specieData.specieName,
+        specieLatinName: specieData.specieLatinName,
+        specieEnglishName: specieData.specieEnglishName,
+        specieClass: specieData.specieClass,
+        specieOrder: specieData.specieOrder,
+        specieFamilly: specieData.specieFamilly,
+        specieThreat : specieData.specieThreat,
+        specieIUCNClassification: specieData.specieIUCNClassification,
+        specieDescription: specieData.specieDescription,
+        specieGestation: specieData.specieGestation,
+        specieWeight: specieData.specieWeight,
+        specieLifeExpectancy: specieData.specieLifeExpectancy,
+        specieFood: specieData.specieFood,
+        specieEnclosure: specieData.specieEnclosure,
         specieProfilePicture: specieData.specieProfilePicture,
         speciePhotos: specieData.speciePhotos,
         specieCreatedBy: userData.userId,
@@ -124,7 +203,7 @@ export function saveDonationSetupToDatabase(donationData) {
 }
 
 export function addNewEnclosureToDatabase(enclosureData) {
-
+           
     // ********************
     // Ajout dans firebase 
     // ********************
@@ -142,7 +221,9 @@ export function addNewEnclosureToDatabase(enclosureData) {
         enclosureName: enclosureData.enclosureName,
         enclosureSpeciesList: enclosureData.enclosureSpeciesList,
         enclosureDescription: enclosureData.enclosureDescription,
-        enclosurePhotoProfile: enclosureData.enclosurePhotoProfile,
+        enclosureProfilePicture: enclosureData.enclosureProfilePicture,
+        enclosureWishListStatus: enclosureData.enclosureWishListStatus,
+        enclosureWishListURL: enclosureData.enclosureWishListStatus,
         enclosurePhotos: enclosureData.enclosurePhotos,
         enclosureCreatedBy: userData.userId,
         enclosureCreationDate: Date(),
@@ -167,40 +248,31 @@ export function addNewEnclosureToDatabase(enclosureData) {
         });
 }
 
-export function editSpecieInDatabase(specieData) {
+export function editEnclosureInDatabase(enclosureData) {
 
     // ********************
     // Ajout dans firebase 
     // ********************
 
-    let reference = (userData.zooName + '/speciesData/' + specieData.specieId);
+    let reference = (userData.zooName + '/enclosuresData/' + enclosureData.enclosureId);
 
-    if (specieData.specieProfilePicture === '') {
-        specieData.specieProfilePicture = 'http://thedroideffect.com/wp-content/themes/thedroideffect/images/missing-image-640x360.png'
+    if (enclosureData.enclosureProfilePicture === '') {
+        enclosureData.enclosureProfilePicture = 'http://thedroideffect.com/wp-content/themes/thedroideffect/images/missing-image-640x360.png'
     }
 
-    firebase.database().ref(reference).set({
+    firebase.database().ref(reference).update({
         dataVersion: 1,
-        specieId: specieData.specieId,
-        specieName: specieData.specieName,
-        specieLatinName: specieData.specieLatinName,
-        specieEnglishName: specieData.specieEnglishName,
-        specieClass: specieData.specieClass,
-        specieOrder: specieData.specieOrder,
-        specieFamilly: specieData.specieFamilly,
-        specieIUCNClassification: specieData.specieIUCNClassification,
-        specieDescription: specieData.specieDescription,
-        specieGestation: specieData.specieGestation,
-        specieWeight: specieData.specieWeight,
-        specieLifeExpectancy: specieData.specieLifeExpectancy,
-        specieFood: specieData.specieFood,
-        specieEnclosureId: specieData.specieEnclosureId,
-        specieEnclosurePhoto: specieData.specieEnclosurePhoto,
-        specieProfilePicture: specieData.specieProfilePicture,
-        speciePhotos: specieData.speciePhotos,
-        specieCreatedBy: userData.userId,
-        specieCreationDate: Date(),
-        dataType: 'specie',
+        enclosureId: enclosureData.enclosureId,
+        enclosureName: enclosureData.enclosureName,
+        enclosureSpeciesList: enclosureData.enclosureSpeciesList,
+        enclosureDescription: enclosureData.enclosureDescription,
+        enclosureProfilePicture: enclosureData.enclosureProfilePicture,
+        enclosureWishListStatus: enclosureData.enclosureWishListStatus,
+        enclosureWishListURL: enclosureData.enclosureWishListStatus,
+        enclosurePhotos: enclosureData.enclosurePhotos,
+        enclosureCreatedBy: userData.userId,
+        enclosureCreationDate: Date(),
+        dataType: 'enclosure',
         zooName: userData.zooName,
     })
 
@@ -214,9 +286,9 @@ export function editSpecieInDatabase(specieData) {
         //          .doc("log-" + Date.now())
         //          .set({
         //              action: "create",
-        //              dataType: 'specie',
-        //              elementId: specieData.SpecieId,
-        //              elementName: specieData.SpecieName,
+        //              dataType: 'enclosure',
+        //              elementId: enclosureData.enclosureId,
+        //              elementName: enclosureData.enclosureName,
         //              actionMadeById: userData.userId,
         //              actionMadeByName: userData.firstname,
         //              actionDate: Date(),
@@ -229,12 +301,12 @@ export function editSpecieInDatabase(specieData) {
         }).then(function () {
             swal({
                 title: "Good job!",
-                text: "L'espèce " + specieData.specieName + " a été ajoutée à votre Zoo",
+                text: "L'espèce " + enclosureData.enclosureName + " a été ajoutée à votre Zoo",
                 type: "success",
                 showCancelButton: false
             }, function () {
                 // Redirect the user
-                window.location.href = nav.akongoURL + 'speciesList';
+                window.location.href = nav.akongoURL + 'enclosuresList';
             })
         })
         .catch(function (error) {
@@ -464,7 +536,6 @@ export function addNewEventToDatabase(eventData) {
 
 
 }
-
 
 export function addNewServiceToDatabase(serviceData) {
 

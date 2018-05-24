@@ -1,30 +1,32 @@
-import React from 'react';
-import { Grid, Row, Col, Panel, Button, FormControl } from 'react-bootstrap';
+import React, { Component } from 'react'
+import Select from 'react-select'
 
+const options = [
+    { value: 'LC', label: 'Préoccupation mineure (LC)' },
+    { value: 'NT', label: 'Espèce quasi menacée (NT)' },
+    { value: 'VU', label: 'Espèce vulnérable (VU)' },
+    { value: 'EN', label: 'Espèce en danger (EN)' },
+    { value: 'CR', label: "En danger critique d'extinction (CR)" },
+    { value: 'EW', label: "Éteint à l'état sauvage (EW)" },
+    { value: 'EX', label: 'Éteint (EX)' },
+    { value: 'DD', label: 'Données insuffisantes (DD)' },
+    { value: 'NE', label: 'Non-Évalué (NE)' },
+  ]
 
 class IUCNSelector extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            value: this.props.value
+            options: options
         }
+    }
+    handleChange(){
+        console.log('je change')
     }
     render() {
         return (
             <div>
-                <label htmlFor="userName">{this.props.name}</label>
-                <FormControl componentClass="select" defaultValue={this.props.value} required="required" className="form-control">
-                    <option></option>
-                    <option>Préoccupation mineure (LC)</option>
-                    <option>Espèce quasi menacée (NT)</option>
-                    <option>Espèce vulnérable (VU)</option>
-                    <option>Espèce en danger (EN)</option>
-                    <option>En danger critique d'extinction (CR)</option>
-                    <option>Éteint à l'état sauvage (EW)</option>
-                    <option>Éteint (EX)</option>
-                    <option>Données insuffisantes (DD)</option>
-                    <option>Non-Évalué (NE)</option>
-                </FormControl>
+                <Select options={this.state.options} onChange={this.handleChange()} />
             </div>
         )
     }
