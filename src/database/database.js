@@ -323,40 +323,36 @@ export function addNewAnimalToDatabase(animalData, specieId) {
     // ********************
 
     let list
+    let reference
 
-    console.log(specieId)
+    // firebase.database().ref(reference).once('value')
+    //     .then(function (snapshot) {
+    //         console.log('snapshot')
+    //         let data = snapshot.val()
+    //         if (data.specieAnimals != undefined) {
+    //             list = data.specieAnimals
+    //         } else {
+    //             list = []
+    //         }
 
-    let categorie = '/speciesData/'
-    let id = specieId
+    //     })
+    //     .then(function () {
+    //         console.log('vieux array')
 
-    let reference = userData.zooName + categorie + id
-    console.log(reference)
-
-    firebase.database().ref(reference).once('value')
-        .then(function (snapshot) {
-            console.log('snapshot')
-            let data = snapshot.val()
-            if (data.specieAnimals != undefined) {
-                list = data.specieAnimals
-            } else {
-                list = []
-            }
-
-        })
-        .then(function () {
-            console.log('vieux array')
-
-            console.log(list)
+    //         console.log(list)
 
             let animalUID = animalData.animalName.toUpperCase().replace(/ /g, "") + (Math.floor(Date.now() / 1000))
-            //let reference = (userData.zooName + '/speciesData/'+ eval(specieId) + '/speciesAnimal');
+        
+            //reference = (userData.zooName + '/speciesData/' + specieId);
 
 
             if (animalData.animalProfilePicture === '') {
                 animalData.animalProfilePicture = 'http://thedroideffect.com/wp-content/themes/thedroideffect/images/missing-image-640x360.png'
             }
 
-            let newAnimal = {
+            reference = userData.zooName + '/speciesData/' + specieId + '/specieAnimals/' + animalUID
+
+            firebase.database().ref(reference).set({
                 dataVersion: 1,
                 animalId: animalUID,
                 animalName: animalData.animalName,
@@ -374,25 +370,15 @@ export function addNewAnimalToDatabase(animalData, specieId) {
                 animalCreationDate: Date(),
                 dataType: 'animal',
                 zooName: userData.zooName,
-            }
-
-            list.push(newAnimal)
-
-            console.log('nouveau array')
-            console.log(list)
-            console.log(reference)
-
-            firebase.database().ref(reference).update({
-                specieAnimals: list
             })
-        })
+        //})
 
         .catch(function (error) {
             console.error("Error writing document: ", error);
         }).then(function () {
             swal({
                 title: "Good job!",
-                text: "L'espèce " + animalData.animalName + " a été ajoutée à votre Zoo",
+                text: "L'individu " + animalData.animalName + " a été ajoutée à votre Zoo",
                 type: "success",
                 showCancelButton: false
             }, function () {
@@ -403,8 +389,6 @@ export function addNewAnimalToDatabase(animalData, specieId) {
         .catch(function (error) {
             console.error("Error writing document: ", error);
         });
-
-
 }
 
 export function addNewAnimationToDatabase(animationData) {

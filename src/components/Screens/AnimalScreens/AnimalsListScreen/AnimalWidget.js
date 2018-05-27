@@ -8,6 +8,12 @@ class AnimalWidget extends React.Component {
         return (
             <div className="col-xl-4">
                 <div className="card">
+                <Link to={{
+                        pathname: "AnimalScreen",
+                        state: { animalId: this.props.animalData.animalId,
+                            specieId: this.props.animalData.specieId,
+                         }
+                    }}>
                     <div className="card-body text-center bg-center" style={{ opacity: 0.7, backgroundImage: `url(${this.props.animalData.animalPhotoEnclosure})` }}>
                         <div className="row">
                             <div className="col-12 text-white">
@@ -42,12 +48,13 @@ class AnimalWidget extends React.Component {
                             <span className="badge badge-primary float-right">{this.props.animalData.animalPhotos.length}</span>
                             <em className="fa fa-fw fa-image text-muted"></em> Photos dans la gallerie de l'individu</a>
                         <a className="list-group-item" href="">
-                            <span className="badge badge-primary float-right">{this.props.animalData.animalPopularity.length}</span>
+                            <span className="badge badge-primary float-right">{this.props.animalData.animalPopularity.popularity}</span>
                             <em className="fa fa-fw fa-image text-muted"></em> Popularité de l'animal</a>
                         <a className="list-group-item" href="">
-                            <span className="badge badge-primary float-right">{this.props.animalData.animalSponsors.length}</span>
+                            <span className="badge badge-primary float-right">{this.props.animalData.animalSponsors.sponsors}</span>
                             <em className="fa fa-fw fa-image text-muted"></em> Parrains de l'animal</a>
                     </div>
+                    </Link>
                 </div>
             </div>
         );

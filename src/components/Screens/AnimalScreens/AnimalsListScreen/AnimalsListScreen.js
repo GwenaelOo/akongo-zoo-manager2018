@@ -17,6 +17,7 @@ class AnimalListScreen extends React.Component {
         for (let animal in animals) {
 
             let animalData = {
+                specieId: animals[animal].specieId,
                 animalName: animals[animal].animalName,
                 animalProfilePicture: animals[animal].animalProfilePicture,
                 animalPhotoEnclosure : animals[animal].animalPhotoEnclosure,

@@ -36,8 +36,14 @@ class AnimalScreen extends React.Component {
             animalName: '',
             animalAge: '',
             animalSex: '',
-            animalPopularity : [],
-            animalSponsors : [],
+            animalPopularity: [{
+                popularity: 0,
+                popularityData: {}
+            }],
+            animalSponsors: [{
+                animalSponsors: 0,
+                animalSponsorsData: {}
+            }],
             animalBiography: '',
             animalSpecieName: this.props.location.state.specieName,
             animalPhotoEnclosure: 'https://www.cmsabirmingham.org/stuff/2017/01/default-placeholder.png',
@@ -168,12 +174,12 @@ class AnimalScreen extends React.Component {
         //database.updateFoodDataBase(animalData.animalFood);
     }
 
-    readAnimalFromFirebase(animalId) {
+    readAnimalFromFirebase(animalId, specieId) {
         //let userData = JSON.parse(localStorage.getItem('user'))
 
         let self = this
 
-        let reference = (userData.zooName + '/animalsData/' + animalId);
+        let reference = (userData.zooName + '/speciesData/' + specieId + '/specieAnimals/' + animalId);
 
         return firebase.database().ref(reference).once('value')
             .then(function (snapshot) {
@@ -189,12 +195,14 @@ class AnimalScreen extends React.Component {
                 // })
 
                 self.setState({
-                    dataVersion: data.dataVersion,
+                    dataVersion: 1,
                     animalId: data.animalId,
                     animalName: data.animalName,
                     animalAge: data.animalAge,
                     animalSex: data.animalSex,
                     animalBiography: data.animalBiography,
+                    animalPopularity : data.animalPopularity,
+                    animalSponsors: data.animalSponsors,
                     animalSpecieName: data.animalSpecieName,
                     animalProfilePicture: data.animalProfilePicture,
                     animalPhotos: data.animalPhotos,
@@ -252,9 +260,9 @@ class AnimalScreen extends React.Component {
     // }
 
     initPage() {
-        // if ( this.props.location.state != undefined) {
-        //     this.readSpecieFromFirebase(this.props.location.state.animalId);
-        // }
+        if ( this.props.location.state.animalId != undefined) {
+            this.readAnimalFromFirebase(this.props.location.state.animalId, this.props.location.state.specieId);
+        }
     }
 
 
