@@ -10,7 +10,7 @@ import DropzonePhoto from '../../../customComponents/Dropzone/DropzonePhoto';
 import swal from 'sweetalert'
 import { Typeahead } from 'react-bootstrap-typeahead';
 import firebase from 'firebase';
-import { addNewAnimationToDatabase } from '../../../../database/database'
+import { addNewAnimationToDatabase, editAnimationInDatabase, deleteAnimationInDatabase } from '../../../../database/database'
 
 // Create a single card with header text as attribute
 const CardWithHeader = props => (
@@ -22,6 +22,10 @@ const CardWithHeader = props => (
 
 const userId = "gwen"
 const animationData = {}
+const userData = {
+    zooName: 'AkongoFakeZoo',
+    userId: 'Gwen'
+}
 
 class AnimationScreen extends React.Component {
     constructor(props) {
@@ -109,7 +113,7 @@ class AnimationScreen extends React.Component {
             closeOnConfirm: false
         },
             function () {
-                // database.deleteAnimationFromDatabase(animationData)
+                deleteAnimationInDatabase(animationData)
             });
     }
 
@@ -125,89 +129,38 @@ class AnimationScreen extends React.Component {
         }
 
         if (this.state.EditMode === true) {
-            //database.editNewanimationToDatabase2(animationData);
+            editAnimationInDatabase(animationData)
         }
         else {
             addNewAnimationToDatabase(animationData);
         }
     }
 
-    // readanimationFromFirebase(animationId) {
-    //     let userData = JSON.parse(localStorage.getItem('user'))
-    //     var self = this
+    readAnimationFromFirebase(animationId) {
+        //let userData = JSON.parse(localStorage.getItem('user'))
+        var self = this
 
-    //     let reference = (userData.zooName + '/animationData/' + animationData.animationId);
+        let reference = (userData.zooName + '/animationData/' + animationData.animationId);
 
-    //     return firebase.database().ref('/users/' + userId).once('value').then(function (snapshot) {
-    //         let data = snapshot.data()
+        return firebase.database().ref('/users/' + userId).once('value').then(function (snapshot) {
+            let data = snapshot.data()
 
+            self.setState({
+                dataVersion: data.dataVersion,
+                animationId: data.animationId,
+                animationProfilePicture: data.animationProfilePicture,
+                animationPhotos: data.animationPhotos,
+                animationDescription: data.animationDescription,
+                EditMode: true,
+            });
+        })
 
-    //         self.setState({
-    //             dataVersion: data.dataVersion,
-    //             animationId: data.animationId,
-    //             animationProfilePicture: data.animationProfilePicture,
-    //             animationPhotos: data.animationPhotos,
-    //             animationDescription: data.animationDescription,
-    //             EditMode: true,
-    //         });
-    //     })
-
-    // }
-
-    // getLogLenght(){
-    //     let userData = JSON.parse(localStorage.getItem('user'))
-    //     var self = this
-    //     let collection = (userData.zooName + '-log')
-    //     firebase.firestore().collection(collection).get().then(function (querySnapshot) {
-    //         let logLenght = []
-    //         querySnapshot.forEach(function (doc) {
-    //             logLenght.push(doc.data())
-    //         });
-
-    //         let logId = logLenght.length;
-    //         console.log(logId)
-    //         self.setState({
-    //             logId: logId
-    //         });
-
-    //     })
-    // }
-
-    // initFoodList() {
-    //     let userData = JSON.parse(localStorage.getItem('user'))
-    //     // Fonction magique que je ne comprend pas 
-    //     var self = this;
-    //     // Selection de la référence de la base de donnée
-
-    //     let foodList = []
-
-    //     var query = firebase.database().ref(userData.zooName + "/Lists/FoodList").orderByKey();
-    //     query.once("value")
-    //         .then(function (snapshot) {
-    //             snapshot.forEach(function (childSnapshot) {
-    //                 var childData = childSnapshot.val();
-    //                 foodList.push(childData);
-
-    //             });
-    //         }).then(function (snapshot) {
-
-    //         self.setState({
-    //             zooFoodList: foodList,
-
-    //         });
-    //     }, function (error) {
-    //         // The Promise was rejected.
-    //         console.error(error);
-    //     });
-    // }
-
+    }
 
     componentWillMount() {
-        //this.getLogLenght();
-        //this.initFoodList();
-        //     if (this.props.location.state.animationId !== null){
-        //     //this.readanimationFromFirebase(this.props.location.state.animationId);
-        //    } 
+            if (this.props.location.state.animationId !== null){
+            this.readAnimationFromFirebase(this.props.location.state.animationId);
+           } 
     }
 
     render() {

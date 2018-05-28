@@ -9,7 +9,7 @@ import DropzonePhoto from '../../../customComponents/Dropzone/DropzonePhoto';
 import swal from 'sweetalert'
 import { Typeahead } from 'react-bootstrap-typeahead';
 import firebase from 'firebase';
-import { addNewEnclosureToDatabase, editEnclosureInDatabase } from '../../../../database/database'
+import { addNewEnclosureToDatabase, editEnclosureInDatabase, deleteEnclosureInDatabase } from '../../../../database/database'
 import SpecieList from '../../SpecieScreens/SpeciesListScreen/SpeciesList/SpeciesList';
 
 // Create a single card with header text as attribute
@@ -110,7 +110,7 @@ class EnclosureScreen extends React.Component {
             closeOnConfirm: false
         },
             function () {
-                // database.deleteenclosureFromDatabase(enclosureData)
+               deleteEnclosureInDatabase(enclosureData)
             });
     }
 
@@ -189,8 +189,6 @@ class EnclosureScreen extends React.Component {
             this.readEnclosureFromFirebase(this.props.location.state.enclosureId);
             this.getSpeciesInThisEnclosure(this.props.location.state.enclosureId);
         }
-
-
     }
 
 
@@ -214,7 +212,7 @@ class EnclosureScreen extends React.Component {
         const innerCheckbox = <input type="checkbox" aria-label="..." />;
 
         const deleteButton = (
-            <Button color="danger" className="btn-labeled" bsSize="large" onClick={() => { this.handleClick() }}>
+            <Button color="danger" className="btn-labeled" bsSize="large" onClick={() => { this.handleDelete() }}>
                 <span className="btn-label"><i className="fa fa-trash"></i></span> Supprimer l'enclos
             </Button>
 

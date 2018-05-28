@@ -7,6 +7,8 @@ const userData = {
     userId: 'Gwen'
 }
 
+// Gestion des espèces /// 
+
 export function addNewSpecieToDatabase(specieData) {
 
     // ********************
@@ -32,7 +34,7 @@ export function addNewSpecieToDatabase(specieData) {
         specieOrder: specieData.specieOrder,
         specieFamilly: specieData.specieFamilly,
         specieIUCNClassification: specieData.specieIUCNClassification,
-        specieThreat : specieData.specieThreat,
+        specieThreat: specieData.specieThreat,
         specieDescription: specieData.specieDescription,
         specieGestation: specieData.specieGestation,
         specieWeight: specieData.specieWeight,
@@ -89,7 +91,7 @@ export function addNewSpecieToDatabase(specieData) {
 
 export function editSpecieInDatabase(specieData) {
 
-    
+
     let reference = (userData.zooName + '/speciesData/' + specieData.specieId);
     let specieAnimals
 
@@ -97,10 +99,10 @@ export function editSpecieInDatabase(specieData) {
         specieData.specieProfilePicture = 'http://thedroideffect.com/wp-content/themes/thedroideffect/images/missing-image-640x360.png'
     }
 
-    if (specieData.specieAnimals === undefined){
-         specieAnimals = []
+    if (specieData.specieAnimals === undefined) {
+        specieAnimals = []
     } else {
-         specieAnimals = specieData.specieAnimals
+        specieAnimals = specieData.specieAnimals
     }
 
     firebase.database().ref(reference).set({
@@ -112,7 +114,7 @@ export function editSpecieInDatabase(specieData) {
         specieClass: specieData.specieClass,
         specieOrder: specieData.specieOrder,
         specieFamilly: specieData.specieFamilly,
-        specieThreat : specieData.specieThreat,
+        specieThreat: specieData.specieThreat,
         specieAnimals: specieAnimals,
         specieIUCNClassification: specieData.specieIUCNClassification,
         specieDescription: specieData.specieDescription,
@@ -171,27 +173,29 @@ export function editSpecieInDatabase(specieData) {
 
 export function deleteSpecieFromDatabase(specieData) {
 
-   let reference = userData.zooName + '/speciesData/' + specieData.specieId 
+    let reference = userData.zooName + '/speciesData/' + specieData.specieId
 
-   firebase.database().ref(reference).remove()
-       .catch(function (error) {
-           console.error("Error writing document: ", error);
-       }).then(function () {
-           swal({
-               title: "Good job!",
-               text: "L'individu " + specieData.specieName + " a été correctement supprimé à votre Zoo",
-               type: "success",
-               showCancelButton: false
-           }, function () {
-               // Redirect the user
-               window.location.href = nav.akongoURL + 'speciesList';
-           })
-       })
-       .catch(function (error) {
-           console.error("Error writing document: ", error);
-       });
+    firebase.database().ref(reference).remove()
+        .catch(function (error) {
+            console.error("Error writing document: ", error);
+        }).then(function () {
+            swal({
+                title: "Good job!",
+                text: "L'individu " + specieData.specieName + " a été correctement supprimé à votre Zoo",
+                type: "success",
+                showCancelButton: false
+            }, function () {
+                // Redirect the user
+                window.location.href = nav.akongoURL + 'speciesList';
+            })
+        })
+        .catch(function (error) {
+            console.error("Error writing document: ", error);
+        });
 
 }
+
+/// Gestion des animaux ///
 
 export function addNewAnimalToDatabase(animalData, specieId) {
 
@@ -218,38 +222,38 @@ export function addNewAnimalToDatabase(animalData, specieId) {
 
     //         console.log(list)
 
-            let animalUID = animalData.animalName.toUpperCase().replace(/ /g, "") + (Math.floor(Date.now() / 1000))
-        
-            //reference = (userData.zooName + '/speciesData/' + specieId);
+    let animalUID = animalData.animalName.toUpperCase().replace(/ /g, "") + (Math.floor(Date.now() / 1000))
+
+    //reference = (userData.zooName + '/speciesData/' + specieId);
 
 
-            if (animalData.animalProfilePicture === '') {
-                animalData.animalProfilePicture = 'http://thedroideffect.com/wp-content/themes/thedroideffect/images/missing-image-640x360.png'
-            }
+    if (animalData.animalProfilePicture === '') {
+        animalData.animalProfilePicture = 'http://thedroideffect.com/wp-content/themes/thedroideffect/images/missing-image-640x360.png'
+    }
 
-            reference = userData.zooName + '/speciesData/' + specieId + '/specieAnimals/' + animalUID
+    reference = userData.zooName + '/speciesData/' + specieId + '/specieAnimals/' + animalUID
 
-            console.log(reference)
+    console.log(reference)
 
-            firebase.database().ref(reference).set({
-                dataVersion: 1,
-                animalId: animalUID,
-                animalName: animalData.animalName,
-                animalAge: animalData.animalAge,
-                animalSex: animalData.animalSex,
-                animalBiography: animalData.animalBiography,
-                animalSpecieName: animalData.animalSpecieName,
-                animalProfilePicture: animalData.animalProfilePicture,
-                animalPhotoEnclosure: animalData.animalPhotoEnclosure,
-                animalPhotos: animalData.animalPhotos,
-                animalSponsors: animalData.animalSponsors,
-                animalPopularity: animalData.animalPopularity,
-                specieId: specieId,
-                animalCreatedBy: userData.userId,
-                animalCreationDate: Date(),
-                dataType: 'animal',
-                zooName: userData.zooName,
-            })
+    firebase.database().ref(reference).set({
+        dataVersion: 1,
+        animalId: animalUID,
+        animalName: animalData.animalName,
+        animalAge: animalData.animalAge,
+        animalSex: animalData.animalSex,
+        animalBiography: animalData.animalBiography,
+        animalSpecieName: animalData.animalSpecieName,
+        animalProfilePicture: animalData.animalProfilePicture,
+        animalPhotoEnclosure: animalData.animalPhotoEnclosure,
+        animalPhotos: animalData.animalPhotos,
+        animalSponsors: animalData.animalSponsors,
+        animalPopularity: animalData.animalPopularity,
+        specieId: specieId,
+        animalCreatedBy: userData.userId,
+        animalCreationDate: Date(),
+        dataType: 'animal',
+        zooName: userData.zooName,
+    })
         //})
 
         .catch(function (error) {
@@ -282,7 +286,7 @@ export function editAnimaleInDatabase(animalData) {
 
     console.log(reference)
 
-  
+
     firebase.database().ref(reference).set({
         dataVersion: 1,
         animalId: animalData.animalId,
@@ -326,7 +330,7 @@ export function editAnimaleInDatabase(animalData) {
 export function deleteAnimalFromDatabase(animalData) {
 
 
-     // ********************
+    // ********************
     // Ajout dans firebase 
     // ********************
 
@@ -336,7 +340,7 @@ export function deleteAnimalFromDatabase(animalData) {
 
     console.log(reference)
 
-  
+
     firebase.database().ref(reference).remove()
         .catch(function (error) {
             console.error("Error writing document: ", error);
@@ -357,46 +361,10 @@ export function deleteAnimalFromDatabase(animalData) {
 
 }
 
-export function saveDonationSetupToDatabase(donationData) {
-
-    // ********************
-    // Ajout dans firebase 
-    // ********************
-
-    let reference = (userData.zooName + '/donationData/');
-
-    firebase.database().ref(reference).set({
-        dataVersion: 1,
-        donationURL: donationData.donationURL,
-        donationCreatedBy: userData.userId,
-        donationCreationDate: Date(),
-        dataType: 'donation',
-        zooName: userData.zooName,
-    })
-
-
-        .catch(function (error) {
-            console.error("Error writing document: ", error);
-        }).then(function () {
-            swal({
-                title: "Good job!",
-                text: "La configuration du don a été correctement réalisée",
-                type: "success",
-                showCancelButton: false
-            }, function () {
-                // Redirect the user
-                window.location.href = nav.akongoURL + 'speciesList';
-            })
-        })
-        .catch(function (error) {
-            console.error("Error writing document: ", error);
-        });
-
-
-}
+/// Gestion des enclos ///
 
 export function addNewEnclosureToDatabase(enclosureData) {
-           
+
     // ********************
     // Ajout dans firebase 
     // ********************
@@ -509,12 +477,74 @@ export function editEnclosureInDatabase(enclosureData) {
 
 }
 
-export function addNewAnimationToDatabase(animationData) {
+export function deleteEnclosureInDatabase(enclosureData) {
+
+
+    let reference = (userData.zooName + '/enclosuresData/' + enclosureData.enclosureId);
+
+    firebase.database().ref(reference).remove()
+        .catch(function (error) {
+            console.error("Error writing document: ", error);
+        }).then(function () {
+            swal({
+                title: "Good job!",
+                text: "L'enclos " + enclosureData.enclosureName + " a été correctement supprimé à votre Zoo",
+                type: "success",
+                showCancelButton: false
+            }, function () {
+                // Redirect the user
+                window.location.href = nav.akongoURL + 'EnclosureList';
+            })
+        })
+        .catch(function (error) {
+            console.error("Error writing document: ", error);
+        });
+
+}
+
+/// Gestion des dons ///
+
+export function saveDonationSetupToDatabase(donationData) {
 
     // ********************
     // Ajout dans firebase 
     // ********************
 
+    let reference = (userData.zooName + '/donationData/');
+
+    firebase.database().ref(reference).set({
+        dataVersion: 1,
+        donationURL: donationData.donationURL,
+        donationCreatedBy: userData.userId,
+        donationCreationDate: Date(),
+        dataType: 'donation',
+        zooName: userData.zooName,
+    })
+
+
+        .catch(function (error) {
+            console.error("Error writing document: ", error);
+        }).then(function () {
+            swal({
+                title: "Good job!",
+                text: "La configuration du don a été correctement réalisée",
+                type: "success",
+                showCancelButton: false
+            }, function () {
+                // Redirect the user
+                window.location.href = nav.akongoURL + 'speciesList';
+            })
+        })
+        .catch(function (error) {
+            console.error("Error writing document: ", error);
+        });
+
+
+}
+
+/// Gestion des animations ///
+
+export function addNewAnimationToDatabase(animationData) {
 
     let animationUID = animationData.animationName.toUpperCase().replace(/ /g, "") + (Math.floor(Date.now() / 1000))
     let reference = (userData.zooName + '/animationsData/' + animationUID);
@@ -571,6 +601,77 @@ export function addNewAnimationToDatabase(animationData) {
             console.error("Error writing document: ", error);
         });
 }
+
+export function editAnimationInDatabase(animationData) {
+
+    // ********************
+    // Ajout dans firebase 
+    // ********************
+
+    let reference = (userData.zooName + '/animationsData/' + animationData.animationId);
+
+    if (animationData.animationProfilePicture === '') {
+        animationData.animationProfilePicture = 'http://thedroideffect.com/wp-content/themes/thedroideffect/images/missing-image-640x360.png'
+    }
+
+    firebase.database().ref(reference).set({
+        dataVersion: 1,
+        animationId: animationData.animationId,
+        animationProfilePicture: animationData.animationProfilePicture,
+        animationDescription: animationData.animationDescription,
+        animationPhotos: animationData.animationPhotos,
+        animationName: animationData.animationName,
+        dataType: 'animation',
+        zooName: userData.zooName,
+    })
+
+        .catch(function (error) {
+            console.error("Error writing document: ", error);
+        }).then(function () {
+            swal({
+                title: "Good job!",
+                text: "L'espèce " + animationData.animationName + " a été correctement editée",
+                type: "success",
+                showCancelButton: false
+            }, function () {
+                // Redirect the user
+                window.location.href = nav.akongoURL + 'animationsList';
+            })
+        })
+        .catch(function (error) {
+            console.error("Error writing document: ", error);
+        });
+}
+
+export function deleteAnimationInDatabase(animationData) {
+
+    // ********************
+    // Ajout dans firebase 
+    // ********************
+
+    let reference = (userData.zooName + '/animationsData/' + animationData.animationId);
+
+    firebase.database().ref(reference).delete()
+
+        .catch(function (error) {
+            console.error("Error writing document: ", error);
+        }).then(function () {
+            swal({
+                title: "Good job!",
+                text: "L'espèce " + animationData.animationName + " a été correctement supprimée",
+                type: "success",
+                showCancelButton: false
+            }, function () {
+                // Redirect the user
+                window.location.href = nav.akongoURL + 'animationsList';
+            })
+        })
+        .catch(function (error) {
+            console.error("Error writing document: ", error);
+        });
+}
+
+/// Gestion des animations ///
 
 export function addNewEventToDatabase(eventData) {
 
@@ -639,6 +740,77 @@ export function addNewEventToDatabase(eventData) {
 
 }
 
+export function editEventInDatabase(eventData) {
+
+    let reference = (userData.zooName + '/eventsData/' + eventData.eventId);
+
+    if (eventData.eventProfilePicture === '') {
+        eventData.eventProfilePicture = 'http://thedroideffect.com/wp-content/themes/thedroideffect/images/missing-image-640x360.png'
+    }
+
+    firebase.database().ref(reference).set({
+        dataVersion: 1,
+        eventId: eventData.eventId,
+        eventName: eventData.eventName,
+        eventDescription: eventData.eventDescription,
+        eventProfilePicture: eventData.eventProfilePicture,
+        eventPhotos: eventData.eventPhotos,
+        dataType: 'event',
+        zooName: userData.zooName,
+    })
+
+        .catch(function (error) {
+            console.error("Error writing document: ", error);
+        }).then(function () {
+            swal({
+                title: "Good job!",
+                text: "L'évenement " + eventData.eventName + " a été correctement éditée",
+                type: "success",
+                showCancelButton: false
+            }, function () {
+                // Redirect the user
+                window.location.href = nav.akongoURL + 'EventsList';
+            })
+        })
+        .catch(function (error) {
+            console.error("Error writing document: ", error);
+        });
+
+
+}
+
+export function deleteEventInDatabase(eventData) {
+
+    let reference = (userData.zooName + '/eventsData/' + eventData.eventId);
+
+    if (eventData.eventProfilePicture === '') {
+        eventData.eventProfilePicture = 'http://thedroideffect.com/wp-content/themes/thedroideffect/images/missing-image-640x360.png'
+    }
+
+    firebase.database().ref(reference).delete()
+
+        .catch(function (error) {
+            console.error("Error writing document: ", error);
+        }).then(function () {
+            swal({
+                title: "Good job!",
+                text: "L'évenement " + eventData.eventName + " a été correctement supprimée",
+                type: "success",
+                showCancelButton: false
+            }, function () {
+                // Redirect the user
+                window.location.href = nav.akongoURL + 'EventsList';
+            })
+        })
+        .catch(function (error) {
+            console.error("Error writing document: ", error);
+        });
+
+
+}
+
+/// Gestion des services ///
+
 export function addNewServiceToDatabase(serviceData) {
 
     // ********************
@@ -704,4 +876,76 @@ export function addNewServiceToDatabase(serviceData) {
 
 
 }
+
+export function editServiceInDatabase(serviceData) {
+
+    let reference = (userData.zooName + '/servicesData/' + serviceData.serviceId);
+
+    if (serviceData.serviceProfilePicture === '') {
+        serviceData.serviceProfilePicture = 'http://thedroideffect.com/wp-content/themes/thedroideffect/images/missing-image-640x360.png'
+    }
+
+    firebase.database().ref(reference).set({
+        dataVersion: 1,
+        serviceId: serviceData.serviceId,
+        serviceProfilePicture: serviceData.serviceProfilePicture,
+        serviceDescription: serviceData.serviceDescription,
+        servicePhotos: serviceData.servicePhotos,
+        serviceName: serviceData.serviceName,
+        dataType: 'service',
+        zooName: userData.zooName,
+    })
+
+        .catch(function (error) {
+            console.error("Error writing document: ", error);
+        }).then(function () {
+            swal({
+                title: "Good job!",
+                text: "Le service " + serviceData.serviceName + " a été correctement édité",
+                type: "success",
+                showCancelButton: false
+            }, function () {
+                // Redirect the user
+                window.location.href = nav.akongoURL + 'servicesList';
+            })
+        })
+        .catch(function (error) {
+            console.error("Error writing document: ", error);
+        });
+
+
+}
+
+export function deleteServiceInDatabase(serviceData) {
+
+
+    let reference = (userData.zooName + '/servicesData/' + serviceData.serviceId);
+
+    if (serviceData.serviceProfilePicture === '') {
+        serviceData.serviceProfilePicture = 'http://thedroideffect.com/wp-content/themes/thedroideffect/images/missing-image-640x360.png'
+    }
+
+    firebase.database().ref(reference).delete()
+
+        .catch(function (error) {
+            console.error("Error writing document: ", error);
+        }).then(function () {
+            swal({
+                title: "Good job!",
+                text: "Le service " + serviceData.serviceName + " a été correctement supprimé",
+                type: "success",
+                showCancelButton: false
+            }, function () {
+                // Redirect the user
+                window.location.href = nav.akongoURL + 'servicesList';
+            })
+        })
+        .catch(function (error) {
+            console.error("Error writing document: ", error);
+        });
+
+
+}
+
+
 
