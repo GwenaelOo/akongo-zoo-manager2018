@@ -10,7 +10,7 @@ import DropzonePhoto from '../../../customComponents/Dropzone/DropzonePhoto';
 import swal from 'sweetalert'
 import { Typeahead } from 'react-bootstrap-typeahead';
 import firebase from 'firebase';
-import { addNewAnimalToDatabase } from '../../../../database/database'
+import { addNewAnimalToDatabase, editAnimaleInDatabase, deleteAnimalFromDatabase } from '../../../../database/database'
 
 // Create a single card with header text as attribute
 const CardWithHeader = props => (
@@ -129,8 +129,8 @@ class AnimalScreen extends React.Component {
 
         let animalData = {
             animalId: this.state.animalId,
+            specieId: this.state.specieId,
             animalName: this.state.animalName,
-            log: this.state.logId
         }
 
         swal({
@@ -143,7 +143,7 @@ class AnimalScreen extends React.Component {
             closeOnConfirm: false
         },
             function () {
-                // database.deleteanimalFromDatabase(animalData)
+                deleteAnimalFromDatabase(animalData)
             });
     }
 
@@ -160,18 +160,16 @@ class AnimalScreen extends React.Component {
             animalSpecieName: this.state.animalSpecieName,
             animalProfilePicture: this.state.animalProfilePicture,
             animalPhotos: this.state.animalPhotos,
+            specieId: this.state.specieId,
             log: this.state.logId + 1
         }
 
         if (this.state.EditMode === true) {
-            //database.editNewanimalToDatabase2(animalData);
+            editAnimaleInDatabase(animalData);
         }
         else {
-
             addNewAnimalToDatabase(animalData, this.state.specieId);
         }
-
-        //database.updateFoodDataBase(animalData.animalFood);
     }
 
     readAnimalFromFirebase(animalId, specieId) {
@@ -185,15 +183,6 @@ class AnimalScreen extends React.Component {
             .then(function (snapshot) {
                 let data = snapshot.val()
 
-                // let foodList = []
-                // data.animalFood.forEach(function (foodItem) {
-                //     if (foodItem.customOption === true) {
-                //         foodList.push(foodItem.animalFood);
-                //     } else {
-                //         foodList.push(foodItem);
-                //     }
-                // })
-
                 self.setState({
                     dataVersion: 1,
                     animalId: data.animalId,
@@ -206,58 +195,12 @@ class AnimalScreen extends React.Component {
                     animalSpecieName: data.animalSpecieName,
                     animalProfilePicture: data.animalProfilePicture,
                     animalPhotos: data.animalPhotos,
+                    specieId: data.specieId,
                     EditMode: true,
                 });
             })
 
     }
-
-    // getLogLenght(){
-    //     let userData = JSON.parse(localStorage.getItem('user'))
-    //     var self = this
-    //     let collection = (userData.zooName + '-log')
-    //     firebase.firestore().collection(collection).get().then(function (querySnapshot) {
-    //         let logLenght = []
-    //         querySnapshot.forEach(function (doc) {
-    //             logLenght.push(doc.data())
-    //         });
-
-    //         let logId = logLenght.length;
-    //         console.log(logId)
-    //         self.setState({
-    //             logId: logId
-    //         });
-
-    //     })
-    // }
-
-    // initFoodList() {
-    //     let userData = JSON.parse(localStorage.getItem('user'))
-    //     // Fonction magique que je ne comprend pas 
-    //     var self = this;
-    //     // Selection de la référence de la base de donnée
-
-    //     let foodList = []
-
-    //     var query = firebase.database().ref(userData.zooName + "/Lists/FoodList").orderByKey();
-    //     query.once("value")
-    //         .then(function (snapshot) {
-    //             snapshot.forEach(function (childSnapshot) {
-    //                 var childData = childSnapshot.val();
-    //                 foodList.push(childData);
-
-    //             });
-    //         }).then(function (snapshot) {
-
-    //         self.setState({
-    //             zooFoodList: foodList,
-
-    //         });
-    //     }, function (error) {
-    //         // The Promise was rejected.
-    //         console.error(error);
-    //     });
-    // }
 
     initPage() {
         if ( this.props.location.state.animalId != undefined) {
@@ -286,7 +229,7 @@ class AnimalScreen extends React.Component {
         const innerCheckbox = <input type="checkbox" aria-label="..." />;
 
         const deleteButton = (
-            <Button color="danger" className="btn-labeled" bsSize="large" onClick={() => { this.handleClick() }}>
+            <Button color="danger" className="btn-labeled" bsSize="large" onClick={() => { this.handleDelete() }}>
                 <span className="btn-label"><i className="fa fa-trash"></i></span> Supprimer l'espèce
             </Button>
 

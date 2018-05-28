@@ -89,14 +89,18 @@ export function addNewSpecieToDatabase(specieData) {
 
 export function editSpecieInDatabase(specieData) {
 
-    // ********************
-    // Ajout dans firebase 
-    // ********************
-
+    
     let reference = (userData.zooName + '/speciesData/' + specieData.specieId);
+    let specieAnimals
 
     if (specieData.specieProfilePicture === '') {
         specieData.specieProfilePicture = 'http://thedroideffect.com/wp-content/themes/thedroideffect/images/missing-image-640x360.png'
+    }
+
+    if (specieData.specieAnimals === undefined){
+         specieAnimals = []
+    } else {
+         specieAnimals = specieData.specieAnimals
     }
 
     firebase.database().ref(reference).set({
@@ -109,6 +113,7 @@ export function editSpecieInDatabase(specieData) {
         specieOrder: specieData.specieOrder,
         specieFamilly: specieData.specieFamilly,
         specieThreat : specieData.specieThreat,
+        specieAnimals: specieAnimals,
         specieIUCNClassification: specieData.specieIUCNClassification,
         specieDescription: specieData.specieDescription,
         specieGestation: specieData.specieGestation,
@@ -161,6 +166,194 @@ export function editSpecieInDatabase(specieData) {
             console.error("Error writing document: ", error);
         });
 
+
+}
+
+export function deleteSpecieFromDatabase(specieData) {
+
+   let reference = userData.zooName + '/speciesData/' + specieData.specieId 
+
+   firebase.database().ref(reference).remove()
+       .catch(function (error) {
+           console.error("Error writing document: ", error);
+       }).then(function () {
+           swal({
+               title: "Good job!",
+               text: "L'individu " + specieData.specieName + " a été correctement supprimé à votre Zoo",
+               type: "success",
+               showCancelButton: false
+           }, function () {
+               // Redirect the user
+               window.location.href = nav.akongoURL + 'speciesList';
+           })
+       })
+       .catch(function (error) {
+           console.error("Error writing document: ", error);
+       });
+
+}
+
+export function addNewAnimalToDatabase(animalData, specieId) {
+
+    // ********************
+    // Ajout dans firebase 
+    // ********************
+
+    let list
+    let reference
+
+    // firebase.database().ref(reference).once('value')
+    //     .then(function (snapshot) {
+    //         console.log('snapshot')
+    //         let data = snapshot.val()
+    //         if (data.specieAnimals != undefined) {
+    //             list = data.specieAnimals
+    //         } else {
+    //             list = []
+    //         }
+
+    //     })
+    //     .then(function () {
+    //         console.log('vieux array')
+
+    //         console.log(list)
+
+            let animalUID = animalData.animalName.toUpperCase().replace(/ /g, "") + (Math.floor(Date.now() / 1000))
+        
+            //reference = (userData.zooName + '/speciesData/' + specieId);
+
+
+            if (animalData.animalProfilePicture === '') {
+                animalData.animalProfilePicture = 'http://thedroideffect.com/wp-content/themes/thedroideffect/images/missing-image-640x360.png'
+            }
+
+            reference = userData.zooName + '/speciesData/' + specieId + '/specieAnimals/' + animalUID
+
+            console.log(reference)
+
+            firebase.database().ref(reference).set({
+                dataVersion: 1,
+                animalId: animalUID,
+                animalName: animalData.animalName,
+                animalAge: animalData.animalAge,
+                animalSex: animalData.animalSex,
+                animalBiography: animalData.animalBiography,
+                animalSpecieName: animalData.animalSpecieName,
+                animalProfilePicture: animalData.animalProfilePicture,
+                animalPhotoEnclosure: animalData.animalPhotoEnclosure,
+                animalPhotos: animalData.animalPhotos,
+                animalSponsors: animalData.animalSponsors,
+                animalPopularity: animalData.animalPopularity,
+                specieId: specieId,
+                animalCreatedBy: userData.userId,
+                animalCreationDate: Date(),
+                dataType: 'animal',
+                zooName: userData.zooName,
+            })
+        //})
+
+        .catch(function (error) {
+            console.error("Error writing document: ", error);
+        }).then(function () {
+            swal({
+                title: "Good job!",
+                text: "L'individu " + animalData.animalName + " a été ajoutée à votre Zoo",
+                type: "success",
+                showCancelButton: false
+            }, function () {
+                // Redirect the user
+                window.location.href = nav.akongoURL + 'animalsList';
+            })
+        })
+        .catch(function (error) {
+            console.error("Error writing document: ", error);
+        });
+}
+
+export function editAnimaleInDatabase(animalData) {
+
+    // ********************
+    // Ajout dans firebase 
+    // ********************
+
+    console.log(animalData)
+
+    let reference = userData.zooName + '/speciesData/' + animalData.specieId + '/specieAnimals/' + animalData.animalId
+
+    console.log(reference)
+
+  
+    firebase.database().ref(reference).set({
+        dataVersion: 1,
+        animalId: animalData.animalId,
+        animalName: animalData.animalName,
+        animalAge: animalData.animalAge,
+        animalSex: animalData.animalSex,
+        animalBiography: animalData.animalBiography,
+        animalSpecieName: animalData.animalSpecieName,
+        animalProfilePicture: animalData.animalProfilePicture,
+        animalPhotoEnclosure: animalData.animalPhotoEnclosure,
+        animalPhotos: animalData.animalPhotos,
+        animalSponsors: animalData.animalSponsors,
+        animalPopularity: animalData.animalPopularity,
+        specieId: animalData.specieId,
+        animalCreatedBy: userData.userId,
+        animalCreationDate: Date(),
+        dataType: 'animal',
+        zooName: userData.zooName,
+    })
+
+        .catch(function (error) {
+            console.error("Error writing document: ", error);
+        }).then(function () {
+            swal({
+                title: "Good job!",
+                text: "L'espèce " + animalData.animalName + " a été ajoutée à votre Zoo",
+                type: "success",
+                showCancelButton: false
+            }, function () {
+                // Redirect the user
+                window.location.href = nav.akongoURL + 'speciesList';
+            })
+        })
+        .catch(function (error) {
+            console.error("Error writing document: ", error);
+        });
+
+
+}
+
+export function deleteAnimalFromDatabase(animalData) {
+
+
+     // ********************
+    // Ajout dans firebase 
+    // ********************
+
+    console.log(animalData)
+
+    let reference = userData.zooName + '/speciesData/' + animalData.specieId + '/specieAnimals/' + animalData.animalId
+
+    console.log(reference)
+
+  
+    firebase.database().ref(reference).remove()
+        .catch(function (error) {
+            console.error("Error writing document: ", error);
+        }).then(function () {
+            swal({
+                title: "Good job!",
+                text: "L'individu " + animalData.animalName + " a été correctement supprimé à votre Zoo",
+                type: "success",
+                showCancelButton: false
+            }, function () {
+                // Redirect the user
+                window.location.href = nav.akongoURL + 'speciesList';
+            })
+        })
+        .catch(function (error) {
+            console.error("Error writing document: ", error);
+        });
 
 }
 
@@ -314,81 +507,6 @@ export function editEnclosureInDatabase(enclosureData) {
         });
 
 
-}
-
-export function addNewAnimalToDatabase(animalData, specieId) {
-
-    // ********************
-    // Ajout dans firebase 
-    // ********************
-
-    let list
-    let reference
-
-    // firebase.database().ref(reference).once('value')
-    //     .then(function (snapshot) {
-    //         console.log('snapshot')
-    //         let data = snapshot.val()
-    //         if (data.specieAnimals != undefined) {
-    //             list = data.specieAnimals
-    //         } else {
-    //             list = []
-    //         }
-
-    //     })
-    //     .then(function () {
-    //         console.log('vieux array')
-
-    //         console.log(list)
-
-            let animalUID = animalData.animalName.toUpperCase().replace(/ /g, "") + (Math.floor(Date.now() / 1000))
-        
-            //reference = (userData.zooName + '/speciesData/' + specieId);
-
-
-            if (animalData.animalProfilePicture === '') {
-                animalData.animalProfilePicture = 'http://thedroideffect.com/wp-content/themes/thedroideffect/images/missing-image-640x360.png'
-            }
-
-            reference = userData.zooName + '/speciesData/' + specieId + '/specieAnimals/' + animalUID
-
-            firebase.database().ref(reference).set({
-                dataVersion: 1,
-                animalId: animalUID,
-                animalName: animalData.animalName,
-                animalAge: animalData.animalAge,
-                animalSex: animalData.animalSex,
-                animalBiography: animalData.animalBiography,
-                animalSpecieName: animalData.animalSpecieName,
-                animalProfilePicture: animalData.animalProfilePicture,
-                animalPhotoEnclosure: animalData.animalPhotoEnclosure,
-                animalPhotos: animalData.animalPhotos,
-                animalSponsors: animalData.animalSponsors,
-                animalPopularity: animalData.animalPopularity,
-                specieId: specieId,
-                animalCreatedBy: userData.userId,
-                animalCreationDate: Date(),
-                dataType: 'animal',
-                zooName: userData.zooName,
-            })
-        //})
-
-        .catch(function (error) {
-            console.error("Error writing document: ", error);
-        }).then(function () {
-            swal({
-                title: "Good job!",
-                text: "L'individu " + animalData.animalName + " a été ajoutée à votre Zoo",
-                type: "success",
-                showCancelButton: false
-            }, function () {
-                // Redirect the user
-                window.location.href = nav.akongoURL + 'animalsList';
-            })
-        })
-        .catch(function (error) {
-            console.error("Error writing document: ", error);
-        });
 }
 
 export function addNewAnimationToDatabase(animationData) {

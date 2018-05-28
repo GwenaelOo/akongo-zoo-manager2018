@@ -11,7 +11,7 @@ import DropzonePhoto from '../../../customComponents/Dropzone/DropzonePhoto';
 import swal from 'sweetalert'
 import { Typeahead } from 'react-bootstrap-typeahead';
 import firebase from 'firebase';
-import { addNewSpecieToDatabase, editSpecieInDatabase } from '../../../../database/database'
+import { addNewSpecieToDatabase, editSpecieInDatabase, deleteSpecieFromDatabase } from '../../../../database/database'
 import AnimalListScreen from '../../AnimalScreens/AnimalsListScreen/AnimalsListScreen';
 
 import Select from 'react-select'
@@ -67,8 +67,7 @@ class SpecieScreen extends React.Component {
             enclosureList: null,
             specieEnclosure: '',
             specieEnclosurePhoto: 'https://www.cmsabirmingham.org/stuff/2017/01/default-placeholder.png',
-            specieAnimals: [],
-
+           
             selectedEnclosure: null,
             IUCNList: options,
             logId: 0,
@@ -190,8 +189,8 @@ class SpecieScreen extends React.Component {
     handleDelete() {
 
         let specieData = {
-            SpecieId: this.state.SpecieId,
-            SpecieName: this.state.SpecieName,
+            specieId: this.state.SpecieId,
+            specieName: this.state.SpecieName,
             log: this.state.logId
         }
 
@@ -205,7 +204,7 @@ class SpecieScreen extends React.Component {
             closeOnConfirm: false
         },
             function () {
-                // database.deleteSpecieFromDatabase(specieData)
+                deleteSpecieFromDatabase(specieData)
             });
     }
 
@@ -378,7 +377,7 @@ class SpecieScreen extends React.Component {
         // Creation du bouton suppression
 
         const deleteButton = (
-            <Button color="danger" className="btn-labeled" bsSize="large" onClick={() => { this.handleClick() }}>
+            <Button color="danger" className="btn-labeled" bsSize="large" onClick={() => { this.handleDelete() }}>
                 <span className="btn-label"><i className="fa fa-trash"></i></span> Supprimer l'espèce
             </Button>
 
