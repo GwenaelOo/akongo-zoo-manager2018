@@ -12,8 +12,13 @@ import SpecieScreen from './components/Screens/SpecieScreens/SpecieScreen/Specie
 import SpecieListScreen from './components/Screens/SpecieScreens/SpeciesListScreen/SpeciesListScreen'
 
 import AnimationScreen from './components/Screens/AnimationsScreens/AnimationScreen/AnimationScreen'
+import AnimationsListScreen from './components/Screens/AnimationsScreens/AnimationsListScreen/AnimationsListScreen'
+
 import ServiceScreen from './components/Screens/ServicesScreens/ServiceScreen/ServiceScreen'
+import ServicesListScreen from './components/Screens/ServicesScreens/ServicesListSreen/ServicesListScreen'
+
 import EventScreen from './components/Screens/EventsScreens/EventScreen/EventScreen'
+import EventsListScreen from './components/Screens/EventsScreens/EventsListScreen/EventsListScreen'
 
 import AnimalScreen from './components/Screens/AnimalScreens/AnimalScreen/AnimalScreen'
 
@@ -174,8 +179,13 @@ const Routes = ({ location }) => {
                                 <Route path="/SpecieListScreen" component={SpecieListScreen} />
 
                                 <Route path="/AnimationScreen" component={AnimationScreen} />
+                                <Route path="/AnimationsListScreen" component={AnimationsListScreen} />
+
                                 <Route path="/EventScreen" component={EventScreen} />
+                                <Route path="/EventsListScreen" component={EventsListScreen} />
+
                                 <Route path="/ServiceScreen" component={ServiceScreen} />
+                                <Route path="/ServicesListScreen" component={ServicesListScreen} />
 
                                 <Route path="/AnimalScreen" component={AnimalScreen} />
 

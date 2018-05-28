@@ -1,5 +1,6 @@
 import React from 'react';
 import ContentWrapper from '../../../Layout/ContentWrapper';
+import { Router, Route, Link, History, withRouter } from 'react-router-dom';
 import { Panel, FormControl, FormGroup, InputGroup, DropdownButton, MenuItem } from 'react-bootstrap';
 import { Row, Col, Card, CardHeader, CardTitle, CardBody, Button, ButtonGroup, ButtonToolbar, ButtonDropdown, DropdownToggle, DropdownMenu, DropdownItem, Pagination, PaginationItem, PaginationLink } from 'reactstrap';
 
@@ -53,7 +54,6 @@ class AnimationScreen extends React.Component {
             animationName: this.state.animationName,
             animatioId: this.state.animationId,
             animationProfilePicture: this.state.animationProfilePicture,
-            animationPhotos: this.state.animationPhotos,
             animationPhotos: this.state.animationPhotos,
             animationDescription: this.state.animationDescription,
         }
@@ -122,7 +122,7 @@ class AnimationScreen extends React.Component {
             dataVersion: this.state.dataVersion + 1,
             animationId: this.state.animationId,
             animationProfilePicture: this.state.animationProfilePicture,
-            animationPhotos: this.state.animationPhotos.slice(1),
+            animationPhotos: this.state.animationPhotos,
             animationDescription: this.state.animationDescription,
             animationName: this.state.animationName,
             log: this.state.logId + 1
@@ -140,15 +140,18 @@ class AnimationScreen extends React.Component {
         //let userData = JSON.parse(localStorage.getItem('user'))
         var self = this
 
-        let reference = (userData.zooName + '/animationData/' + animationData.animationId);
+        let reference = (userData.zooName + '/animationsData/' + animationId);
 
-        return firebase.database().ref('/users/' + userId).once('value').then(function (snapshot) {
-            let data = snapshot.data()
+        return firebase.database().ref(reference).once('value').then(function (snapshot) {
+            let data = snapshot.val()
+
+            console.log(data)
 
             self.setState({
-                dataVersion: data.dataVersion,
+                dataVersion: 1,
                 animationId: data.animationId,
                 animationProfilePicture: data.animationProfilePicture,
+                animationName: data.animationName,
                 animationPhotos: data.animationPhotos,
                 animationDescription: data.animationDescription,
                 EditMode: true,
@@ -158,9 +161,9 @@ class AnimationScreen extends React.Component {
     }
 
     componentWillMount() {
-            if (this.props.location.state.animationId !== null){
+        if (this.props.location.state != undefined) {
             this.readAnimationFromFirebase(this.props.location.state.animationId);
-           } 
+        }
     }
 
     render() {
@@ -174,12 +177,14 @@ class AnimationScreen extends React.Component {
         const innerRadio = <input type="radio" aria-label="..." />;
         const innerCheckbox = <input type="checkbox" aria-label="..." />;
 
-        const deleteButton = (
-            <Button bsClass="btn btn-labeled btn-danger mr" onClick={() => { this.handleDelete() }}>
-                <span className="btn-label"><i className="fa fa-trash-o"></i></span> Supprimer l'espèce
-            </Button>
-        );
+        // Creation du bouton suppression
 
+        const deleteButton = (
+            <Button color="danger" className="btn-labeled" bsSize="large" onClick={() => { this.handleDelete() }}>
+                <span className="btn-label"><i className="fa fa-trash"></i></span> Supprimer l'animation
+            </Button>
+
+        );
 
         var rows = [];
         for (var i = 0; i < this.state.animationPhotos.length; i++) {
@@ -189,8 +194,6 @@ class AnimationScreen extends React.Component {
                 </div>
             );
         }
-
-        
 
         return (
 
@@ -228,7 +231,7 @@ class AnimationScreen extends React.Component {
                             <fieldset>
                                 <legend> Ajout de photos</legend>
                                 <FormGroup>
-                                <div className="col-md-12" >
+                                    <div className="col-md-12" >
                                         <div className="row" style={{ display: 'flex', flexDirection: "row", flexWrap: 'wrap', justifyContent: 'flex-start' }}>
                                             {rows}
                                         </div>
@@ -239,15 +242,15 @@ class AnimationScreen extends React.Component {
                     </CardWithHeader>
                 </Panel>
 
-                <Panel style={{ "display": "flex" }}>
-                    <Button bsClass="btn btn-labeled btn-success mr" bsSize="large" onClick={() => { this.handleClick() }}>
-                        <span className="btn-label"><i className="fa fa-check"></i></span> Valider l'espèce
-                    </Button>
+                <CardWithHeader header="Validation" >
+
+                    <Button color="success" className="btn-labeled" bsSize="large" style={{ marginRight: 20 }} onClick={() => { this.handleClick() }}>
+                        <span className="btn-label"><i className="fa fa-check"></i></span> Valider l'animation
+                     </Button>
 
                     {this.state.EditMode ? deleteButton : null}
 
-
-                </Panel>
+                </CardWithHeader>
             </ContentWrapper>
         );
     }

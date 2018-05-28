@@ -33,7 +33,7 @@ class ServiceScreen extends React.Component {
         this.state = {
             serviceId: '',
             serviceName: '',
-            serviceProfilePicture: '',
+            serviceDescription: '',
             serviceProfilePicture: 'https://www.cmsabirmingham.org/stuff/2017/01/default-placeholder.png',
             servicePhotos: [{ photoURL: 'https://www.cmsabirmingham.org/stuff/2017/01/default-placeholder.png' }],
             logId: 0,
@@ -56,8 +56,6 @@ class ServiceScreen extends React.Component {
             servicePhotos: this.state.servicePhotos,
             serviceDescription: this.state.serviceDescription,
         }
-
-        console.log(serviceData)
     }
 
     handleReturnedUrl(returnedUrl, photoId) {
@@ -74,12 +72,8 @@ class ServiceScreen extends React.Component {
             return
         }
 
-        console.log(this.state.servicePhotos)
-
         let photoUID = photoId
         let photosArray = this.state.servicePhotos
-
-        console.log(photosArray.length)
 
         let newObject = {
             photoId: photoId,
@@ -92,8 +86,6 @@ class ServiceScreen extends React.Component {
             servicePhotos: photosArray
 
         });
-
-        console.log(this.state.servicePhotos)
     }
 
     handleDelete() {
@@ -123,7 +115,7 @@ class ServiceScreen extends React.Component {
             dataVersion: this.state.dataVersion + 1,
             serviceId: this.state.serviceId,
             serviceProfilePicture: this.state.serviceProfilePicture,
-            servicePhotos: this.state.servicePhotos.slice(1),
+            servicePhotos: this.state.servicePhotos,
             serviceDescription: this.state.serviceDescription,
             serviceName: this.state.serviceName,
             log: this.state.logId + 1
@@ -141,14 +133,15 @@ class ServiceScreen extends React.Component {
         //let userData = JSON.parse(localStorage.getItem('user'))
         var self = this
 
-        let reference = (userData.zooName + '/serviceData/' + serviceData.serviceId);
+        let reference = (userData.zooName + '/servicesData/' + serviceId);
 
-        return firebase.database().ref('/users/' + userId).once('value').then(function (snapshot) {
-            let data = snapshot.data()
+        return firebase.database().ref(reference).once('value').then(function (snapshot) {
+            let data = snapshot.val()
 
             self.setState({
                 dataVersion: 1,
                 serviceId: data.serviceId,
+                serviceName: data.serviceName,
                 serviceProfilePicture: data.serviceProfilePicture,
                 servicePhotos: data.servicePhotos,
                 serviceDescription: data.serviceDescription,
@@ -159,7 +152,7 @@ class ServiceScreen extends React.Component {
     }
 
     componentWillMount() {
-        if (this.props.location.state.serviceId !== null) {
+        if (this.props.location.state != undefined) {
             this.readServiceFromFirebase(this.props.location.state.serviceId);
         }
     }
@@ -175,11 +168,11 @@ class ServiceScreen extends React.Component {
         const innerRadio = <input type="radio" aria-label="..." />;
         const innerCheckbox = <input type="checkbox" aria-label="..." />;
 
+
         const deleteButton = (
-            <Button bsClass="btn btn-labeled btn-danger mr" onClick={() => { this.handleDelete() }}>
-                <span className="btn-label"><i className="fa fa-trash-o"></i></span> Supprimer l'espèce
-            </Button>
-        );
+            <Button color="danger" className="btn-labeled" bsSize="large" onClick={() => { this.handleDelete() }}>
+                <span className="btn-label"><i className="fa fa-trash"></i></span> Supprimer le service
+            </Button>);
 
         // Creation de la partie ajout photo
 
@@ -239,15 +232,15 @@ class ServiceScreen extends React.Component {
                     </CardWithHeader>
                 </Panel>
 
-                <Panel style={{ "display": "flex" }}>
-                    <Button bsClass="btn btn-labeled btn-success mr" bsSize="large" onClick={() => { this.handleClick() }}>
-                        <span className="btn-label"><i className="fa fa-check"></i></span> Valider l'espèce
+                <CardWithHeader header="Validation" >
+
+                    <Button color="success" className="btn-labeled" bsSize="large" style={{ marginRight: 20 }} onClick={() => { this.handleClick() }}>
+                        <span className="btn-label"><i className="fa fa-check"></i></span> Valider le service
                     </Button>
 
                     {this.state.EditMode ? deleteButton : null}
 
-
-                </Panel>
+                </CardWithHeader>
             </ContentWrapper>
         );
     }

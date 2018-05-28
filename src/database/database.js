@@ -651,7 +651,7 @@ export function deleteAnimationInDatabase(animationData) {
 
     let reference = (userData.zooName + '/animationsData/' + animationData.animationId);
 
-    firebase.database().ref(reference).delete()
+    firebase.database().ref(reference).remove()
 
         .catch(function (error) {
             console.error("Error writing document: ", error);
@@ -787,7 +787,7 @@ export function deleteEventInDatabase(eventData) {
         eventData.eventProfilePicture = 'http://thedroideffect.com/wp-content/themes/thedroideffect/images/missing-image-640x360.png'
     }
 
-    firebase.database().ref(reference).delete()
+    firebase.database().ref(reference).remove()
 
         .catch(function (error) {
             console.error("Error writing document: ", error);
@@ -925,7 +925,7 @@ export function deleteServiceInDatabase(serviceData) {
         serviceData.serviceProfilePicture = 'http://thedroideffect.com/wp-content/themes/thedroideffect/images/missing-image-640x360.png'
     }
 
-    firebase.database().ref(reference).delete()
+    firebase.database().ref(reference).remove()
 
         .catch(function (error) {
             console.error("Error writing document: ", error);

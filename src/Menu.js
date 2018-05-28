@@ -18,11 +18,20 @@ const Menu = [
                 name: 'Ecran Animation',
                 path: 'AnimationScreen'
             },{
+                name: 'Ecran Liste Animations',
+                path: 'AnimationsListScreen'
+            },{
                 name: 'Ecran Evement',
                 path: 'EventScreen'
             },{
+                name: 'Ecran Liste Evements',
+                path: 'EventsListScreen'
+            },{
                 name: 'Ecran Service',
                 path: 'ServiceScreen'
+            },{
+                name: 'Ecran Liste Services',
+                path: 'ServicesListScreen'
             },{
                 name: 'Ecran Enclos',
                 path: 'EnclosureScreen'

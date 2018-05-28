@@ -15,6 +15,7 @@ import { addNewSpecieToDatabase, editSpecieInDatabase, deleteSpecieFromDatabase 
 import AnimalListScreen from '../../AnimalScreens/AnimalsListScreen/AnimalsListScreen';
 
 import Select from 'react-select'
+import { Creatable } from 'react-select'
 
 // Create a single card with header text as attribute
 const CardWithHeader = props => (
@@ -34,6 +35,13 @@ const options = [
     { value: 'EX', label: 'Éteint (EX)' },
     { value: 'DD', label: 'Données insuffisantes (DD)' },
     { value: 'NE', label: 'Non-Évalué (NE)' },
+]
+
+const orders = [
+    { value: 'MAMALIA', label: 'Mamifère' },
+    { value: 'MAMALIA', label: 'Poney' },
+    { value: 'MAMALIA', label: 'tanguy' },
+    { value: 'MAMALIA', label: 'ffkds' },
 ]
 
 
@@ -56,7 +64,7 @@ class SpecieScreen extends React.Component {
             specieOrder: '',
             specieFamilly: '',
             specieIUCNClassification: '',
-            specieThreat : '',
+            specieThreat: '',
             specieDescription: '',
             specieGestation: '',
             specieWeight: '',
@@ -67,9 +75,10 @@ class SpecieScreen extends React.Component {
             enclosureList: null,
             specieEnclosure: '',
             specieEnclosurePhoto: 'https://www.cmsabirmingham.org/stuff/2017/01/default-placeholder.png',
-           
+
             selectedEnclosure: null,
             IUCNList: options,
+            orderList: orders,
             logId: 0,
             EditMode: false,
             zooFoodList: ['chargement']
@@ -92,7 +101,7 @@ class SpecieScreen extends React.Component {
             specieClass: this.state.specieClass,
             specieOrder: this.state.specieOrder,
             specieFood: this.state.specieFood,
-            specieThreat : this.state.specieThreat,
+            specieThreat: this.state.specieThreat,
             specieFamilly: this.state.specieFamilly,
             specieAnimals: this.state.specieAnimals,
             specieIUCNClassification: this.state.specieIUCNClassification,
@@ -164,6 +173,13 @@ class SpecieScreen extends React.Component {
         })
     }
 
+    handleSelectedChoice(newValue) {
+        console.log(newValue)
+        this.setState({
+            specieOrder2: newValue
+        })
+    }
+
     handleEnclosureChoice(selectedEnclosureData) {
 
         this.setState({
@@ -184,6 +200,10 @@ class SpecieScreen extends React.Component {
                 }
             }
         }
+    }
+
+    initSelectedList(){
+
     }
 
     handleDelete() {
@@ -219,7 +239,7 @@ class SpecieScreen extends React.Component {
             specieClass: this.state.specieClass,
             specieOrder: this.state.specieOrder,
             specieFamilly: this.state.specieFamilly,
-            specieThreat : this.state.specieThreat,
+            specieThreat: this.state.specieThreat,
             specieIUCNClassification: this.state.specieIUCNClassification,
             specieDescription: this.state.specieDescription,
             specieGestation: this.state.specieGestation,
@@ -240,8 +260,6 @@ class SpecieScreen extends React.Component {
         else {
             addNewSpecieToDatabase(specieData);
         }
-
-        //database.updateFoodDataBase(specieData.SpecieFood);
     }
 
     readEnclosureList() {
@@ -252,7 +270,7 @@ class SpecieScreen extends React.Component {
         let reference = (userData.zooName + '/enclosuresData/');
         let data
         let enclosureId = this.state.specieEnclosure.enclosureId
-    
+
 
         return firebase.database().ref(reference).once('value')
             .then(function (snapshot) {
@@ -309,15 +327,6 @@ class SpecieScreen extends React.Component {
             .then(function (snapshot) {
                 let data = snapshot.val()
 
-                // let foodList = []
-                // data.SpecieFood.forEach(function (foodItem) {
-                //     if (foodItem.customOption === true) {
-                //         foodList.push(foodItem.SpecieFood);
-                //     } else {
-                //         foodList.push(foodItem);
-                //     }
-                // })
-
                 self.setState({
                     dataVersion: data.dataVersion,
                     specieId: data.specieId,
@@ -332,7 +341,6 @@ class SpecieScreen extends React.Component {
                     specieDescription: data.specieDescription,
                     specieGestation: data.specieGestation,
                     specieWeight: data.specieWeight,
-                    //specieFood: foodList,
                     specieLifeExpectancy: data.specieLifeExpectancy,
                     specieProfilePicture: data.specieProfilePicture,
                     specieEnclosure: data.specieEnclosure,
@@ -347,9 +355,9 @@ class SpecieScreen extends React.Component {
         if (this.props.location.state != undefined) {
             let self = this
             this.readSpecieFromFirebase(this.props.location.state.specieId)
-            .then(function(){
-                self.readEnclosureList();
-            })
+                .then(function () {
+                    self.readEnclosureList();
+                })
         } else {
             this.readEnclosureList();
         }
@@ -358,11 +366,9 @@ class SpecieScreen extends React.Component {
 
     componentWillMount() {
         this.initPage()
-
     }
 
     render() {
-
 
         const innerIcon = <em className="fa fa-check"></em>;
         const innerButton = <Button>Before</Button>;
@@ -476,6 +482,22 @@ class SpecieScreen extends React.Component {
                                                 </FormGroup>
                                             </fieldset>
                                         </div>
+
+                                        {/* test selection  */}
+
+                                        <div className="col-md-12" >
+                                            <fieldset>
+                                                <FormGroup>
+                                                    <label className="col-sm-12 control-label">Classe </label>
+                                                    <Creatable
+                                                        options={this.state.orderList}
+                                                        onChange={(newValue) => this.handleSelectedChoice(newValue)}
+                                                        value={this.state.specieOrder2}
+                                                    />
+                                                </FormGroup>
+                                            </fieldset>
+                                        </div>
+
                                         <div className="col-md-12" >
                                             <fieldset>
                                                 <FormGroup>

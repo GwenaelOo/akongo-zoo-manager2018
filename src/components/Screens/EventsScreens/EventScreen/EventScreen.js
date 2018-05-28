@@ -124,7 +124,7 @@ class EventScreen extends React.Component {
             dataVersion: this.state.dataVersion + 1,
             eventId: this.state.eventId,
             eventProfilePicture: this.state.eventProfilePicture,
-            eventPhotos: this.state.eventPhotos.slice(1),
+            eventPhotos: this.state.eventPhotos,
             eventDescription: this.state.eventDescription,
             eventName: this.state.eventName,
             log: this.state.logId + 1
@@ -142,16 +142,19 @@ class EventScreen extends React.Component {
         //let userData = JSON.parse(localStorage.getItem('user'))
         var self = this
 
-        let reference = (userData.zooName + '/eventData/' + eventData.eventId);
+        let reference = (userData.zooName + '/eventsData/' + eventId);
 
-        return firebase.database().ref('/users/' + userId).once('value').then(function (snapshot) {
-            let data = snapshot.data()
+        console.log(reference)
+
+        return firebase.database().ref(reference).once('value').then(function (snapshot) {
+            let data = snapshot.val()
 
             self.setState({
                 dataVersion: 1,
                 eventId: data.eventId,
                 eventProfilePicture: data.eventProfilePicture,
                 eventPhotos: data.eventPhotos,
+                eventName: data.eventName,
                 eventDescription: data.eventDescription,
                 EditMode: true,
             });
@@ -160,9 +163,9 @@ class EventScreen extends React.Component {
     }
 
     componentWillMount() {
-            if (this.props.location.state.eventId !== null){
+        if (this.props.location.state != undefined) {
             this.readEventFromFirebase(this.props.location.state.eventId);
-           } 
+        }
     }
 
     render() {
@@ -176,11 +179,12 @@ class EventScreen extends React.Component {
         const innerRadio = <input type="radio" aria-label="..." />;
         const innerCheckbox = <input type="checkbox" aria-label="..." />;
 
+        // Creation du bouton suppression
+
         const deleteButton = (
-            <Button bsClass="btn btn-labeled btn-danger mr" onClick={() => { this.handleDelete() }}>
-                <span className="btn-label"><i className="fa fa-trash-o"></i></span> Supprimer l'espèce
-            </Button>
-        );
+            <Button color="danger" className="btn-labeled" bsSize="large" onClick={() => { this.handleDelete() }}>
+                <span className="btn-label"><i className="fa fa-trash"></i></span> Supprimer l'évènement
+            </Button>);
 
         // Creation de la partie ajout photo
 
@@ -241,15 +245,15 @@ class EventScreen extends React.Component {
                     </CardWithHeader>
                 </Panel>
 
-                <Panel style={{ "display": "flex" }}>
-                    <Button bsClass="btn btn-labeled btn-success mr" bsSize="large" onClick={() => { this.handleClick() }}>
-                        <span className="btn-label"><i className="fa fa-check"></i></span> Valider l'espèce
+                <CardWithHeader header="Validation" >
+
+                    <Button color="success" className="btn-labeled" bsSize="large" style={{ marginRight: 20 }} onClick={() => { this.handleClick() }}>
+                        <span className="btn-label"><i className="fa fa-check"></i></span> Valider l'évènement
                     </Button>
 
                     {this.state.EditMode ? deleteButton : null}
 
-
-                </Panel>
+                </CardWithHeader>
             </ContentWrapper>
         );
     }
