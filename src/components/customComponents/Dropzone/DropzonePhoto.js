@@ -37,7 +37,7 @@ class DropzonePhoto extends React.Component {
             formData.append("file", file);
             formData.append("tags", `specie.name, specie.zoo`);
             formData.append("folder", "test");
-            formData.append("upload_preset", "wrvzfjll"); // Replace the preset name with your own
+            formData.append("upload_preset", "esbpefvx"); // Replace the preset name with your own
             formData.append("api_key", "247372227977832"); // Replace API key with your own Cloudinary key
             formData.append("timestamp", (Date.now() / 1000) | 0);
 

@@ -41,7 +41,13 @@ export function addNewSpecieToDatabase(specieData) {
         specieLifeExpectancy: specieData.specieLifeExpectancy,
         specieEnclosure: specieData.specieEnclosure,
         specieFood: specieData.specieFood,
-        specieProfilePicture: specieData.specieProfilePicture,
+
+        // attention fonctioon debug pour tester le script serveur
+
+        specieProfilePicture: {
+            edited: false,
+            fullPhoto: specieData.specieProfilePicture
+        },
         speciePhotos: specieData.speciePhotos,
         specieCreatedBy: userData.userId,
         specieCreationDate: Date(),
