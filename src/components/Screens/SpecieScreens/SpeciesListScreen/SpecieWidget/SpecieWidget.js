@@ -18,7 +18,7 @@ class SpecieWidget extends React.Component {
                         pathname: "SpecieScreen",
                         state: { specieId: this.props.specieData.specieId }
                     }}>
-                        <img className="img-fluid" src={this.props.specieData.specieProfilePicture} alt="Demo" />
+                        <img className="img-fluid" src={this.props.specieData.specieProfilePicture.largeThumb} alt="Demo" />
                     </Link>
                     <div className="card-body">
                         <div className="row text-center">

@@ -70,7 +70,11 @@ class SpecieScreen extends React.Component {
             specieWeight: '',
             specieLifeExpectancy: '',
             specieFood: [],
-            specieProfilePicture: 'https://www.cmsabirmingham.org/stuff/2017/01/default-placeholder.png',
+            specieProfilePicture: {
+                fullPhoto: 'https://www.cmsabirmingham.org/stuff/2017/01/default-placeholder.png',
+                largeThumb: 'https://www.cmsabirmingham.org/stuff/2017/01/default-placeholder.png',
+                smallThumb: 'https://www.cmsabirmingham.org/stuff/2017/01/default-placeholder.png'
+            },
             speciePhotos: [{ photoURL: 'https://www.cmsabirmingham.org/stuff/2017/01/default-placeholder.png' }],
             enclosureList: null,
             specieEnclosure: '',
@@ -123,7 +127,6 @@ class SpecieScreen extends React.Component {
         this.setState({ [name]: selected.target.value });
 
         let specieData = {
-
             specieFood: this.state.specieFood,
         }
 
@@ -139,7 +142,12 @@ class SpecieScreen extends React.Component {
 
             let photoName = ('specie' + photoId)
             this.setState({
-                specieProfilePicture: returnedUrl
+                specieProfilePicture: {
+                    edited: false,
+                    fullPhoto: returnedUrl,
+                    largeThumb: returnedUrl,
+                    smallThumb: returnedUrl,
+                },
             });
 
             return
@@ -202,7 +210,7 @@ class SpecieScreen extends React.Component {
         }
     }
 
-    initSelectedList(){
+    initSelectedList() {
 
     }
 
@@ -466,7 +474,7 @@ class SpecieScreen extends React.Component {
 
                                     <div className="col-md-6" >
                                         <label htmlFor="userName">Photo de profile</label>
-                                        <DropzonePhoto eventName={this.state.eventName} background={this.state.specieProfilePicture} id="ProfilePicture" methodToReturnUrl={this.handleReturnedUrl} />
+                                        <DropzonePhoto eventName={this.state.eventName} background={this.state.specieProfilePicture.fullPhoto} id="ProfilePicture" methodToReturnUrl={this.handleReturnedUrl} />
                                     </div>
 
                                 </div>
