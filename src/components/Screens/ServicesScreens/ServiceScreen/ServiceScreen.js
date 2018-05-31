@@ -34,8 +34,12 @@ class ServiceScreen extends React.Component {
             serviceId: '',
             serviceName: '',
             serviceDescription: '',
-            serviceProfilePicture: 'https://www.cmsabirmingham.org/stuff/2017/01/default-placeholder.png',
-            servicePhotos: [{ photoURL: 'https://www.cmsabirmingham.org/stuff/2017/01/default-placeholder.png' }],
+            serviceProfilePicture: {
+                fullPhoto: 'https://www.cmsabirmingham.org/stuff/2017/01/default-placeholder.png',
+                largeThumb: 'https://www.cmsabirmingham.org/stuff/2017/01/default-placeholder.png',
+                smallThumb: 'https://www.cmsabirmingham.org/stuff/2017/01/default-placeholder.png'
+            },
+            servicePhotos: [{ largeThumb: 'https://www.cmsabirmingham.org/stuff/2017/01/default-placeholder.png' }],
             logId: 0,
             dataVersion: 0,
             EditMode: false,
@@ -66,7 +70,12 @@ class ServiceScreen extends React.Component {
 
             let photoName = ('service' + photoId)
             this.setState({
-                serviceProfilePicture: returnedUrl
+                serviceProfilePicture: {
+                    edited: false,
+                    fullPhoto: returnedUrl,
+                    largeThumb: returnedUrl,
+                    smallThumb: returnedUrl,
+                },
             });
 
             return
@@ -76,8 +85,12 @@ class ServiceScreen extends React.Component {
         let photosArray = this.state.servicePhotos
 
         let newObject = {
+            edited: false,
             photoId: photoId,
-            photoURL: returnedUrl
+            photoURL: returnedUrl,
+            fullPhoto: returnedUrl,
+            largeThumb: returnedUrl,
+            smallThumb: returnedUrl,
         }
 
         photosArray.push(newObject)
@@ -138,6 +151,9 @@ class ServiceScreen extends React.Component {
         return firebase.database().ref(reference).once('value').then(function (snapshot) {
             let data = snapshot.val()
 
+            let placeholder = { largeThumb: 'https://www.cmsabirmingham.org/stuff/2017/01/default-placeholder.png' }
+            let gallery = data.servicePhotos.unshift(placeholder)
+
             self.setState({
                 dataVersion: 1,
                 serviceId: data.serviceId,
@@ -180,7 +196,7 @@ class ServiceScreen extends React.Component {
         for (var i = 0; i < this.state.servicePhotos.length; i++) {
             rows.push(
                 <div className="col-md-3">
-                    <DropzonePhoto serviceName={this.state.serviceName} background={this.state.servicePhotos[i].photoURL} id={"Photo" + i} methodToReturnUrl={this.handleReturnedUrl} />
+                    <DropzonePhoto serviceName={this.state.serviceName} background={this.state.servicePhotos[i].largeThumb} id={"Photo" + i} methodToReturnUrl={this.handleReturnedUrl} />
                 </div>
             );
         }
@@ -213,7 +229,7 @@ class ServiceScreen extends React.Component {
 
                                     <div className="col-md-4" >
                                         <label htmlFor="userName">Photo Principale</label>
-                                        <DropzonePhoto serviceName={this.state.serviceName} background={this.state.serviceProfilePicture} id="PhotoProfil" methodToReturnUrl={this.handleReturnedUrl} />
+                                        <DropzonePhoto serviceName={this.state.serviceName} background={this.state.serviceProfilePicture.largeThumb} id="PhotoProfil" methodToReturnUrl={this.handleReturnedUrl} />
                                     </div>
                                 </div>
                             </fieldset>

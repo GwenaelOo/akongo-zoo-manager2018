@@ -34,8 +34,12 @@ class EventScreen extends React.Component {
         this.state = {
             eventId: '',
             eventName: '',
-            eventProfilePicture: 'https://www.cmsabirmingham.org/stuff/2017/01/default-placeholder.png',
-            eventPhotos: [{ photoURL: 'https://www.cmsabirmingham.org/stuff/2017/01/default-placeholder.png' }],
+            eventProfilePicture: {
+                fullPhoto: 'https://www.cmsabirmingham.org/stuff/2017/01/default-placeholder.png',
+                largeThumb: 'https://www.cmsabirmingham.org/stuff/2017/01/default-placeholder.png',
+                smallThumb: 'https://www.cmsabirmingham.org/stuff/2017/01/default-placeholder.png'
+            },
+            eventPhotos: [{ largeThumb: 'https://www.cmsabirmingham.org/stuff/2017/01/default-placeholder.png' }],
             eventDescription: '',
             logId: 0,
             dataVersion: 0,
@@ -69,7 +73,12 @@ class EventScreen extends React.Component {
 
             let photoName = ('event' + photoId)
             this.setState({
-                eventProfilePicture: returnedUrl
+                eventProfilePicture: {
+                    edited: false,
+                    fullPhoto: returnedUrl,
+                    largeThumb: returnedUrl,
+                    smallThumb: returnedUrl,
+                },
             });
 
             return
@@ -83,8 +92,12 @@ class EventScreen extends React.Component {
         console.log(photosArray.length)
 
         let newObject = {
+            edited: false,
             photoId: photoId,
-            photoURL: returnedUrl
+            photoURL: returnedUrl,
+            fullPhoto: returnedUrl,
+            largeThumb: returnedUrl,
+            smallThumb: returnedUrl,
         }
 
         photosArray.push(newObject)
@@ -149,6 +162,9 @@ class EventScreen extends React.Component {
         return firebase.database().ref(reference).once('value').then(function (snapshot) {
             let data = snapshot.val()
 
+            let placeholder = { largeThumb: 'https://www.cmsabirmingham.org/stuff/2017/01/default-placeholder.png' }
+            let gallery = data.eventPhotos.unshift(placeholder)
+
             self.setState({
                 dataVersion: 1,
                 eventId: data.eventId,
@@ -192,7 +208,7 @@ class EventScreen extends React.Component {
         for (var i = 0; i < this.state.eventPhotos.length; i++) {
             rows.push(
                 <div className="col-md-3">
-                    <DropzonePhoto eventName={this.state.eventName} background={this.state.eventPhotos[i].photoURL} id={"Photo" + i} methodToReturnUrl={this.handleReturnedUrl} />
+                    <DropzonePhoto eventName={this.state.eventName} background={this.state.eventPhotos[i].largeThumb} id={"Photo" + i} methodToReturnUrl={this.handleReturnedUrl} />
                 </div>
             );
         }
@@ -226,7 +242,7 @@ class EventScreen extends React.Component {
 
                                     <div className="col-md-4" >
                                         <label htmlFor="userName">Photo de profile</label>
-                                        <DropzonePhoto eventName={this.state.eventName} background={this.state.eventProfilePicture} id="PhotoProfil" methodToReturnUrl={this.handleReturnedUrl} />
+                                        <DropzonePhoto eventName={this.state.eventName} background={this.state.eventProfilePicture.largeThumb} id="PhotoProfil" methodToReturnUrl={this.handleReturnedUrl} />
                                     </div>
                                 </div>
                             </fieldset>

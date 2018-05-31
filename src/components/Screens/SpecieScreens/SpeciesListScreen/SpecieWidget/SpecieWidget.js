@@ -9,6 +9,7 @@ class SpecieWidget extends React.Component {
 
     }
     render() {
+        console.log(this.props.specieData.specieProfilePicture.largeThumb)
         return (
             <div className="col-xl-4">
                 {/* START card- */}

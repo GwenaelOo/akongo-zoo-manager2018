@@ -112,6 +112,7 @@ class EnclosureScreen extends React.Component {
             function () {
                deleteEnclosureInDatabase(enclosureData)
             });
+            
     }
 
     handleClick() {

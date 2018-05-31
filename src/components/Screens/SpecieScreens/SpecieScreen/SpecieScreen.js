@@ -75,7 +75,7 @@ class SpecieScreen extends React.Component {
                 largeThumb: 'https://www.cmsabirmingham.org/stuff/2017/01/default-placeholder.png',
                 smallThumb: 'https://www.cmsabirmingham.org/stuff/2017/01/default-placeholder.png'
             },
-            speciePhotos: [{ photoURL: 'https://www.cmsabirmingham.org/stuff/2017/01/default-placeholder.png' }],
+            speciePhotos: [{ largeThumb: 'https://www.cmsabirmingham.org/stuff/2017/01/default-placeholder.png' }],
             enclosureList: null,
             specieEnclosure: '',
             specieEnclosurePhoto: 'https://www.cmsabirmingham.org/stuff/2017/01/default-placeholder.png',
@@ -161,8 +161,12 @@ class SpecieScreen extends React.Component {
         console.log(photosArray.length)
 
         let newObject = {
+            edited: false,
             photoId: photoId,
-            photoURL: returnedUrl
+            photoURL: returnedUrl,
+            fullPhoto: returnedUrl,
+            largeThumb: returnedUrl,
+            smallThumb: returnedUrl,
         }
 
         photosArray.push(newObject)
@@ -335,6 +339,11 @@ class SpecieScreen extends React.Component {
             .then(function (snapshot) {
                 let data = snapshot.val()
 
+                console.log('ajout du bouton d ajout des photos')
+
+                let placeholder = { largeThumb: 'https://www.cmsabirmingham.org/stuff/2017/01/default-placeholder.png' }
+                let gallery = data.speciePhotos.unshift(placeholder)
+
                 self.setState({
                     dataVersion: data.dataVersion,
                     specieId: data.specieId,
@@ -424,7 +433,7 @@ class SpecieScreen extends React.Component {
         for (var i = 0; i < this.state.speciePhotos.length; i++) {
             rows.push(
                 <div className="col-md-3">
-                    <DropzonePhoto specieName={this.state.specieName} background={this.state.speciePhotos[i].photoURL} id={"Photo" + i} methodToReturnUrl={this.handleReturnedUrl} />
+                    <DropzonePhoto specieName={this.state.specieName} background={this.state.speciePhotos[i].largeThumb} id={"Photo" + i} methodToReturnUrl={this.handleReturnedUrl} />
                 </div>
             );
         }

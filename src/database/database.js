@@ -48,27 +48,6 @@ export function addNewSpecieToDatabase(specieData) {
         dataType: 'specie',
         zooName: userData.zooName,
     })
-
-        // ********************
-        // Ecriture du log
-        // ********************
-
-        //  .then(function () {
-        //      firebase.firestore()
-        //          .collection(userData.zooName + '-log')
-        //          .doc("log-" + Date.now())
-        //          .set({
-        //              action: "create",
-        //              dataType: 'specie',
-        //              elementId: specieData.SpecieId,
-        //              elementName: specieData.SpecieName,
-        //              actionMadeById: userData.userId,
-        //              actionMadeByName: userData.firstname,
-        //              actionDate: Date(),
-        //              actionTimestamp: Date.now(),
-        //              zooName: userData.zooName
-        //          })
-        //  })
         .catch(function (error) {
             console.error("Error writing document: ", error);
         }).then(function () {
@@ -85,8 +64,6 @@ export function addNewSpecieToDatabase(specieData) {
         .catch(function (error) {
             console.error("Error writing document: ", error);
         });
-
-
 }
 
 export function editSpecieInDatabase(specieData) {

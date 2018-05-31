@@ -34,8 +34,12 @@ class AnimationScreen extends React.Component {
         this.state = {
             animationId: '',
             animationName: '',
-            animationProfilePicture: 'https://www.cmsabirmingham.org/stuff/2017/01/default-placeholder.png',
-            animationPhotos: [{ photoURL: 'https://www.cmsabirmingham.org/stuff/2017/01/default-placeholder.png' }],
+            animationProfilePicture: {
+                fullPhoto: 'https://www.cmsabirmingham.org/stuff/2017/01/default-placeholder.png',
+                largeThumb: 'https://www.cmsabirmingham.org/stuff/2017/01/default-placeholder.png',
+                smallThumb: 'https://www.cmsabirmingham.org/stuff/2017/01/default-placeholder.png'
+            },
+            animationPhotos: [{ largeThumb: 'https://www.cmsabirmingham.org/stuff/2017/01/default-placeholder.png' }],
             animationDescription: '',
             logId: 0,
             dataVersion: 0,
@@ -67,7 +71,12 @@ class AnimationScreen extends React.Component {
 
             let photoName = ('animation' + photoId)
             this.setState({
-                animationProfilePicture: returnedUrl
+                animationProfilePicture: {
+                    edited: false,
+                    fullPhoto: returnedUrl,
+                    largeThumb: returnedUrl,
+                    smallThumb: returnedUrl,
+                },
             });
 
             return
@@ -81,8 +90,12 @@ class AnimationScreen extends React.Component {
         console.log(photosArray.length)
 
         let newObject = {
+            edited: false,
             photoId: photoId,
-            photoURL: returnedUrl
+            photoURL: returnedUrl,
+            fullPhoto: returnedUrl,
+            largeThumb: returnedUrl,
+            smallThumb: returnedUrl,
         }
 
         photosArray.push(newObject)
@@ -116,7 +129,7 @@ class AnimationScreen extends React.Component {
                 deleteAnimationInDatabase(animationData)
             });
     }
-
+ 
     handleClick() {
         let animationData = {
             dataVersion: this.state.dataVersion + 1,
@@ -144,6 +157,9 @@ class AnimationScreen extends React.Component {
 
         return firebase.database().ref(reference).once('value').then(function (snapshot) {
             let data = snapshot.val()
+
+            let placeholder = { largeThumb: 'https://www.cmsabirmingham.org/stuff/2017/01/default-placeholder.png' }
+            let gallery = data.animationPhotos.unshift(placeholder)
 
             console.log(data)
 
@@ -190,7 +206,7 @@ class AnimationScreen extends React.Component {
         for (var i = 0; i < this.state.animationPhotos.length; i++) {
             rows.push(
                 <div className="col-md-3">
-                    <DropzonePhoto animationName={this.state.animationName} background={this.state.animationPhotos[i].photoURL} id={i} methodToReturnUrl={this.handleReturnedUrl} />
+                    <DropzonePhoto animationName={this.state.animationName} background={this.state.animationPhotos[i].largeThumb} id={i} methodToReturnUrl={this.handleReturnedUrl} />
                 </div>
             );
         }
@@ -223,7 +239,7 @@ class AnimationScreen extends React.Component {
 
                                     <div className="col-md-4" >
                                         <label htmlFor="userName">Photo Principale</label>
-                                        <DropzonePhoto animationName={this.state.animationName} background={this.state.animationProfilePicture} id="PhotoProfil" methodToReturnUrl={this.handleReturnedUrl} />
+                                        <DropzonePhoto animationName={this.state.animationName} background={this.state.animationProfilePicture.largeThumb} id="PhotoProfil" methodToReturnUrl={this.handleReturnedUrl} />
                                     </div>
                                 </div>
                             </fieldset>
