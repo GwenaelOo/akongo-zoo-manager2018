@@ -199,7 +199,7 @@ class ServiceScreen extends React.Component {
         var rows = [];
         for (var i = 0; i < this.state.servicePhotos.length; i++) {
             rows.push(
-                <div className="col-md-3">
+                <div style={{ display: 'flex', flexDirection: "row", flexWrap: 'wrap', justifyContent: 'space-around'}}>
                     <DropzonePhoto serviceName={this.state.serviceName} background={this.state.servicePhotos[i].largeThumb} id={"Photo" + i} methodToReturnUrl={this.handleReturnedUrl} />
                 </div>
             );

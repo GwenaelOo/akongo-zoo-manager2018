@@ -28,6 +28,8 @@ import DonationScreen from './components/Screens/DonationScreen/DonationScreen'
 
 import EnclosureList from './components/Screens/EnclosureScreens/EnclosureScreen/EnclosuresListScreen/EnclosureListScreen'
 
+import LoginPage from './components/Login/LoginPage'
+
 import DashboardV1 from './components/Dashboard/DashboardV1';
 import DashboardV2 from './components/Dashboard/DashboardV2';
 import DashboardV3 from './components/Dashboard/DashboardV3';
@@ -122,7 +124,7 @@ import ForumDiscussion from './components/Forum/ForumDiscussion';
 // listed here to Switch between layouts
 // depending on the current pathname
 const listofPages = [
-    '/login',
+    '/loginPage',
     '/register',
     '/recover',
     '/lock',
@@ -150,10 +152,10 @@ const Routes = ({ location }) => {
 
     if (listofPages.indexOf(location.pathname) > -1) {
         return (
-            // Page Layout component wrapper
+            // Page Layout component 
             <BasePage>
                 <Switch location={location}>
-                    <Route path="/login" component={Login} />
+                    <Route path="/loginPage" component={LoginPage} />
                     <Route path="/register" component={Register} />
                     <Route path="/recover" component={Recover} />
                     <Route path="/lock" component={Lock} />
@@ -194,6 +196,8 @@ const Routes = ({ location }) => {
                                 <Route path="/DonationScreen" component={DonationScreen} />
 
                                 <Route path="/EnclosureList" component={EnclosureList} />
+
+
                                 
 
                                 {/*Dashboard*/}
@@ -281,8 +285,10 @@ const Routes = ({ location }) => {
                                 <Route path="/social-board" component={SocialBoard} />
                                 <Route path="/team-viewer" component={TeamViewer} />
                                 <Route path="/vote-links" component={VoteLinks} />
-
+                                
+                             
                                 <Redirect to="/dashboard" />
+
                             </Switch>
                         </div>
                     </CSSTransition>

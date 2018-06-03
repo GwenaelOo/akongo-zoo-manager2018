@@ -245,7 +245,7 @@ class EnclosureScreen extends React.Component {
         var rows = [];
         for (var i = 0; i < this.state.enclosurePhotos.length; i++) {
             rows.push(
-                <div className="col-md-3">
+                <div style={{ display: 'flex', flexDirection: "row", flexWrap: 'wrap', justifyContent: 'space-around'}}>
                     <DropzonePhoto enclosureName={this.state.enclosureName} background={this.state.enclosurePhotos[i].largeThumb} id={"Photo" + i} methodToReturnUrl={this.handleReturnedUrl} />
                 </div>
             );

@@ -5,6 +5,8 @@ import Sidebar from './Sidebar'
 import Offsidebar from './Offsidebar'
 import Footer from './Footer'
 
+import nav from '../../Nav/Nav'
+
 const Base = props => (
     <div className="wrapper">
         <Header />

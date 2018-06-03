@@ -209,7 +209,7 @@ class EventScreen extends React.Component {
         var rows = [];
         for (var i = 0; i < this.state.eventPhotos.length; i++) {
             rows.push(
-                <div className="col-md-3">
+                <div style={{ display: 'flex', flexDirection: "row", flexWrap: 'wrap', justifyContent: 'space-around'}}>
                     <DropzonePhoto eventName={this.state.eventName} background={this.state.eventPhotos[i].largeThumb} id={"Photo" + i} methodToReturnUrl={this.handleReturnedUrl} />
                 </div>
             );

@@ -17,6 +17,8 @@ import { initDatabase } from './config/config'
 
 // App Routes
 import Routes from './Routes';
+import nav from './Nav/Nav'
+
 
 // Vendor dependencies
 import "./Vendor";

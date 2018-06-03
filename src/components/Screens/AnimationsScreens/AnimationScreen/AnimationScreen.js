@@ -97,7 +97,6 @@ class AnimationScreen extends React.Component {
 
         this.setState({
             animationPhotos: photosArray
-
         });
 
     }
@@ -175,7 +174,7 @@ class AnimationScreen extends React.Component {
             });
         })
 
-        
+
     }
 
     componentWillMount() {

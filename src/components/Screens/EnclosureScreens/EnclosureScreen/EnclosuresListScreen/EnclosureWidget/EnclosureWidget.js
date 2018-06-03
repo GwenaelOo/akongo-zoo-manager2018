@@ -18,7 +18,7 @@ class EnclosureWidget extends React.Component {
                 <div className="card">
                     <div className="row row-flush">
                         <div className="col-8">
-                            <img className="img-fluid" src={this.props.enclosureData.enclosureProfilePicture} alt="Demo" />
+                            <img className="img-fluid" src={this.props.enclosureData.enclosureProfilePicture.largeThumb} alt="Demo" />
                         </div>
                         <div className="col-4 bg-info d-flex align-items-center justify-content-center">
                             <div className="text-center">

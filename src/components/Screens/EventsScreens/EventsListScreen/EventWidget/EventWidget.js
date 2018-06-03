@@ -18,7 +18,7 @@ class EventWidget extends React.Component {
                         state: { eventId: this.props.eventData.eventId }
                     }}>
                 <div className="row row-flush">
-                    <div className="col-5 d-flex align-items-center justify-content-center" style={{background: "url('img/bg2.jpg')", backgroundSize: 'cover'}}></div>
+                    <div className="col-5 d-flex align-items-center justify-content-center" style={{background: `url(${this.props.eventData.eventProfilePicture.largeThumb})`, backgroundSize: 'cover'}}></div>
                     <div className="col-7">
                         <div className="p-3">
                             <div className="float-right"><a className="btn btn-primary btn-sm" href="">Register</a>

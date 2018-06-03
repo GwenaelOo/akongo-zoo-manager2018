@@ -435,7 +435,7 @@ class SpecieScreen extends React.Component {
         var rows = [];
         for (var i = 0; i < this.state.speciePhotos.length; i++) {
             rows.push(
-                <div className="col-md-3">
+                <div style={{ display: 'flex', flexDirection: "row", flexWrap: 'wrap', justifyContent: 'space-around'}}>
                     <DropzonePhoto specieName={this.state.specieName} background={this.state.speciePhotos[i].largeThumb} id={"Photo" + i} methodToReturnUrl={this.handleReturnedUrl} />
                 </div>
             );

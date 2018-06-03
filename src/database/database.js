@@ -1,6 +1,10 @@
+import { Router, Route, Link, History, withRouter, Redirect } from 'react-router-dom';
+import React from 'react';
+
 import firebase from 'firebase';
 import swal from 'sweetalert';
 import nav from '../Nav/Nav'
+import RedirectTo from './RedirectTo';
 
 const userData = {
     zooName: 'AkongoFakeZoo',
@@ -550,9 +554,9 @@ export function addNewAnimationToDatabase(animationData) {
                 text: "L'espèce " + animationData.animationName + " a été ajoutée à votre Zoo",
                 type: "success",
                 showCancelButton: false
-            }, function () {
-                // Redirect the user
-                window.location.href = nav.akongoURL + 'animationsList';
+            }, function (nextState, replaceState) {
+                //Redirect the user
+                window.location.href = nav.akongoURL + 'animationsList';        
             })
         })
         .catch(function (error) {

@@ -95,40 +95,6 @@ class AnimalScreen extends React.Component {
         console.log(animalData)
     }
 
-    // handleReturnedUrl(returnedUrl, photoId) {
-
-    //     console.log(photoId)
-
-    //     if (photoId === 'ProfilePicture') {
-
-    //         let photoName = ('animal' + photoId)
-    //         this.setState({
-    //             animalProfilePicture: returnedUrl
-    //         });
-
-    //         return
-    //     }
-
-    //     console.log(this.state.animalPhotos)
-
-    //     let photoUID = photoId
-    //     let photosArray = this.state.animalPhotos
-
-    //     let newObject = {
-    //         photoId: photoId,
-    //         photoURL: returnedUrl
-    //     }
-
-    //     photosArray.push(newObject)
-
-    //     this.setState({
-    //         animalPhotos: photosArray
-
-    //     });
-
-    //     console.log(this.state.animalPhotos)
-    // }
-
     handleReturnedUrl(returnedUrl, photoId) {
 
         if (photoId === 'ProfilePicture') {
@@ -290,7 +256,7 @@ class AnimalScreen extends React.Component {
         var rows = [];
         for (var i = 0; i < this.state.animalPhotos.length; i++) {
             rows.push(
-                <div className="col-md-3">
+                <div style={{ display: 'flex', flexDirection: "row", flexWrap: 'wrap', justifyContent: 'space-around'}}>
                     <DropzonePhoto animalName={this.state.animalName} background={this.state.animalPhotos[i].largeThumb} id={"Photo" + i} methodToReturnUrl={this.handleReturnedUrl} />
                 </div>
             );
