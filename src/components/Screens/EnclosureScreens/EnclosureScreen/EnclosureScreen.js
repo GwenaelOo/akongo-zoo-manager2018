@@ -39,8 +39,12 @@ class EnclosureScreen extends React.Component {
             enclosureWishListStatus: '',
             enclosureWishListDescription: '',
             enclosureDescription: '',
-            enclosureProfilePicture: 'https://www.cmsabirmingham.org/stuff/2017/01/default-placeholder.png',
-            enclosurePhotos: [{ photoURL: 'https://www.cmsabirmingham.org/stuff/2017/01/default-placeholder.png' }],
+            enclosureProfilePicture: {
+                fullPhoto: 'https://www.cmsabirmingham.org/stuff/2017/01/default-placeholder.png',
+                largeThumb: 'https://www.cmsabirmingham.org/stuff/2017/01/default-placeholder.png',
+                smallThumb: 'https://www.cmsabirmingham.org/stuff/2017/01/default-placeholder.png'
+            },
+            enclosurePhotos: [{ largeThumb: 'https://www.cmsabirmingham.org/stuff/2017/01/default-placeholder.png' }],
             logId: 0,
             EditMode: false,
         };
@@ -69,11 +73,16 @@ class EnclosureScreen extends React.Component {
 
     handleReturnedUrl(returnedUrl, photoId) {
 
-        if (photoId === 'ProfilePicture') {
+        if (photoId === 'PhotoProfil') {
 
             let photoName = ('enclosure' + photoId)
             this.setState({
-                enclosureProfilePicture: returnedUrl
+                enclosureProfilePicture: {
+                    edited: false,
+                    fullPhoto: returnedUrl,
+                    largeThumb: returnedUrl,
+                    smallThumb: returnedUrl,
+                },
             });
 
             return
@@ -81,15 +90,22 @@ class EnclosureScreen extends React.Component {
 
         let photoUID = photoId
         let photosArray = this.state.enclosurePhotos
-
         let newObject = {
+            edited: false,
             photoId: photoId,
-            photoURL: returnedUrl
+            photoURL: returnedUrl,
+            fullPhoto: returnedUrl,
+            largeThumb: returnedUrl,
+            smallThumb: returnedUrl,
         }
+
         photosArray.push(newObject)
+
         this.setState({
             enclosurePhotos: photosArray
+
         });
+
     }
 
     handleDelete() {
@@ -129,20 +145,19 @@ class EnclosureScreen extends React.Component {
             log: this.state.logId + 1
         }
 
+        enclosureData.enclosurePhotos.shift()
+
         if (this.state.EditMode === true) {
             editEnclosureInDatabase(enclosureData);
         }
         else {
-            console.log('ajout enclos')
             addNewEnclosureToDatabase(enclosureData);
         }
-
-        //database.updateFoodDataBase(enclosureData.enclosureFood);
     }
 
     readEnclosureFromFirebase(enclosureId) {
         //let userData = JSON.parse(localStorage.getItem('user'))
-
+        let newGallery = this.state.enclosurePhotos
         let self = this
 
         let reference = (userData.zooName + '/enclosuresData/' + enclosureId);
@@ -151,6 +166,12 @@ class EnclosureScreen extends React.Component {
             .then(function (snapshot) {
                 let data = snapshot.val()
 
+                for (let item in data.enclosurePhotos){
+                    let photo = data.enclosurePhotos[item]
+                    photo.newUpload = false
+                    newGallery.push(photo)
+                }
+
                 self.setState({
                     dataVersion: 1,
                     enclosureId: data.enclosureId,
@@ -158,7 +179,7 @@ class EnclosureScreen extends React.Component {
                     enclosureSpeciesList: data.enclosureSpeciesList,
                     enclosureDescription: data.enclosureDescription,
                     enclosureProfilePicture: data.enclosureProfilePicture,
-                    enclosurePhotos: data.enclosurePhotos,
+                    enclosurePhotos: newGallery,
                     EditMode: true,
                 });
             })
@@ -225,7 +246,7 @@ class EnclosureScreen extends React.Component {
         for (var i = 0; i < this.state.enclosurePhotos.length; i++) {
             rows.push(
                 <div className="col-md-3">
-                    <DropzonePhoto enclosureName={this.state.enclosureName} background={this.state.enclosurePhotos[i].photoURL} id={"Photo" + i} methodToReturnUrl={this.handleReturnedUrl} />
+                    <DropzonePhoto enclosureName={this.state.enclosureName} background={this.state.enclosurePhotos[i].largeThumb} id={"Photo" + i} methodToReturnUrl={this.handleReturnedUrl} />
                 </div>
             );
         }
@@ -267,7 +288,7 @@ class EnclosureScreen extends React.Component {
 
                                     <div className="col-md-6" >
                                         <label htmlFor="userName">Photo de profile</label>
-                                        <DropzonePhoto eventName={this.state.eventName} background={this.state.enclosureProfilePicture} id="ProfilePicture" methodToReturnUrl={this.handleReturnedUrl} />
+                                        <DropzonePhoto eventName={this.state.eventName} background={this.state.enclosureProfilePicture.largeThumb} id="PhotoProfil" methodToReturnUrl={this.handleReturnedUrl} />
                                     </div>
 
                                 </div>
@@ -306,10 +327,10 @@ class EnclosureScreen extends React.Component {
                             </fieldset>
                         </form>
 
-                        <form className="form-horizontal" onSubmit={this.handleSubmit}>
+                        {/* <form className="form-horizontal" onSubmit={this.handleSubmit}>
                             <legend>Espèces dans l'enclos</legend>
                             <SpecieList speciesList={this.state.enclosureSpeciesList} />
-                        </form>
+                        </form> */}
                     </CardWithHeader>
                 </Panel>
                 <CardWithHeader header="Validation" >

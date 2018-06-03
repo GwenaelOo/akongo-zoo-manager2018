@@ -333,16 +333,19 @@ class SpecieScreen extends React.Component {
 
         let self = this
 
+        let newGallery = this.state.speciePhotos
+
         let reference = (userData.zooName + '/speciesData/' + specieId);
 
         return firebase.database().ref(reference).once('value')
             .then(function (snapshot) {
                 let data = snapshot.val()
 
-                console.log('ajout du bouton d ajout des photos')
-
-                let placeholder = { largeThumb: 'https://www.cmsabirmingham.org/stuff/2017/01/default-placeholder.png' }
-                let gallery = data.speciePhotos.unshift(placeholder)
+                for (let item in data.speciePhotos){
+                    let photo = data.speciePhotos[item]
+                    photo.newUpload = false
+                    newGallery.push(photo)
+                }
 
                 self.setState({
                     dataVersion: data.dataVersion,
@@ -362,7 +365,7 @@ class SpecieScreen extends React.Component {
                     specieProfilePicture: data.specieProfilePicture,
                     specieEnclosure: data.specieEnclosure,
                     specieAnimals: data.specieAnimals,
-                    speciePhotos: data.speciePhotos,
+                    speciePhotos: newGallery,
                     EditMode: true,
                 });
             })

@@ -47,8 +47,12 @@ class AnimalScreen extends React.Component {
             animalBiography: '',
             animalSpecieName: this.props.location.state.specieName,
             animalPhotoEnclosure: 'https://www.cmsabirmingham.org/stuff/2017/01/default-placeholder.png',
-            animalProfilePicture: 'https://www.cmsabirmingham.org/stuff/2017/01/default-placeholder.png',
-            animalPhotos: [{ photoURL: 'https://www.cmsabirmingham.org/stuff/2017/01/default-placeholder.png' }],
+            animalProfilePicture: {
+                fullPhoto: 'https://www.cmsabirmingham.org/stuff/2017/01/default-placeholder.png',
+                largeThumb: 'https://www.cmsabirmingham.org/stuff/2017/01/default-placeholder.png',
+                smallThumb: 'https://www.cmsabirmingham.org/stuff/2017/01/default-placeholder.png'
+            },
+            animalPhotos: [{ largeThumb: 'https://www.cmsabirmingham.org/stuff/2017/01/default-placeholder.png' }],
             logId: 0,
             EditMode: false,
         };
@@ -91,28 +95,66 @@ class AnimalScreen extends React.Component {
         console.log(animalData)
     }
 
-    handleReturnedUrl(returnedUrl, photoId) {
+    // handleReturnedUrl(returnedUrl, photoId) {
 
-        console.log(photoId)
+    //     console.log(photoId)
+
+    //     if (photoId === 'ProfilePicture') {
+
+    //         let photoName = ('animal' + photoId)
+    //         this.setState({
+    //             animalProfilePicture: returnedUrl
+    //         });
+
+    //         return
+    //     }
+
+    //     console.log(this.state.animalPhotos)
+
+    //     let photoUID = photoId
+    //     let photosArray = this.state.animalPhotos
+
+    //     let newObject = {
+    //         photoId: photoId,
+    //         photoURL: returnedUrl
+    //     }
+
+    //     photosArray.push(newObject)
+
+    //     this.setState({
+    //         animalPhotos: photosArray
+
+    //     });
+
+    //     console.log(this.state.animalPhotos)
+    // }
+
+    handleReturnedUrl(returnedUrl, photoId) {
 
         if (photoId === 'ProfilePicture') {
 
             let photoName = ('animal' + photoId)
             this.setState({
-                animalProfilePicture: returnedUrl
+                animalProfilePicture: {
+                    edited: false,
+                    fullPhoto: returnedUrl,
+                    largeThumb: returnedUrl,
+                    smallThumb: returnedUrl,
+                },
             });
 
             return
         }
 
-        console.log(this.state.animalPhotos)
-
         let photoUID = photoId
         let photosArray = this.state.animalPhotos
-
         let newObject = {
+            edited: false,
             photoId: photoId,
-            photoURL: returnedUrl
+            photoURL: returnedUrl,
+            fullPhoto: returnedUrl,
+            largeThumb: returnedUrl,
+            smallThumb: returnedUrl,
         }
 
         photosArray.push(newObject)
@@ -122,7 +164,6 @@ class AnimalScreen extends React.Component {
 
         });
 
-        console.log(this.state.animalPhotos)
     }
 
     handleDelete() {
@@ -164,6 +205,8 @@ class AnimalScreen extends React.Component {
             log: this.state.logId + 1
         }
 
+        animalData.animalPhotos.shift()
+
         if (this.state.EditMode === true) {
             editAnimaleInDatabase(animalData);
         }
@@ -176,12 +219,19 @@ class AnimalScreen extends React.Component {
         //let userData = JSON.parse(localStorage.getItem('user'))
 
         let self = this
+        let newGallery = this.state.animalPhotos
 
         let reference = (userData.zooName + '/speciesData/' + specieId + '/specieAnimals/' + animalId);
 
         return firebase.database().ref(reference).once('value')
             .then(function (snapshot) {
                 let data = snapshot.val()
+
+                for (let item in data.animalPhotos){
+                    let photo = data.animalPhotos[item]
+                    photo.newUpload = false
+                    newGallery.push(photo)
+                }
 
                 self.setState({
                     dataVersion: 1,
@@ -194,7 +244,7 @@ class AnimalScreen extends React.Component {
                     animalSponsors: data.animalSponsors,
                     animalSpecieName: data.animalSpecieName,
                     animalProfilePicture: data.animalProfilePicture,
-                    animalPhotos: data.animalPhotos,
+                    animalPhotos: newGallery,
                     specieId: data.specieId,
                     EditMode: true,
                 });
@@ -241,7 +291,7 @@ class AnimalScreen extends React.Component {
         for (var i = 0; i < this.state.animalPhotos.length; i++) {
             rows.push(
                 <div className="col-md-3">
-                    <DropzonePhoto animalName={this.state.animalName} background={this.state.animalPhotos[i].photoURL} id={"Photo" + i} methodToReturnUrl={this.handleReturnedUrl} />
+                    <DropzonePhoto animalName={this.state.animalName} background={this.state.animalPhotos[i].largeThumb} id={"Photo" + i} methodToReturnUrl={this.handleReturnedUrl} />
                 </div>
             );
 
@@ -295,7 +345,7 @@ class AnimalScreen extends React.Component {
 
                                     <div className="col-md-6" >
                                         <label htmlFor="userName">Photo de profile</label>
-                                        <DropzonePhoto eventName={this.state.eventName} background={this.state.animalProfilePicture} id="ProfilePicture" methodToReturnUrl={this.handleReturnedUrl} />
+                                        <DropzonePhoto eventName={this.state.eventName} background={this.state.animalProfilePicture.largeThumb} id="ProfilePicture" methodToReturnUrl={this.handleReturnedUrl} />
                                     </div>
 
                                 </div>

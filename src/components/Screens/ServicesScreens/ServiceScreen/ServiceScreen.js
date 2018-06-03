@@ -145,21 +145,25 @@ class ServiceScreen extends React.Component {
     readServiceFromFirebase(serviceId) {
         //let userData = JSON.parse(localStorage.getItem('user'))
         var self = this
+        let newGallery = this.state.servicePhotos
 
         let reference = (userData.zooName + '/servicesData/' + serviceId);
 
         return firebase.database().ref(reference).once('value').then(function (snapshot) {
             let data = snapshot.val()
 
-            let placeholder = { largeThumb: 'https://www.cmsabirmingham.org/stuff/2017/01/default-placeholder.png' }
-            let gallery = data.servicePhotos.unshift(placeholder)
+            for (let item in data.servicePhotos){
+                let photo = data.servicePhotos[item]
+                photo.newUpload = false
+                newGallery.push(photo)
+            }
 
             self.setState({
                 dataVersion: 1,
                 serviceId: data.serviceId,
                 serviceName: data.serviceName,
                 serviceProfilePicture: data.serviceProfilePicture,
-                servicePhotos: data.servicePhotos,
+                servicePhotos: newGallery,
                 serviceDescription: data.serviceDescription,
                 EditMode: true,
             });

@@ -349,6 +349,8 @@ export function addNewEnclosureToDatabase(enclosureData) {
     let enclosureUID = enclosureData.enclosureName.toUpperCase().replace(/ /g, "") + (Math.floor(Date.now() / 1000))
     let reference = (userData.zooName + '/enclosuresData/' + enclosureUID);
 
+    console.log(enclosureData.enclosurePhotos)
+
     if (enclosureData.enclosureProfilePicture === '') {
         enclosureData.enclosureProfilePicture = 'http://thedroideffect.com/wp-content/themes/thedroideffect/images/missing-image-640x360.png'
     }
@@ -398,6 +400,8 @@ export function editEnclosureInDatabase(enclosureData) {
         enclosureData.enclosureProfilePicture = 'http://thedroideffect.com/wp-content/themes/thedroideffect/images/missing-image-640x360.png'
     }
 
+    console.log(enclosureData.enclosurePhotos)
+
     firebase.database().ref(reference).update({
         dataVersion: 1,
         enclosureId: enclosureData.enclosureId,
@@ -413,27 +417,6 @@ export function editEnclosureInDatabase(enclosureData) {
         dataType: 'enclosure',
         zooName: userData.zooName,
     })
-
-        // ********************
-        // Ecriture du log
-        // ********************
-
-        //  .then(function () {
-        //      firebase.firestore()
-        //          .collection(userData.zooName + '-log')
-        //          .doc("log-" + Date.now())
-        //          .set({
-        //              action: "create",
-        //              dataType: 'enclosure',
-        //              elementId: enclosureData.enclosureId,
-        //              elementName: enclosureData.enclosureName,
-        //              actionMadeById: userData.userId,
-        //              actionMadeByName: userData.firstname,
-        //              actionDate: Date(),
-        //              actionTimestamp: Date.now(),
-        //              zooName: userData.zooName
-        //          })
-        //  })
         .catch(function (error) {
             console.error("Error writing document: ", error);
         }).then(function () {
@@ -450,8 +433,6 @@ export function editEnclosureInDatabase(enclosureData) {
         .catch(function (error) {
             console.error("Error writing document: ", error);
         });
-
-
 }
 
 export function deleteEnclosureInDatabase(enclosureData) {
@@ -648,7 +629,7 @@ export function deleteAnimationInDatabase(animationData) {
         });
 }
 
-/// Gestion des animations ///
+/// Gestion des évènements ///
 
 export function addNewEventToDatabase(eventData) {
 

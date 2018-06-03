@@ -154,22 +154,24 @@ class EventScreen extends React.Component {
     readEventFromFirebase(eventId) {
         //let userData = JSON.parse(localStorage.getItem('user'))
         var self = this
-
+        let newGallery = this.state.eventPhotos
         let reference = (userData.zooName + '/eventsData/' + eventId);
 
-        console.log(reference)
 
         return firebase.database().ref(reference).once('value').then(function (snapshot) {
             let data = snapshot.val()
 
-            let placeholder = { largeThumb: 'https://www.cmsabirmingham.org/stuff/2017/01/default-placeholder.png' }
-            let gallery = data.eventPhotos.unshift(placeholder)
+            for (let item in data.eventPhotos){
+                let photo = data.eventPhotos[item]
+                photo.newUpload = false
+                newGallery.push(photo)
+            }
 
             self.setState({
                 dataVersion: 1,
                 eventId: data.eventId,
                 eventProfilePicture: data.eventProfilePicture,
-                eventPhotos: data.eventPhotos,
+                eventPhotos: newGallery,
                 eventName: data.eventName,
                 eventDescription: data.eventDescription,
                 EditMode: true,

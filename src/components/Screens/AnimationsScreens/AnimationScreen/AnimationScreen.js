@@ -82,13 +82,8 @@ class AnimationScreen extends React.Component {
             return
         }
 
-        console.log(this.state.animationPhotos)
-
         let photoUID = photoId
         let photosArray = this.state.animationPhotos
-
-        console.log(photosArray.length)
-
         let newObject = {
             edited: false,
             photoId: photoId,
@@ -105,7 +100,6 @@ class AnimationScreen extends React.Component {
 
         });
 
-        console.log(this.state.animationPhotos.slice(1))
     }
 
     handleDelete() {
@@ -141,6 +135,11 @@ class AnimationScreen extends React.Component {
             log: this.state.logId + 1
         }
 
+        animationData.animationPhotos.shift()
+
+        console.log('nombre de photos envoyée ', animationData.animationPhotos)
+        console.log(animationData.animationPhotos)
+
         if (this.state.EditMode === true) {
             editAnimationInDatabase(animationData)
         }
@@ -152,28 +151,31 @@ class AnimationScreen extends React.Component {
     readAnimationFromFirebase(animationId) {
         //let userData = JSON.parse(localStorage.getItem('user'))
         var self = this
+        let newGallery = this.state.animationPhotos
 
         let reference = (userData.zooName + '/animationsData/' + animationId);
 
         return firebase.database().ref(reference).once('value').then(function (snapshot) {
             let data = snapshot.val()
-
-            let placeholder = { largeThumb: 'https://www.cmsabirmingham.org/stuff/2017/01/default-placeholder.png' }
-            let gallery = data.animationPhotos.unshift(placeholder)
-
-            console.log(data)
+           
+            for (let item in data.animationPhotos){
+                let photo = data.animationPhotos[item]
+                photo.newUpload = false
+                newGallery.push(photo)
+            }
 
             self.setState({
                 dataVersion: 1,
                 animationId: data.animationId,
                 animationProfilePicture: data.animationProfilePicture,
                 animationName: data.animationName,
-                animationPhotos: data.animationPhotos,
+                animationPhotos: newGallery,
                 animationDescription: data.animationDescription,
                 EditMode: true,
             });
         })
 
+        
     }
 
     componentWillMount() {
