@@ -8,6 +8,17 @@ class SidebarUserBlock extends Component {
         userBlockCollapse: false
     }
 
+    getUserData() {
+        let userData = JSON.parse(localStorage.getItem('user'))
+        this.setState({
+            userData: userData
+        })
+    }
+
+    componentWillMount(){
+        this.getUserData()
+    }
+   
     componentDidMount() {
         this.pubsub_token = pubsub.subscribe('toggleUserblock', () => {
             this.setState({
@@ -34,8 +45,8 @@ class SidebarUserBlock extends Component {
                        </div>
                        {/* Name and Job */}
                        <div className="user-block-info">
-                          <span className="user-block-name">Hello, Mike</span>
-                          <span className="user-block-role">Designer</span>
+                          <span className="user-block-name">Bonjour, {this.state.userData.firstname}</span>
+                          <span className="user-block-role">{this.state.userData.zooNameDisplay}</span>
                        </div>
                     </div>
                 </div>

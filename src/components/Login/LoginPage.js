@@ -2,8 +2,7 @@ import React from 'react';
 import { Grid, Row, Col, Panel, Button } from 'react-bootstrap';
 import { Router, Route, Link, History, Redirect, } from 'react-router-dom';
 import firebase from 'firebase';
-
-const nav = require("../../Nav/Nav");
+import nav from '../../Nav/Nav'
 
 class LoginPage extends React.Component {
     constructor(props) {
@@ -24,6 +23,9 @@ class LoginPage extends React.Component {
     }
 
     handleClick(){
+
+
+
         firebase.auth().signInWithEmailAndPassword(this.state.email, this.state.password).catch(function (error) {
             // Handle Errors here.
             var errorCode = error.code;
@@ -42,9 +44,7 @@ class LoginPage extends React.Component {
                 var isAnonymous = user.isAnonymous;
                 var uid = user.uid;
                 var providerData = user.providerData;
-                console.log(email, uid)
-            
-                window.location.href = nav.akongoURL + 'InitialLoading';
+                window.location.href = nav.akongoURL + 'lock';
 
             } else {
                 // User is signed out.
@@ -73,7 +73,7 @@ class LoginPage extends React.Component {
     }
 
     componentWillMount(){
-        
+        console.log(nav)
         this.signout()
         this.generateRandomBackground();
        

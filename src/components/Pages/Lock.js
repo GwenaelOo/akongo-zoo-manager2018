@@ -1,37 +1,81 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
+import firebase from 'firebase';
+import nav from '../../Nav/Nav';
 
-class Lock extends Component {
+
+class Lock extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            redirect: false,
+        };
+    }
+
+    initUser() {
+
+
+        firebase.auth().onAuthStateChanged(function (user) {
+            if (user) {
+                console.log(user.uid, 'logged')
+
+                var self = this;
+                var ref = firebase.database().ref('users/' + user.uid);
+                ref.once('value').then(function (snapshot) {
+                    let userInfos = snapshot.val();
+                    console.log('Zoo du user logué : ' + userInfos.zooName);
+
+                    let dataToStore = {
+                        userId: user.uid,
+                        city: userInfos.city,
+                        zooName: userInfos.zooName,
+                        firstname: userInfos.firstname,
+                        zooNameDisplay: userInfos.zooNameDisplay,
+                        logged: true
+                    }
+
+                    localStorage.setItem('user', JSON.stringify(dataToStore))
+
+                }, function (error) {
+                    console.error(error);
+                })
+                    .then(function (valeur) {
+                        window.location.href = nav.akongoURL + 'dashboard';
+                    }, function (raison) {
+                        // Rejet de la promesse
+                    })
+            }
+        })
+    }
+
+
+
+    componentDidMount() {
+        this.initUser()
+    }
+
+
 
     render() {
         return (
             <div className="abs-center wd-xl">
                 <div className="d-flex justify-content-center">
                     <div className="p-2">
-                        <img className="img-fluid img-thumbnail rounded-circle" src="img/user/02.jpg" alt="Avatar" width="60" height="60"/>
+                        <img className="img-fluid img-thumbnail rounded-circle" src="img/user/02.jpg" alt="Avatar" width="60" height="60" />
                     </div>
                 </div>
                 <div className="card b0">
                     <div className="card-body">
-                        <p className="text-center">Please login to unlock your screen.</p>
+                        <p className="text-center">Chargement de votre espace personnel.</p>
                         <form>
                             <div className="form-group">
                                 <div className="input-group with-focus">
-                                    <input className="form-control border-right-0" id="exampleInputEmail1" type="email" placeholder="Enter email" autoComplete="off" required/>
-                                    <div className="input-group-append">
-                                        <span className="input-group-text fa fa-lock text-muted bg-transparent border-left-0"></span>
-                                    </div>
+
+
                                 </div>
                             </div>
                             <div className="d-flex">
-                                <div className="mt-1">
-                                    <Link to="recover" className="text-muted">
-                                        <small>Forgot your password?</small>
-                                    </Link>
-                                </div>
-                                <div className="ml-auto">
-                                    <Link to="dashboard" className="btn btn-sm btn-primary">Unlock</Link>
-                                </div>
+
                             </div>
                         </form>
                     </div>
@@ -40,9 +84,9 @@ class Lock extends Component {
                     <span className="mr-2">&copy;</span>
                     <span>2018</span>
                     <span className="mx-2">-</span>
-                    <span>Angle</span>
-                    <br/>
-                    <span>Bootstrap Admin Template</span>
+                    <span>AKONGO TECHNOLOGIE</span>
+                    <br />
+                    <span></span>
                 </div>
             </div>
         );

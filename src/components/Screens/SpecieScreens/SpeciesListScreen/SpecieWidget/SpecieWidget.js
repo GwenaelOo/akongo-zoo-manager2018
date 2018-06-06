@@ -29,7 +29,7 @@ class SpecieWidget extends React.Component {
                             </div>
                             <div className="col-4">
                                 <p>Nom</p>
-                                <h3 className="m-0 text-primary">{this.props.specieData.specieName}</h3>
+                                <h3 className="m-0 text-primary">{this.props.specieData.specieName.fr}</h3>
                             </div>
                             <div className="col-4">
                                 <p>Shots</p>

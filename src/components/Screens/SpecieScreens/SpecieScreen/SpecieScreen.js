@@ -38,10 +38,7 @@ const options = [
 ]
 
 const orders = [
-    { value: 'MAMALIA', label: 'Mamifère' },
-    { value: 'MAMALIA', label: 'Poney' },
-    { value: 'MAMALIA', label: 'tanguy' },
-    { value: 'MAMALIA', label: 'ffkds' },
+    { value: 'Loading', label: 'Chargement ...' },
 ]
 
 
@@ -82,7 +79,11 @@ class SpecieScreen extends React.Component {
 
             selectedEnclosure: null,
             IUCNList: options,
-            orderList: orders,
+            ordersList: orders,
+            classesList: orders,
+            familiesList: orders,
+            specieFamily: '',
+            specieIUCNClassification : '',
             logId: 0,
             EditMode: false,
             zooFoodList: ['chargement']
@@ -95,7 +96,18 @@ class SpecieScreen extends React.Component {
     handleChange(specie) {
 
         let name = specie.target.name
-        this.setState({ [name]: specie.target.value });
+
+        if (name === 'specieName' ||
+            name === 'specieThreat' ||
+            name === 'specieDescription') {
+            this.setState({
+                [name]: {
+                    fr: specie.target.value
+                }
+            });
+        } else {
+            this.setState({ [name]: specie.target.value });
+        }
 
         let specieData = {
             specieId: this.state.specieId,
@@ -116,6 +128,7 @@ class SpecieScreen extends React.Component {
             specieEnclosure: this.state.specieEnclosure,
             speciePhotoProfil: this.state.speciePhotoProfil,
             speciePhotos: this.state.speciePhotos,
+            specieOrder2: this.state.specieOrder2
         }
 
         console.log(specieData)
@@ -129,7 +142,6 @@ class SpecieScreen extends React.Component {
         let specieData = {
             specieFood: this.state.specieFood,
         }
-
 
         console.log(specieData)
     }
@@ -185,10 +197,27 @@ class SpecieScreen extends React.Component {
         })
     }
 
-    handleSelectedChoice(newValue) {
+    handleOrderChoice(newValue) {
+        
         console.log(newValue)
         this.setState({
-            specieOrder2: newValue
+            specieOrder: newValue
+        })
+    }
+
+    handleClassChoice(newValue) {
+        
+        console.log(newValue)
+        this.setState({
+            specieClass: newValue
+        })
+    }
+
+    handleFamilyChoice(newValue) {
+        
+        console.log(newValue)
+        this.setState({
+            specieFamily: newValue
         })
     }
 
@@ -214,16 +243,11 @@ class SpecieScreen extends React.Component {
         }
     }
 
-    initSelectedList() {
-
-    }
-
     handleDelete() {
 
         let specieData = {
-            specieId: this.state.SpecieId,
-            specieName: this.state.SpecieName,
-            log: this.state.logId
+            specieId: this.state.specieId,
+            specieName: this.state.specieName
         }
 
         swal({
@@ -239,8 +263,6 @@ class SpecieScreen extends React.Component {
                 deleteSpecieFromDatabase(specieData)
             });
     }
-
-
 
     handleClick() {
         let specieData = {
@@ -263,8 +285,15 @@ class SpecieScreen extends React.Component {
             speciePhotos: this.state.speciePhotos,
             specieEnclosure: this.state.specieEnclosure,
             specieAnimals: this.state.specieAnimals,
-            log: this.state.logId + 1
+            log: this.state.logId + 1,
+
+            specieOrder2: this.state.specieOrder2,
+            specieClass2: this.state.specieClass2,
+            specieFamily: this.state.specieFamily
         }
+
+      
+        specieData.speciePhotos.shift()
 
         if (this.state.EditMode === true) {
             editSpecieInDatabase(specieData);
@@ -328,6 +357,24 @@ class SpecieScreen extends React.Component {
             })
     }
 
+    readLists() {
+
+        let self = this
+
+        let reference = ('/inputLists/');
+        let lists
+
+        return firebase.database().ref(reference).once('value')
+            .then(function (snapshot) {
+                lists = snapshot.val()
+                self.setState({
+                    ordersList: lists.ordersList,
+                    classesList: lists.classesList,
+                    familiesList: lists.familiesList
+                })
+            })
+    }
+
     readSpecieFromFirebase(specieId) {
         //let userData = JSON.parse(localStorage.getItem('user'))
 
@@ -341,7 +388,7 @@ class SpecieScreen extends React.Component {
             .then(function (snapshot) {
                 let data = snapshot.val()
 
-                for (let item in data.speciePhotos){
+                for (let item in data.speciePhotos) {
                     let photo = data.speciePhotos[item]
                     photo.newUpload = false
                     newGallery.push(photo)
@@ -372,6 +419,7 @@ class SpecieScreen extends React.Component {
     }
 
     initPage() {
+       this.readLists()
         if (this.props.location.state != undefined) {
             let self = this
             this.readSpecieFromFirebase(this.props.location.state.specieId)
@@ -382,7 +430,6 @@ class SpecieScreen extends React.Component {
             this.readEnclosureList();
         }
     }
-
 
     componentWillMount() {
         this.initPage()
@@ -435,8 +482,8 @@ class SpecieScreen extends React.Component {
         var rows = [];
         for (var i = 0; i < this.state.speciePhotos.length; i++) {
             rows.push(
-                <div style={{ display: 'flex', flexDirection: "row", flexWrap: 'wrap', justifyContent: 'space-around'}}>
-                    <DropzonePhoto specieName={this.state.specieName} background={this.state.speciePhotos[i].largeThumb} id={"Photo" + i} methodToReturnUrl={this.handleReturnedUrl} />
+                <div style={{ display: 'flex', flexDirection: "row", flexWrap: 'wrap', justifyContent: 'space-around' }}>
+                    <DropzonePhoto specieName={this.state.specieName} background={this.state.speciePhotos[i].largeThumb} id={"Photo" + i} methodToReturnUrl={this.handleReturnedUrl} handleDelete={'a faire'} />
                 </div>
             );
         }
@@ -457,7 +504,7 @@ class SpecieScreen extends React.Component {
                                                 <FormGroup>
                                                     <label className="col-sm-12 control-label">Nom de l'espèce</label>
                                                     <Col sm={10}>
-                                                        <FormControl type="text" name="specieName" placeholder="Ex. Gorilles" value={this.state.specieName} onChange={this.handleChange} className="form-control" />
+                                                        <FormControl type="text" name="specieName" placeholder="Ex. Gorilles" value={this.state.specieName.fr} onChange={this.handleChange} className="form-control" />
                                                     </Col>
                                                 </FormGroup>
                                             </fieldset>
@@ -486,13 +533,13 @@ class SpecieScreen extends React.Component {
 
                                     <div className="col-md-6" >
                                         <label htmlFor="userName">Photo de profile</label>
-                                        <DropzonePhoto eventName={this.state.eventName} background={this.state.specieProfilePicture.fullPhoto} id="ProfilePicture" methodToReturnUrl={this.handleReturnedUrl} />
+                                        <DropzonePhoto size='400px' eventName={this.state.eventName} background={this.state.specieProfilePicture.fullPhoto} id="ProfilePicture" methodToReturnUrl={this.handleReturnedUrl} />
                                     </div>
 
                                 </div>
                                 <div style={{ display: 'flex', flexDirection: 'row' }}>
                                     <div className="col-md-6">
-                                        <div className="col-md-12" >
+                                        {/* <div className="col-md-12" >
                                             <fieldset>
                                                 <FormGroup>
                                                     <label className="col-sm-12 control-label">Classe </label>
@@ -501,24 +548,40 @@ class SpecieScreen extends React.Component {
                                                     </Col>
                                                 </FormGroup>
                                             </fieldset>
-                                        </div>
+                                        </div> */}
 
-                                        {/* test selection  */}
 
                                         <div className="col-md-12" >
                                             <fieldset>
                                                 <FormGroup>
-                                                    <label className="col-sm-12 control-label">Classe </label>
+                                                    <label className="col-sm-12 control-label">Classe</label>
                                                     <Creatable
-                                                        options={this.state.orderList}
-                                                        onChange={(newValue) => this.handleSelectedChoice(newValue)}
-                                                        value={this.state.specieOrder2}
+                                                        options={this.state.classesList}
+                                                        onChange={(newValue) => this.handleClassChoice(newValue)}
+                                                        value={this.state.specieClass}
+                                                        placeholder='Ex. Mammifères'
                                                     />
                                                 </FormGroup>
                                             </fieldset>
                                         </div>
 
+
                                         <div className="col-md-12" >
+                                            <fieldset>
+                                                <FormGroup>
+                                                    <label className="col-sm-12 control-label">Ordre </label>
+                                                    <Creatable
+                                                        name='specieOrder'
+                                                        options={this.state.ordersList}
+                                                        onChange={(newValue) => this.handleOrderChoice(newValue)}
+                                                        value={this.state.specieOrder}
+                                                        placeholder='Ex. Primates'
+                                                    />
+                                                </FormGroup>
+                                            </fieldset>
+                                        </div>
+
+                                        {/* <div className="col-md-12" >
                                             <fieldset>
                                                 <FormGroup>
                                                     <label className="col-sm-12 control-label">Ordre </label>
@@ -527,14 +590,28 @@ class SpecieScreen extends React.Component {
                                                     </Col>
                                                 </FormGroup>
                                             </fieldset>
-                                        </div>
-                                        <div className="col-md-12" >
+                                        </div> */}
+                                        {/* <div className="col-md-12" >
                                             <fieldset>
                                                 <FormGroup>
                                                     <label className="col-sm-12 control-label">Famille </label>
                                                     <Col sm={10}>
                                                         <FormControl type="text" name="specieFamilly" placeholder="Ex. hominidés" value="" className="form-control" value={this.state.specieFamilly} onChange={this.handleChange} />
                                                     </Col>
+                                                </FormGroup>
+                                            </fieldset>
+                                        </div> */}
+
+                                        <div className="col-md-12" >
+                                            <fieldset>
+                                                <FormGroup>
+                                                    <label className="col-sm-12 control-label">Famille </label>
+                                                    <Creatable
+                                                        options={this.state.familiesList}
+                                                        onChange={(newValue) => this.handleFamilyChoice(newValue)}
+                                                        value={this.state.specieFamily}
+                                                        placeholder='Ex. hominidés'
+                                                    />
                                                 </FormGroup>
                                             </fieldset>
                                         </div>
@@ -544,7 +621,7 @@ class SpecieScreen extends React.Component {
                                     <div className="col-md-6">
                                         <label htmlFor="userName">Description de l'espèce</label>
                                         <Panel>
-                                            <textarea name="specieDescription" rows="12" className="form-control note-editor" value={this.state.specieDescription} onChange={this.handleChange}>
+                                            <textarea name="specieDescription" rows="12" className="form-control note-editor" value={this.state.specieDescription.fr} onChange={this.handleChange}>
                                             </textarea>
                                         </Panel>
                                     </div>
@@ -569,7 +646,7 @@ class SpecieScreen extends React.Component {
                                     <div className="col-md-6">
                                         <label htmlFor="userName">Description des menaces</label>
                                         <Panel>
-                                            <textarea name="specieThreat" rows="10" className="form-control note-editor" value={this.state.specieThreat} onChange={this.handleChange}>
+                                            <textarea name="specieThreat" rows="10" className="form-control note-editor" value={this.state.specieThreat.fr} onChange={this.handleChange}>
                                             </textarea>
                                         </Panel>
                                     </div>

@@ -1,4 +1,20 @@
+import firebase from 'firebase';
+
 let maValeure = ''
+
+const userData = {
+    zooName: 'AkongoFakeZoo',
+    userId: 'Gwen'
+}
+
+//let userData = JSON.parse(localStorage.getItem('user'))
+// var self = this
+// let data
+// let reference = (userData.zooName);
+
+// firebase.database().ref(reference).once('value').then(function (snapshot) {
+//     data = snapshot.val()
+// })
 
 
 const Menu = [
@@ -524,7 +540,7 @@ const Menu = [
     //         path: 'forum-discussion'
     //     }
     //     ]
-    //}
+    // }
 ];
 
 export default Menu;

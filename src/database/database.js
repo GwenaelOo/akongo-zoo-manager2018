@@ -5,6 +5,7 @@ import firebase from 'firebase';
 import swal from 'sweetalert';
 import nav from '../Nav/Nav'
 import RedirectTo from './RedirectTo';
+import {manageInputs} from './specieInputManagement'
 
 const userData = {
     zooName: 'AkongoFakeZoo',
@@ -19,11 +20,22 @@ export function addNewSpecieToDatabase(specieData) {
     // Ajout dans firebase 
     // ********************
 
-    let specieUID = specieData.specieName.toUpperCase().replace(/ /g, "") + (Math.floor(Date.now() / 1000))
-    let reference = (userData.zooName + '/speciesData/' + specieUID);
-
     console.log(specieData)
+   
+    manageInputs(specieData.specieOrder, specieData.specieClass, specieData.specieFamily)
 
+    let specieUID
+
+    if (specieData.specieName.fr != null) {
+        specieUID = specieData.specieName.fr.toUpperCase().replace(/ /g, "") + (Math.floor(Date.now() / 1000))
+    } else if (specieData.specieName.en != null) {
+        specieUID = specieData.specieName.us.toUpperCase().replace(/ /g, "") + (Math.floor(Date.now() / 1000))
+    } else {
+        specieUID = specieData.specieLatinName.toUpperCase().replace(/ /g, "") + (Math.floor(Date.now() / 1000))
+    }
+
+    let reference = (userData.zooName + '/speciesData/' + specieUID);
+   
     if (specieData.specieProfilePicture === '') {
         specieData.specieProfilePicture = 'http://thedroideffect.com/wp-content/themes/thedroideffect/images/missing-image-640x360.png'
     }
@@ -36,7 +48,7 @@ export function addNewSpecieToDatabase(specieData) {
         specieEnglishName: specieData.specieEnglishName,
         specieClass: specieData.specieClass,
         specieOrder: specieData.specieOrder,
-        specieFamilly: specieData.specieFamilly,
+        specieFamily: specieData.specieFamily,
         specieIUCNClassification: specieData.specieIUCNClassification,
         specieThreat: specieData.specieThreat,
         specieDescription: specieData.specieDescription,
@@ -57,11 +69,10 @@ export function addNewSpecieToDatabase(specieData) {
         }).then(function () {
             swal({
                 title: "Good job!",
-                text: "L'espèce " + specieData.specieName + " a été ajoutée à votre Zoo",
+                text: "L'espèce " + specieData.specieName.fr + " a été ajoutée à votre Zoo",
                 type: "success",
                 showCancelButton: false
             }, function () {
-                // Redirect the user
                 window.location.href = nav.akongoURL + 'speciesList';
             })
         })
@@ -72,6 +83,7 @@ export function addNewSpecieToDatabase(specieData) {
 
 export function editSpecieInDatabase(specieData) {
 
+    manageInputs(specieData.specieOrder, specieData.specieClass, specieData.specieFamily)
 
     let reference = (userData.zooName + '/speciesData/' + specieData.specieId);
     let specieAnimals
@@ -94,7 +106,7 @@ export function editSpecieInDatabase(specieData) {
         specieEnglishName: specieData.specieEnglishName,
         specieClass: specieData.specieClass,
         specieOrder: specieData.specieOrder,
-        specieFamilly: specieData.specieFamilly,
+        specieFamily: specieData.specieFamily,
         specieThreat: specieData.specieThreat,
         specieAnimals: specieAnimals,
         specieIUCNClassification: specieData.specieIUCNClassification,
@@ -137,7 +149,7 @@ export function editSpecieInDatabase(specieData) {
         }).then(function () {
             swal({
                 title: "Good job!",
-                text: "L'espèce " + specieData.specieName + " a été ajoutée à votre Zoo",
+                text: "L'espèce " + specieData.specieName.fr + " a été ajoutée à votre Zoo",
                 type: "success",
                 showCancelButton: false
             }, function () {
@@ -162,7 +174,7 @@ export function deleteSpecieFromDatabase(specieData) {
         }).then(function () {
             swal({
                 title: "Good job!",
-                text: "L'individu " + specieData.specieName + " a été correctement supprimé à votre Zoo",
+                text: "L'individu " + specieData.specieName.fr + " a été correctement supprimé à votre Zoo",
                 type: "success",
                 showCancelButton: false
             }, function () {
@@ -187,25 +199,7 @@ export function addNewAnimalToDatabase(animalData, specieId) {
     let list
     let reference
 
-    // firebase.database().ref(reference).once('value')
-    //     .then(function (snapshot) {
-    //         console.log('snapshot')
-    //         let data = snapshot.val()
-    //         if (data.specieAnimals != undefined) {
-    //             list = data.specieAnimals
-    //         } else {
-    //             list = []
-    //         }
-
-    //     })
-    //     .then(function () {
-    //         console.log('vieux array')
-
-    //         console.log(list)
-
     let animalUID = animalData.animalName.toUpperCase().replace(/ /g, "") + (Math.floor(Date.now() / 1000))
-
-    //reference = (userData.zooName + '/speciesData/' + specieId);
 
 
     if (animalData.animalProfilePicture === '') {

@@ -11,6 +11,7 @@ import swal from 'sweetalert'
 import { Typeahead } from 'react-bootstrap-typeahead';
 import firebase from 'firebase';
 import { addNewEventToDatabase, deleteEventInDatabase, editEventInDatabase } from '../../../../database/database'
+import DropzonePhotoDropDown from '../../../customComponents/Dropzone/DropzonePhotoDropDown';
 
 // Create a single card with header text as attribute
 const CardWithHeader = props => (
@@ -142,6 +143,8 @@ class EventScreen extends React.Component {
             eventName: this.state.eventName,
             log: this.state.logId + 1
         }
+
+        eventData.eventPhotos.shift()
 
         if (this.state.EditMode === true) {
             editEventInDatabase(eventData);

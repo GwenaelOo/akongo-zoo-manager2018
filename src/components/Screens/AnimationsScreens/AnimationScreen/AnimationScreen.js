@@ -44,6 +44,7 @@ class AnimationScreen extends React.Component {
             logId: 0,
             dataVersion: 0,
             EditMode: false,
+
         };
         this.handleChange = this.handleChange.bind(this);
         this.handleReturnedUrl = this.handleReturnedUrl.bind(this);
@@ -135,9 +136,6 @@ class AnimationScreen extends React.Component {
         }
 
         animationData.animationPhotos.shift()
-
-        console.log('nombre de photos envoyée ', animationData.animationPhotos)
-        console.log(animationData.animationPhotos)
 
         if (this.state.EditMode === true) {
             editAnimationInDatabase(animationData)

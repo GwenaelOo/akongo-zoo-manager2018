@@ -1,7 +1,9 @@
 import React from 'react';
 import { Grid, Row, Col, Panel, Button } from 'react-bootstrap';
 import { Router, Route, Link, History } from 'react-router-dom';
-const nav = require("../Nav/Nav");
+import firebase from 'firebase';
+import nav from '../../Nav/Nav';
+
 
 class InitialLoading extends React.Component {
     constructor(props) {
@@ -12,6 +14,9 @@ class InitialLoading extends React.Component {
     }
 
     initUser() {
+
+      
+
         firebase.auth().onAuthStateChanged(function (user) {
             if (user) {
                 console.log(user.uid, 'logged')
@@ -21,7 +26,7 @@ class InitialLoading extends React.Component {
                 ref.once('value').then(function (snapshot) {
                     let userInfos = snapshot.val();
                     console.log('Zoo du user logué : ' + userInfos.zooName);
-
+                   
                     let dataToStore = {
                         userId: user.uid,
                         city: userInfos.city,
@@ -36,7 +41,8 @@ class InitialLoading extends React.Component {
                 }, function (error) {
                     console.error(error);
                 }).then(function (valeur) {
-                    window.location.href = nav.akongoURL + 'Dashboard';
+                    
+                   // window.location.href = nav.akongoURL + 'dashboard';
                 }, function (raison) {
                     // Rejet de la promesse
                 });
@@ -46,6 +52,9 @@ class InitialLoading extends React.Component {
 
    
     componentDidMount() {
+
+        alert('omg')
+        
         this.initUser()    
     }
     

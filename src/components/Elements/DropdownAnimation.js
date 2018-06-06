@@ -6,14 +6,17 @@ import { Row, Col, Dropdown, DropdownMenu, DropdownToggle, DropdownItem } from '
 
 class DropdownBox extends Component  {
     state = { ddOpen: false }
-    toggle = () => this.setState({
-            ddOpen: !this.state.ddOpen
+    toggleOn = () => this.setState({
+            ddOpen: true
     })
+    toggleOff = () => this.setState({
+        ddOpen: false
+})
     render() {
         const ddClass = classNames('animated', this.props.title);
         return (
             <div className="box-placeholder">
-                <Dropdown isOpen={this.state.ddOpen} toggle={this.toggle}>
+                <Dropdown isOpen={this.state.ddOpen} onMouseOver={this.toggleOn} onMouseLeave={this.toggleOff}>
                     <DropdownToggle>
                         {this.props.title}
                     </DropdownToggle>
@@ -50,4 +53,4 @@ const DropdownAnimation = props => {
     );
 }
 
-export default DropdownAnimation;
+export default DropdownBox;

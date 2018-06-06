@@ -118,6 +118,7 @@ import BlogArticleView from './components/Blog/BlogArticleView';
 import ForumCategories from './components/Forum/ForumCategories';
 import ForumTopic from './components/Forum/ForumTopics';
 import ForumDiscussion from './components/Forum/ForumDiscussion';
+import InitialLoading from './components/Login/InitialLoading';
 
 
 // List of routes that uses the page layout
@@ -155,7 +156,8 @@ const Routes = ({ location }) => {
             // Page Layout component 
             <BasePage>
                 <Switch location={location}>
-                    <Route path="/loginPage" component={LoginPage} />
+                    <Route path="/LoginPage" component={LoginPage} />
+                    <Route path="/InitialLoading" component={InitialLoading} />
                     <Route path="/register" component={Register} />
                     <Route path="/recover" component={Recover} />
                     <Route path="/lock" component={Lock} />
@@ -198,8 +200,7 @@ const Routes = ({ location }) => {
                                 <Route path="/EnclosureList" component={EnclosureList} />
 
 
-                                
-
+        
                                 {/*Dashboard*/}
                                 <Route path="/dashboard" component={DashboardV1} />
                                 <Route path="/dashboardv2" component={DashboardV2} />
@@ -287,7 +288,7 @@ const Routes = ({ location }) => {
                                 <Route path="/vote-links" component={VoteLinks} />
                                 
                              
-                                <Redirect to="/dashboard" />
+                                <Redirect to="/loginPage" />
 
                             </Switch>
                         </div>

@@ -2,6 +2,7 @@ import Dropzone from 'react-dropzone'
 import React, { Component } from 'react';
 import axios from 'axios'
 import config from '../../../config/config'
+import DropzonePhotoDropDown from './DropzonePhotoDropDown';
 
 class DropzonePhoto extends React.Component {
     constructor(props) {
@@ -10,7 +11,9 @@ class DropzonePhoto extends React.Component {
         this.state = {
             files: [],
             background: this.props.background,
-            returnedURL: ''
+            returnedURL: '',
+            displayEdit: false,
+            size: '300px'
         }  
     }
 
@@ -50,7 +53,8 @@ class DropzonePhoto extends React.Component {
 
                 this.setState({
                     background: data.url,
-                    returnedUrl : data.url
+                    returnedUrl : data.url,
+                    displayEdit: true
                 });
             })
         });
@@ -61,13 +65,22 @@ class DropzonePhoto extends React.Component {
         });
     }
 
+    componentWillMount(){
+        if (this.props.size){
+            console.log('recuperation de la taille')
+            this.setState({
+                size: this.props.size
+            })
+        }
+    }
+
     render() {
 
         let style = {
             'backgroundImage': 'url(' + this.state.background + ')',
-            'height': '300px',
-            'width': '300px',
-            'backgroundSize': '300px 300px',
+            'height': this.state.size,
+            'width': this.state.size,
+            'backgroundSize': this.state.size,
             'borderRadius': '10px',
             'margin': '10px 10px 10px 10px'
         }
@@ -76,6 +89,7 @@ class DropzonePhoto extends React.Component {
             <section>
                 <div className="dropzone">
                     <Dropzone onDrop={this.onDrop.bind(this)} style={style}>
+                    <DropzonePhotoDropDown displayEdit={this.state.displayEdit} />
                     </Dropzone>
                 </div>
               

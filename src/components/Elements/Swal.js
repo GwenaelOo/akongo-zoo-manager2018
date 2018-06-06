@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 // Sweet Alert (global access for other scripts)
 import 'sweetalert/dist/sweetalert.css';
 import swal from 'sweetalert';
+import { withRouter } from 'react-router-dom';
 
 /**
  * Wrapper component for sweetalert plugin

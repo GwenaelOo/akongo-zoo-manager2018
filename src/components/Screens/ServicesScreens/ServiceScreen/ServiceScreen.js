@@ -134,6 +134,8 @@ class ServiceScreen extends React.Component {
             log: this.state.logId + 1
         }
 
+        serviceData.servicePhotos.shift()
+
         if (this.state.EditMode === true) {
             editServiceInDatabase(serviceData)
         }

@@ -66,6 +66,9 @@ class BlogArticleView extends Component {
     }
 
     render() {
+
+        console.log(this.state.editorState)
+
         return (
             <ContentWrapper>
                 <div className="content-heading">New Article</div>
