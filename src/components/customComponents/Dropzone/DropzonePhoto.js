@@ -14,7 +14,7 @@ class DropzonePhoto extends React.Component {
             returnedURL: '',
             displayEdit: false,
             editMode : this.props.editMode,
-            size: '300px'
+            size: this.props.size
         }
     }
 
@@ -84,7 +84,7 @@ class DropzonePhoto extends React.Component {
             'backgroundImage': 'url(' + this.state.background + ')',
             'height': this.state.size,
             'width': this.state.size,
-            'backgroundSize': this.state.size,
+            'backgroundSize': `auto ${this.state.size}`,
             'borderRadius': '10px',
             'margin': '10px 10px 10px 10px'
         }
