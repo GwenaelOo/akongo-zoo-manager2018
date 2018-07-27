@@ -5,10 +5,12 @@ import { Tabs, Tab } from 'react-bootstrap'
 class ServiceWidget extends React.Component {
 
 
+
     handleEditClic(specieId) {
 
     }
     render() {
+        
         return (
             <div className="col-xl-4">
             {/* START card */}

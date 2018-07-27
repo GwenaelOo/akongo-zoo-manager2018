@@ -37,6 +37,7 @@ function manageOrder(ordersList, order) {
                 console.log('osef')
             }
             else {
+                order.id = Date.now()
                 ordersList.push(order)
 
                 firebase.database().ref('/inputLists/').update({
@@ -92,7 +93,7 @@ function manageClasses(classesList, newClass) {
             console.log('osef')
         }
         else {
-
+            newClass.id = Date.now()
             classesList.push(newClass)
 
             firebase.database().ref('/inputLists/').update({
@@ -144,8 +145,9 @@ function manageFamilies(familiesList, newFamily) {
             console.log('osef')
         }
         else {
-            familiesList.push(newFamily)
 
+            newFamily.id = Date.now()
+            familiesList.push(newFamily)
             firebase.database().ref('/inputLists/').update({
                 ['familiesList']: familiesList
             })

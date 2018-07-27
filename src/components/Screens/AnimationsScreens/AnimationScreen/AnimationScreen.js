@@ -23,10 +23,8 @@ const CardWithHeader = props => (
 
 const userId = "gwen"
 const animationData = {}
-const userData = {
-    zooName: 'AkongoFakeZoo',
-    userId: 'Gwen'
-}
+
+const userData = JSON.parse(localStorage.getItem('user'))
 
 class AnimationScreen extends React.Component {
     constructor(props) {

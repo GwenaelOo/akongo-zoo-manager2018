@@ -14,10 +14,10 @@ class AnimalWidget extends React.Component {
                             specieId: this.props.animalData.specieId,
                          }
                     }}>
-                    <div className="card-body text-center bg-center" style={{ opacity: 0.7, backgroundImage: `url(${this.props.animalData.animalPhotoEnclosure})` }}>
+                    <div className="card-body text-center bg-center" style={{ opacity: 0.7, backgroundImage: `url(${this.props.animalData.animalPhotoEnclosure.largeThumb})` }}>
                         <div className="row">
                             <div className="col-12 text-white">
-                                <img className="img-thumbnail circle thumb128" src={this.props.animalData.animalProfilePicture} alt="Demo" />
+                                <img className="img-thumbnail circle thumb128" src={this.props.animalData.animalProfilePicture.largeThumb} alt="Demo" />
                                 <h3 className="m-0">{this.props.animalData.animalName}</h3>
                                 <p className="m-0">
                                     <em className="fa fa-twitter fa-fw"></em></p>

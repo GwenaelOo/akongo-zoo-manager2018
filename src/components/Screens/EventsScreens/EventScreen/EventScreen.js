@@ -23,10 +23,7 @@ const CardWithHeader = props => (
 
 const userId = "gwen"
 const eventData = {}
-const userData = {
-    zooName: 'AkongoFakeZoo',
-    userId: 'Gwen'
-}
+const userData = JSON.parse(localStorage.getItem('user'))
 
 
 class EventScreen extends React.Component {

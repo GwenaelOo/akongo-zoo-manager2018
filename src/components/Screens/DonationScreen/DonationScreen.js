@@ -20,6 +20,7 @@ const CardWithHeader = props => (
 const userId = "gwen"
 const donationData = {}
 
+const userData = JSON.parse(localStorage.getItem('user'))
 
 class DonationScreen extends React.Component {
     constructor(props) {

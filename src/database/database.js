@@ -7,10 +7,9 @@ import nav from '../Nav/Nav'
 import RedirectTo from './RedirectTo';
 import {manageInputs} from './specieInputManagement'
 
-const userData = {
-    zooName: 'AkongoFakeZoo',
-    userId: 'Gwen'
-}
+
+const userData = JSON.parse(localStorage.getItem('user'))
+
 
 // Gestion des espèces /// 
 
@@ -25,6 +24,7 @@ export function addNewSpecieToDatabase(specieData) {
     manageInputs(specieData.specieOrder, specieData.specieClass, specieData.specieFamily)
 
     let specieUID
+    
 
     if (specieData.specieName.fr != null) {
         specieUID = specieData.specieName.fr.toUpperCase().replace(/ /g, "") + (Math.floor(Date.now() / 1000))
@@ -73,7 +73,7 @@ export function addNewSpecieToDatabase(specieData) {
                 type: "success",
                 showCancelButton: false
             }, function () {
-                window.location.href = nav.akongoURL + 'speciesList';
+                window.location.href = nav.akongoURL + 'SpecieListScreen';
             })
         })
         .catch(function (error) {
@@ -154,7 +154,7 @@ export function editSpecieInDatabase(specieData) {
                 showCancelButton: false
             }, function () {
                 // Redirect the user
-                window.location.href = nav.akongoURL + 'speciesList';
+                window.location.href = nav.akongoURL + 'SpecieListScreen';
             })
         })
         .catch(function (error) {
@@ -179,7 +179,7 @@ export function deleteSpecieFromDatabase(specieData) {
                 showCancelButton: false
             }, function () {
                 // Redirect the user
-                window.location.href = nav.akongoURL + 'speciesList';
+                window.location.href = nav.akongoURL + 'SpecieListScreen';
             })
         })
         .catch(function (error) {
@@ -241,7 +241,7 @@ export function addNewAnimalToDatabase(animalData, specieId) {
                 showCancelButton: false
             }, function () {
                 // Redirect the user
-                window.location.href = nav.akongoURL + 'animalsList';
+                window.location.href = nav.akongoURL + 'SpecieListScreen';
             })
         })
         .catch(function (error) {
@@ -292,7 +292,7 @@ export function editAnimaleInDatabase(animalData) {
                 showCancelButton: false
             }, function () {
                 // Redirect the user
-                window.location.href = nav.akongoURL + 'speciesList';
+                window.location.href = nav.akongoURL + 'SpecieListScreen';
             })
         })
         .catch(function (error) {
@@ -327,7 +327,7 @@ export function deleteAnimalFromDatabase(animalData) {
                 showCancelButton: false
             }, function () {
                 // Redirect the user
-                window.location.href = nav.akongoURL + 'speciesList';
+                window.location.href = nav.akongoURL + 'SpecieListScreen';
             })
         })
         .catch(function (error) {

@@ -22,10 +22,7 @@ const CardWithHeader = props => (
 
 const userId = "gwen"
 const enclosureData = {}
-const userData = {
-    zooName: 'AkongoFakeZoo',
-    userId: 'Gwen'
-}
+const userData = JSON.parse(localStorage.getItem('user'))
 
 class EnclosureScreen extends React.Component {
     constructor(props) {

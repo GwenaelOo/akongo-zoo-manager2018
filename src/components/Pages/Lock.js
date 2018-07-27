@@ -14,15 +14,16 @@ class Lock extends React.Component {
 
     initUser() {
 
-
         firebase.auth().onAuthStateChanged(function (user) {
             if (user) {
                 console.log(user.uid, 'logged')
-
+                
                 var self = this;
                 var ref = firebase.database().ref('users/' + user.uid);
+            
                 ref.once('value').then(function (snapshot) {
                     let userInfos = snapshot.val();
+                    console.log(userInfos)
                     console.log('Zoo du user logué : ' + userInfos.zooName);
 
                     let dataToStore = {

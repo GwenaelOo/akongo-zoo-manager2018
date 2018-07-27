@@ -22,10 +22,7 @@ const CardWithHeader = props => (
 
 const userId = "gwen"
 const serviceData = {}
-const userData = {
-    zooName: 'AkongoFakeZoo',
-    userId: 'Gwen'
-}
+const userData = JSON.parse(localStorage.getItem('user'))
 
 class ServiceScreen extends React.Component {
     constructor(props) {

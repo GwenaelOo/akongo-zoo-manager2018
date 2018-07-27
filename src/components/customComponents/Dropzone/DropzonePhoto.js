@@ -7,22 +7,23 @@ import DropzonePhotoDropDown from './DropzonePhotoDropDown';
 class DropzonePhoto extends React.Component {
     constructor(props) {
         super(props)
-        
+
         this.state = {
             files: [],
             background: this.props.background,
             returnedURL: '',
             displayEdit: false,
+            editMode : this.props.editMode,
             size: '300px'
-        }  
+        }
     }
 
     componentWillReceiveProps(nextProps) {
-        
+
         if (nextProps.background !== this.state.background) {
             this.setState({ background: nextProps.background });
-            }
-        
+        }
+
         if (nextProps.background === '') {
             this.setState({ background: 'http://res.cloudinary.com/akongo/image/upload/v1512762269/test/mmpjwr0yxwuwx7soyzq6.png' })
         }
@@ -32,7 +33,7 @@ class DropzonePhoto extends React.Component {
         this.setState({
             files,
             background: 'http://www.akongo.fr/assets/ico/Spin.gif'
-        });        
+        });
 
         const uploaders = files.map(file => {
             // Initial FormData
@@ -53,20 +54,21 @@ class DropzonePhoto extends React.Component {
 
                 this.setState({
                     background: data.url,
-                    returnedUrl : data.url,
-                    displayEdit: true
+                    returnedUrl: data.url,
+                    displayEdit: true,
+                    hasBeenUploaded: true
                 });
             })
         });
         // Once all the files are uploaded 
         axios.all(uploaders).then(() => {
-    
+
             this.props.methodToReturnUrl(this.state.returnedUrl, this.props.id);
         });
     }
 
-    componentWillMount(){
-        if (this.props.size){
+    componentWillMount() {
+        if (this.props.size) {
             console.log('recuperation de la taille')
             this.setState({
                 size: this.props.size
@@ -76,6 +78,8 @@ class DropzonePhoto extends React.Component {
 
     render() {
 
+        console.log(this.state.editMode)
+
         let style = {
             'backgroundImage': 'url(' + this.state.background + ')',
             'height': this.state.size,
@@ -84,15 +88,28 @@ class DropzonePhoto extends React.Component {
             'borderRadius': '10px',
             'margin': '10px 10px 10px 10px'
         }
-        
+
+        // if (this.state.hasBeenUploaded === true || this.props.editMode === true) {
+
+        //     console.log('nouveau style')
+        //     console.log(this.state.size)
+        //  style = {
+        //         'backgroundImage': 'url(' + this.state.background + ')',
+        //         'height': this.props.size,
+        //         'width': this.props.size,
+        //         'backgroundSize': '400px 400px',
+        //         'borderRadius': '10px',
+        //         'margin': '10px 10px 10px 10px'
+        //     }
+        // }
         return (
             <section>
                 <div className="dropzone">
                     <Dropzone onDrop={this.onDrop.bind(this)} style={style}>
-                    <DropzonePhotoDropDown displayEdit={this.state.displayEdit} />
+                        <DropzonePhotoDropDown displayEdit={this.state.displayEdit} />
                     </Dropzone>
                 </div>
-              
+
             </section>
         );
     }

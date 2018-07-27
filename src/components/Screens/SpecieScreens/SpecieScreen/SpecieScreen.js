@@ -38,16 +38,11 @@ const options = [
 ]
 
 const orders = [
-    { value: 'Loading', label: 'Chargement ...' },
+    { value: 'Loading', label: 'Chargement ...' }
 ]
 
-
-const userId = "gwen"
 const specieData = {}
-const userData = {
-    zooName: 'AkongoFakeZoo',
-    userId: 'Gwen'
-}
+const userData = JSON.parse(localStorage.getItem('user'))
 
 class SpecieScreen extends React.Component {
     constructor(props) {
@@ -74,7 +69,12 @@ class SpecieScreen extends React.Component {
             },
             speciePhotos: [{ largeThumb: 'https://www.cmsabirmingham.org/stuff/2017/01/default-placeholder.png' }],
             enclosureList: null,
-            specieEnclosure: '',
+            specieEnclosure: {
+                enclosureProfilePicture:{
+                    largeThumb : '',
+                    enlusoreName : '',
+                }
+            } ,
             specieEnclosurePhoto: 'https://www.cmsabirmingham.org/stuff/2017/01/default-placeholder.png',
 
             selectedEnclosure: null,
@@ -367,6 +367,7 @@ class SpecieScreen extends React.Component {
         return firebase.database().ref(reference).once('value')
             .then(function (snapshot) {
                 lists = snapshot.val()
+
                 self.setState({
                     ordersList: lists.ordersList,
                     classesList: lists.classesList,
@@ -433,6 +434,7 @@ class SpecieScreen extends React.Component {
 
     componentWillMount() {
         this.initPage()
+        console.log(this.state.specieEnclosure.enclosureProfilePicture)
     }
 
     render() {
@@ -463,7 +465,7 @@ class SpecieScreen extends React.Component {
             <div className="card">
                 <div className="row row-flush">
                     <div className="col-8">
-                        <img className="img-fluid" src={this.state.specieEnclosure.enclosureProfilePicture} alt="Demo" />
+                        <img className="img-fluid" src={this.state.specieEnclosure.enclosureProfilePicture.largeThumb} alt="Demo" />
                     </div>
                     <div className="col-4 bg-info d-flex align-items-center justify-content-center">
                         <div className="text-center">
@@ -483,14 +485,12 @@ class SpecieScreen extends React.Component {
         for (var i = 0; i < this.state.speciePhotos.length; i++) {
             rows.push(
                 <div style={{ display: 'flex', flexDirection: "row", flexWrap: 'wrap', justifyContent: 'space-around' }}>
-                    <DropzonePhoto specieName={this.state.specieName} background={this.state.speciePhotos[i].largeThumb} id={"Photo" + i} methodToReturnUrl={this.handleReturnedUrl} handleDelete={'a faire'} />
+                    <DropzonePhoto size='300px' specieName={this.state.specieName} editMode={this.state.EditMode} background={this.state.speciePhotos[i].largeThumb} id={"Photo" + i} methodToReturnUrl={this.handleReturnedUrl} handleDelete={'a faire'} />
                 </div>
             );
         }
 
-        return (
-
-
+        return (  
             <ContentWrapper>
                 <Panel>
                     <CardWithHeader header="">

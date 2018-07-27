@@ -6,10 +6,6 @@ import { Tabs, Tab } from 'react-bootstrap'
 
 class ServiceList extends React.Component {
 
-    componentDidMount() {
-
-    }
-
     render() {
 
         let services = this.props.servicesList;

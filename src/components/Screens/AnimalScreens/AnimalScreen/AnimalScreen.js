@@ -22,10 +22,7 @@ const CardWithHeader = props => (
 
 const userId = "gwen"
 const animalData = {}
-const userData = {
-    zooName: 'AkongoFakeZoo',
-    userId: 'Gwen'
-}
+const userData = JSON.parse(localStorage.getItem('user'))
 
 class AnimalScreen extends React.Component {
     constructor(props) {
@@ -192,6 +189,8 @@ class AnimalScreen extends React.Component {
         return firebase.database().ref(reference).once('value')
             .then(function (snapshot) {
                 let data = snapshot.val()
+
+                console.log(data)
 
                 for (let item in data.animalPhotos){
                     let photo = data.animalPhotos[item]

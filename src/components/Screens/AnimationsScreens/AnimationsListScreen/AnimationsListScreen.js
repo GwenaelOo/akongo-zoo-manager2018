@@ -6,10 +6,7 @@ import { Tabs, Tab } from 'react-bootstrap';
 import firebase from 'firebase';
 
 
-const userData = {
-    zooName: 'AkongoFakeZoo',
-    userId: 'Gwen'
-}
+const userData = JSON.parse(localStorage.getItem('user'))
 
 class AnimationsListScreen extends React.Component {
     constructor(props) {
