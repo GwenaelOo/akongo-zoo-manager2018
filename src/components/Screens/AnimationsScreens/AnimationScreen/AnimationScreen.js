@@ -13,6 +13,11 @@ import { Typeahead } from 'react-bootstrap-typeahead';
 import firebase from 'firebase';
 import { addNewAnimationToDatabase, editAnimationInDatabase, deleteAnimationInDatabase } from '../../../../database/database'
 
+import Datetime from 'react-datetime';
+import 'react-datetime/css/react-datetime.css';
+
+import moment from 'moment';
+  
 // Create a single card with header text as attribute
 const CardWithHeader = props => (
     <Card className="card-default">
@@ -39,12 +44,14 @@ class AnimationScreen extends React.Component {
             },
             animationPhotos: [{ largeThumb: 'https://www.cmsabirmingham.org/stuff/2017/01/default-placeholder.png' }],
             animationDescription: '',
+            animationStartTime: moment(),
             logId: 0,
             dataVersion: 0,
             EditMode: false,
 
         };
         this.handleChange = this.handleChange.bind(this);
+        this.handleTimeChange = this.handleTimeChange.bind(this);
         this.handleReturnedUrl = this.handleReturnedUrl.bind(this);
     }
 
@@ -121,7 +128,7 @@ class AnimationScreen extends React.Component {
                 deleteAnimationInDatabase(animationData)
             });
     }
- 
+
     handleClick() {
         let animationData = {
             dataVersion: this.state.dataVersion + 1,
@@ -130,6 +137,7 @@ class AnimationScreen extends React.Component {
             animationPhotos: this.state.animationPhotos,
             animationDescription: this.state.animationDescription,
             animationName: this.state.animationName,
+            animationStartTime: this.state.animationStartTime.format(),
             log: this.state.logId + 1
         }
 
@@ -144,33 +152,39 @@ class AnimationScreen extends React.Component {
     }
 
     readAnimationFromFirebase(animationId) {
-        //let userData = JSON.parse(localStorage.getItem('user'))
         var self = this
         let newGallery = this.state.animationPhotos
 
         let reference = (userData.zooName + '/animationsData/' + animationId);
 
-        return firebase.database().ref(reference).once('value').then(function (snapshot) {
-            let data = snapshot.val()
-           
-            for (let item in data.animationPhotos){
-                let photo = data.animationPhotos[item]
-                photo.newUpload = false
-                newGallery.push(photo)
-            }
+        return firebase.database().ref(reference).once('value')
 
-            self.setState({
-                dataVersion: 1,
-                animationId: data.animationId,
-                animationProfilePicture: data.animationProfilePicture,
-                animationName: data.animationName,
-                animationPhotos: newGallery,
-                animationDescription: data.animationDescription,
-                EditMode: true,
-            });
-        })
+            .then(function (snapshot) {
+                let data = snapshot.val()
 
+                for (let item in data.animationPhotos) {
+                    let photo = data.animationPhotos[item]
+                    photo.newUpload = false
+                    newGallery.push(photo)
+                }
 
+                self.setState({
+                    dataVersion: 1,
+                    animationId: data.animationId,
+                    animationProfilePicture: data.animationProfilePicture,
+                    animationName: data.animationName,
+                    animationPhotos: newGallery,
+                    animationDescription: data.animationDescription,
+                    animationStartTime: moment(data.animationStartTime),
+                    EditMode: true,
+                });
+            })
+    }
+
+    handleTimeChange(moment) {
+      this.setState({
+          animationStartTime: moment
+      })
     }
 
     componentWillMount() {
@@ -227,10 +241,15 @@ class AnimationScreen extends React.Component {
                                 <div style={{ display: 'flex', flex: 1, flexDirection: 'row-reverse', justifyContent: 'space-between' }}>
                                     <div className="col-md-8" >
 
-                                        <label htmlFor="userName">Description du animation</label>
+                                        <label htmlFor="userName">Description de l'animation</label>
                                         <Panel>
                                             <textarea name="animationDescription" rows="11" className="form-control note-editor" value={this.state.animationDescription} onChange={this.handleChange}>
                                             </textarea>
+                                        </Panel>
+
+                                        <label htmlFor="userName"><i class="fa fa-clock-o" aria-hidden="true"></i>  Heure de début l'animation</label>
+                                        <Panel>
+                                             <Datetime name="animationStartTime" inputProps={{className: 'form-control'}} value={this.state.animationStartTime} onChange={this.handleTimeChange} dateFormat={false} timeFormat="HH:mm"  />
                                         </Panel>
                                     </div>
 

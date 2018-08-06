@@ -25,7 +25,6 @@ export function addNewSpecieToDatabase(specieData) {
 
     let specieUID
     
-
     if (specieData.specieName.fr != null) {
         specieUID = specieData.specieName.fr.toUpperCase().replace(/ /g, "") + (Math.floor(Date.now() / 1000))
     } else if (specieData.specieName.en != null) {
@@ -516,6 +515,7 @@ export function addNewAnimationToDatabase(animationData) {
         animationDescription: animationData.animationDescription,
         animationPhotos: animationData.animationPhotos,
         animationName: animationData.animationName,
+        animationStartTime: animationData.animationStartTime,
         dataType: 'animation',
         zooName: userData.zooName,
     })
@@ -577,6 +577,7 @@ export function editAnimationInDatabase(animationData) {
         animationDescription: animationData.animationDescription,
         animationPhotos: animationData.animationPhotos,
         animationName: animationData.animationName,
+        animationStartTime: animationData.animationStartTime,
         dataType: 'animation',
         zooName: userData.zooName,
     })
@@ -651,31 +652,12 @@ export function addNewEventToDatabase(eventData) {
         eventDescription: eventData.eventDescription,
         eventProfilePicture: eventData.eventProfilePicture,
         eventPhotos: eventData.eventPhotos,
+        eventDateTime: eventData.eventDateTime,
 
         dataType: 'event',
         zooName: userData.zooName,
     })
 
-        // ********************
-        // Ecriture du log
-        // ********************
-
-        //  .then(function () {
-        //      firebase.firestore()
-        //          .collection(userData.zooName + '-log')
-        //          .doc("log-" + Date.now())
-        //          .set({
-        //              action: "create",
-        //              dataType: 'event',
-        //              elementId: eventData.eventId,
-        //              elementName: eventData.eventName,
-        //              actionMadeById: userData.userId,
-        //              actionMadeByName: userData.firstname,
-        //              actionDate: Date(),
-        //              actionTimestamp: Date.now(),
-        //              zooName: userData.zooName
-        //          })
-        //  })
         .catch(function (error) {
             console.error("Error writing document: ", error);
         }).then(function () {
@@ -711,6 +693,7 @@ export function editEventInDatabase(eventData) {
         eventDescription: eventData.eventDescription,
         eventProfilePicture: eventData.eventProfilePicture,
         eventPhotos: eventData.eventPhotos,
+        eventDateTime: eventData.eventDateTime,
         dataType: 'event',
         zooName: userData.zooName,
     })
@@ -789,30 +772,11 @@ export function addNewServiceToDatabase(serviceData) {
         serviceDescription: serviceData.serviceDescription,
         servicePhotos: serviceData.servicePhotos,
         serviceName: serviceData.serviceName,
+        serviceOpeningTime: serviceData.serviceOpeningTime,
+        serviceClosingTime: serviceData.serviceClosingTime,
         dataType: 'service',
         zooName: userData.zooName,
     })
-
-        // ********************
-        // Ecriture du log
-        // ********************
-
-        //  .then(function () {
-        //      firebase.firestore()
-        //          .collection(userData.zooName + '-log')
-        //          .doc("log-" + Date.now())
-        //          .set({
-        //              action: "create",
-        //              dataType: 'service',
-        //              elementId: serviceData.serviceId,
-        //              elementName: serviceData.serviceName,
-        //              actionMadeById: userData.userId,
-        //              actionMadeByName: userData.firstname,
-        //              actionDate: Date(),
-        //              actionTimestamp: Date.now(),
-        //              zooName: userData.zooName
-        //          })
-        //  })
         .catch(function (error) {
             console.error("Error writing document: ", error);
         }).then(function () {
@@ -848,6 +812,8 @@ export function editServiceInDatabase(serviceData) {
         serviceDescription: serviceData.serviceDescription,
         servicePhotos: serviceData.servicePhotos,
         serviceName: serviceData.serviceName,
+        serviceOpeningTime: serviceData.serviceOpeningTime,
+        serviceClosingTime: serviceData.serviceClosingTime,
         dataType: 'service',
         zooName: userData.zooName,
     })

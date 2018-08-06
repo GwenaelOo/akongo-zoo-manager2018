@@ -12,6 +12,19 @@ import { Typeahead } from 'react-bootstrap-typeahead';
 import firebase from 'firebase';
 import { addNewServiceToDatabase, editServiceInDatabase, deleteServiceInDatabase } from '../../../../database/database'
 
+import Select from 'react-select'
+
+import Datetime from 'react-datetime';
+import 'react-datetime/css/react-datetime.css';
+
+import moment from 'moment';
+
+const servicesTypes = [
+    { value: 'Restaurant', label: 'Restaurant' },
+    { value: 'Boutiques', label: 'Boutiques' },
+    { value: 'Toilette', label: 'Toilette' }
+];
+
 // Create a single card with header text as attribute
 const CardWithHeader = props => (
     <Card className="card-default">
@@ -31,6 +44,9 @@ class ServiceScreen extends React.Component {
             serviceId: '',
             serviceName: '',
             serviceDescription: '',
+            serviceType: '',
+            serviceOpeningTime: '',
+            serviceClosingTime: '',
             serviceProfilePicture: {
                 fullPhoto: 'https://www.cmsabirmingham.org/stuff/2017/01/default-placeholder.png',
                 largeThumb: 'https://www.cmsabirmingham.org/stuff/2017/01/default-placeholder.png',
@@ -43,6 +59,8 @@ class ServiceScreen extends React.Component {
         };
         this.handleChange = this.handleChange.bind(this);
         this.handleReturnedUrl = this.handleReturnedUrl.bind(this);
+        this.handleOpeningTimeChange = this.handleOpeningTimeChange.bind(this);
+        this.handleClosingTimeChange = this.handleClosingTimeChange.bind(this);
     }
 
     handleChange(service) {
@@ -74,7 +92,6 @@ class ServiceScreen extends React.Component {
                     smallThumb: returnedUrl,
                 },
             });
-
             return
         }
 
@@ -128,6 +145,8 @@ class ServiceScreen extends React.Component {
             servicePhotos: this.state.servicePhotos,
             serviceDescription: this.state.serviceDescription,
             serviceName: this.state.serviceName,
+            serviceOpeningTime: this.state.serviceOpeningTime.format(),
+            serviceClosingTime: this.state.serviceClosingTime.format(),
             log: this.state.logId + 1
         }
 
@@ -151,7 +170,7 @@ class ServiceScreen extends React.Component {
         return firebase.database().ref(reference).once('value').then(function (snapshot) {
             let data = snapshot.val()
 
-            for (let item in data.servicePhotos){
+            for (let item in data.servicePhotos) {
                 let photo = data.servicePhotos[item]
                 photo.newUpload = false
                 newGallery.push(photo)
@@ -164,10 +183,32 @@ class ServiceScreen extends React.Component {
                 serviceProfilePicture: data.serviceProfilePicture,
                 servicePhotos: newGallery,
                 serviceDescription: data.serviceDescription,
+                serviceOpeningTime: moment(data.serviceOpeningTime),
+                serviceClosingTime: moment(data.serviceClosingTime),
                 EditMode: true,
             });
         })
 
+    }
+
+    handleOpeningTimeChange(moment) {
+
+        this.setState({
+            serviceOpeningTime: moment
+        })
+    }
+
+    handleClosingTimeChange(moment) {
+        this.setState({
+            serviceClosingTime: moment
+        })
+    }
+
+
+    handleServiceType(newValue) {
+        this.setState({
+            serviceType: newValue
+        })
     }
 
     componentWillMount() {
@@ -177,6 +218,7 @@ class ServiceScreen extends React.Component {
     }
 
     render() {
+
         const innerIcon = <em className="fa fa-check"></em>;
         const innerButton = <Button>Before</Button>;
         const innerDropdown = (
@@ -198,11 +240,13 @@ class ServiceScreen extends React.Component {
         var rows = [];
         for (var i = 0; i < this.state.servicePhotos.length; i++) {
             rows.push(
-                <div style={{ display: 'flex', flexDirection: "row", flexWrap: 'wrap', justifyContent: 'space-around'}}>
+                <div style={{ display: 'flex', flexDirection: "row", flexWrap: 'wrap', justifyContent: 'space-around' }}>
                     <DropzonePhoto serviceName={this.state.serviceName} background={this.state.servicePhotos[i].largeThumb} id={"Photo" + i} methodToReturnUrl={this.handleReturnedUrl} />
                 </div>
             );
         }
+
+        console.log(this.state.serviceClosingTime)
 
         return (
 
@@ -212,15 +256,29 @@ class ServiceScreen extends React.Component {
                         <form className="form-horizontal" onSubmit={this.handleSubmit}>
                             <fieldset>
                                 <fieldset>
-                                    <FormGroup>
-                                        <label className="col-sm-2 control-label">Nom du service</label>
-                                        <Col sm={10}>
-                                            <FormControl type="text" name="serviceName" placeholder="Ex. Vol des perroquets" value={this.state.serviceName} onChange={this.handleChange} className="form-control" />
-                                        </Col>
+                                    <FormGroup >
+                                        <div style={{ display: 'flex', flex: 1, flexDirection: 'row', justifyContent: 'space-between' }}>
+
+                                            <div className="col-md-6" style={{}}  >
+                                                <label className="control-label">Nom du service</label>
+                                                <FormControl type="text" name="serviceName" placeholder="Ex. Vol des perroquets" value={this.state.serviceName} onChange={this.handleChange} className="form-control" />
+
+                                            </div>
+
+                                            <div className="col-md-6" style={{}} >
+                                                <label className="control-label">Type de service</label>
+                                                <Select
+                                                    options={servicesTypes}
+                                                    onChange={(newValue) => this.handleServiceType(newValue)}
+                                                    value={this.state.serviceType}
+                                                />
+                                            </div>
+                                        </div>
+
                                     </FormGroup>
                                 </fieldset>
 
-                                <div style={{ display: 'flex', flex: 1, flexDirection: 'row-reverse', justifyContent: 'space-between' }}>
+                                <div style={{ display: 'flex', flex: 1, flexDirection: 'row-reverse', justifyContent: 'space-around' }}>
                                     <div className="col-md-8" >
 
                                         <label htmlFor="userName">Description du service</label>
@@ -228,6 +286,24 @@ class ServiceScreen extends React.Component {
                                             <textarea name="serviceDescription" rows="11" className="form-control note-editor" value={this.state.serviceDescription} onChange={this.handleChange}>
                                             </textarea>
                                         </Panel>
+
+                                        <div style={{ display: 'flex', flex: 1, flexDirection: 'row', justifyContent: 'flex-start', marginTop: '1em' }}>
+                                            <div>
+                                                <label htmlFor="userName"><i class="fa fa-clock-o" aria-hidden="true"></i> Heure d'ouverture </label>
+                                                <Panel>
+                                                    <Datetime inputProps={{ className: 'form-control' }} value={this.state.serviceOpeningTime} onChange={this.handleOpeningTimeChange} dateFormat={false} timeFormat="HH:mm" />
+                                                </Panel>
+                                            </div>
+                                            <div style={{marginLeft: '1em'}}>
+
+                                                <label htmlFor="userName"><i class="fa fa-clock-o" aria-hidden="true"></i> Heure de fermeture </label>
+                                                <Panel>
+                                                    <Datetime inputProps={{ className: 'form-control' }} value={this.state.serviceClosingTime} onChange={this.handleClosingTimeChange} dateFormat={false} timeFormat="HH:mm" />
+                                                </Panel>
+                                            </div>
+
+                                        </div>
+
                                     </div>
 
                                     <div className="col-md-4" >

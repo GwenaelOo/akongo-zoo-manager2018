@@ -13,6 +13,11 @@ import firebase from 'firebase';
 import { addNewEventToDatabase, deleteEventInDatabase, editEventInDatabase } from '../../../../database/database'
 import DropzonePhotoDropDown from '../../../customComponents/Dropzone/DropzonePhotoDropDown';
 
+import Datetime from 'react-datetime';
+import 'react-datetime/css/react-datetime.css';
+
+import moment from 'moment';
+
 // Create a single card with header text as attribute
 const CardWithHeader = props => (
     <Card className="card-default">
@@ -39,12 +44,15 @@ class EventScreen extends React.Component {
             },
             eventPhotos: [{ largeThumb: 'https://www.cmsabirmingham.org/stuff/2017/01/default-placeholder.png' }],
             eventDescription: '',
+            eventDateTime: '',
             logId: 0,
             dataVersion: 0,
             EditMode: false,
         };
         this.handleChange = this.handleChange.bind(this);
         this.handleReturnedUrl = this.handleReturnedUrl.bind(this);
+        this.handleDateTimeChange = this.handleDateTimeChange.bind(this);
+        
     }
 
     handleChange(event) {
@@ -138,6 +146,7 @@ class EventScreen extends React.Component {
             eventPhotos: this.state.eventPhotos,
             eventDescription: this.state.eventDescription,
             eventName: this.state.eventName,
+            eventDateTime: this.state.eventDateTime.format(),
             log: this.state.logId + 1
         }
 
@@ -174,6 +183,7 @@ class EventScreen extends React.Component {
                 eventPhotos: newGallery,
                 eventName: data.eventName,
                 eventDescription: data.eventDescription,
+                eventDateTime: moment(data.eventDateTime),
                 EditMode: true,
             });
         })
@@ -186,6 +196,12 @@ class EventScreen extends React.Component {
         }
     }
 
+    handleDateTimeChange(moment) {
+        this.setState({
+            eventDateTime: moment
+        })
+    }
+   
     render() {
         const innerIcon = <em className="fa fa-check"></em>;
         const innerButton = <Button>Before</Button>;
@@ -239,6 +255,12 @@ class EventScreen extends React.Component {
                                         <Panel>
                                             <textarea name="eventDescription" rows="11" className="form-control note-editor" value={this.state.eventDescription} onChange={this.handleChange}>
                                             </textarea>
+                                        </Panel>
+
+                                        <label htmlFor="userName"><i class="fa fa-clock-o" aria-hidden="true"></i>  Date et heure de l'évènement</label>
+                                        <Panel>
+                                                
+                                             <Datetime name="eventDateTime" inputProps={{className: 'form-control'}} value={this.state.eventDateTime} onChange={this.handleDateTimeChange} dateFormat={true} timeFormat="HH:mm"  />
                                         </Panel>
                                     </div>
 

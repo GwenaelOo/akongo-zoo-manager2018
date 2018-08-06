@@ -72,13 +72,15 @@ class DropzonePhoto extends React.Component {
             console.log('recuperation de la taille')
             this.setState({
                 size: this.props.size
-            })
+            }) 
+        } else {
+            this.setState({
+                size: '300px'
+            })  
         }
     }
 
     render() {
-
-        console.log(this.state.editMode)
 
         let style = {
             'backgroundImage': 'url(' + this.state.background + ')',

@@ -74,8 +74,6 @@ class AnimalScreen extends React.Component {
             animalProfilePicture: this.state.animalProfilePicture,
             animalPhotos: this.state.animalPhotos,
         }
-
-        console.log(animalData)
     }
 
     handleChangeTypehead(selected) {
@@ -87,9 +85,6 @@ class AnimalScreen extends React.Component {
 
             animalFood: this.state.animalFood,
         }
-
-
-        console.log(animalData)
     }
 
     handleReturnedUrl(returnedUrl, photoId) {
@@ -190,7 +185,7 @@ class AnimalScreen extends React.Component {
             .then(function (snapshot) {
                 let data = snapshot.val()
 
-                console.log(data)
+
 
                 for (let item in data.animalPhotos){
                     let photo = data.animalPhotos[item]
@@ -223,7 +218,6 @@ class AnimalScreen extends React.Component {
         }
     }
 
-
     componentWillMount() {
         //this.getLogLenght();
         //this.initFoodList();
@@ -233,6 +227,9 @@ class AnimalScreen extends React.Component {
     }
 
     render() {
+
+        console.log(this.state.animalProfilePicture)
+
         const innerIcon = <em className="fa fa-check"></em>;
         const innerButton = <Button>Before</Button>;
         const innerDropdown = (
@@ -256,14 +253,9 @@ class AnimalScreen extends React.Component {
         for (var i = 0; i < this.state.animalPhotos.length; i++) {
             rows.push(
                 <div style={{ display: 'flex', flexDirection: "row", flexWrap: 'wrap', justifyContent: 'space-around'}}>
-                    <DropzonePhoto animalName={this.state.animalName} background={this.state.animalPhotos[i].largeThumb} id={"Photo" + i} methodToReturnUrl={this.handleReturnedUrl} />
+                    <DropzonePhoto size='300px' animalName={this.state.animalName} background={this.state.animalPhotos[i].largeThumb} id={"Photo" + i} methodToReturnUrl={this.handleReturnedUrl} />
                 </div>
             );
-
-            // Gestion des individus
-
-
-            // }
         }
 
         return (
@@ -310,7 +302,7 @@ class AnimalScreen extends React.Component {
 
                                     <div className="col-md-6" >
                                         <label htmlFor="userName">Photo de profile</label>
-                                        <DropzonePhoto eventName={this.state.eventName} background={this.state.animalProfilePicture.largeThumb} id="ProfilePicture" methodToReturnUrl={this.handleReturnedUrl} />
+                                        <DropzonePhoto size='400px' eventName={this.state.eventName} background={this.state.animalProfilePicture.largeThumb} id="ProfilePicture" methodToReturnUrl={this.handleReturnedUrl} />
                                     </div>
 
                                 </div>

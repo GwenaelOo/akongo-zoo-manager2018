@@ -243,7 +243,7 @@ class EnclosureScreen extends React.Component {
         for (var i = 0; i < this.state.enclosurePhotos.length; i++) {
             rows.push(
                 <div style={{ display: 'flex', flexDirection: "row", flexWrap: 'wrap', justifyContent: 'space-around'}}>
-                    <DropzonePhoto enclosureName={this.state.enclosureName} background={this.state.enclosurePhotos[i].largeThumb} id={"Photo" + i} methodToReturnUrl={this.handleReturnedUrl} />
+                    <DropzonePhoto size='300px' enclosureName={this.state.enclosureName} background={this.state.enclosurePhotos[i].largeThumb} id={"Photo" + i} methodToReturnUrl={this.handleReturnedUrl} />
                 </div>
             );
         }
@@ -285,7 +285,7 @@ class EnclosureScreen extends React.Component {
 
                                     <div className="col-md-6" >
                                         <label htmlFor="userName">Photo de profile</label>
-                                        <DropzonePhoto eventName={this.state.eventName} background={this.state.enclosureProfilePicture.largeThumb} id="PhotoProfil" methodToReturnUrl={this.handleReturnedUrl} />
+                                        <DropzonePhoto size='400px' eventName={this.state.eventName} background={this.state.enclosureProfilePicture.largeThumb} id="PhotoProfil" methodToReturnUrl={this.handleReturnedUrl} />
                                     </div>
 
                                 </div>
