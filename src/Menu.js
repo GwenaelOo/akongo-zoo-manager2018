@@ -97,6 +97,18 @@ const Menu = [
         },]
     },
 
+    {
+        name: 'Blog',
+        icon: 'icon-speedometer',
+        label: { value: maValeure, color: 'success' },
+        submenu: [{
+            name: 'Nouvel article',
+            path: 'BlogPost'
+        }, {
+            name: 'Voir les articles',
+            path: 'ArticlesListView'
+        },]
+    },
 
     {
         heading: "Gestion de L'application",

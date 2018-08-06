@@ -147,6 +147,7 @@ class ServiceScreen extends React.Component {
             serviceName: this.state.serviceName,
             serviceOpeningTime: this.state.serviceOpeningTime.format(),
             serviceClosingTime: this.state.serviceClosingTime.format(),
+            serviceType: this.state.serviceType,
             log: this.state.logId + 1
         }
 
@@ -183,7 +184,8 @@ class ServiceScreen extends React.Component {
                 serviceProfilePicture: data.serviceProfilePicture,
                 servicePhotos: newGallery,
                 serviceDescription: data.serviceDescription,
-                serviceOpeningTime: moment(data.serviceOpeningTime),
+                serviceType: data.serviceType,
+                serviceOpeningTime: moment(data. serviceOpeningTime),
                 serviceClosingTime: moment(data.serviceClosingTime),
                 EditMode: true,
             });
@@ -217,6 +219,10 @@ class ServiceScreen extends React.Component {
         }
     }
 
+    handleCrop(data){
+        console.log(data)
+    }
+
     render() {
 
         const innerIcon = <em className="fa fa-check"></em>;
@@ -239,14 +245,15 @@ class ServiceScreen extends React.Component {
 
         var rows = [];
         for (var i = 0; i < this.state.servicePhotos.length; i++) {
+            let id = i
             rows.push(
-                <div style={{ display: 'flex', flexDirection: "row", flexWrap: 'wrap', justifyContent: 'space-around' }}>
+                <div style={{ display: 'flex', flexDirection: "column", flexWrap: 'wrap', justifyContent: 'space-around' }}>
                     <DropzonePhoto serviceName={this.state.serviceName} background={this.state.servicePhotos[i].largeThumb} id={"Photo" + i} methodToReturnUrl={this.handleReturnedUrl} />
+                    
+                   <div style={{backgroundColor: 'grey', borderRadius: '5px', width: '60%'}} onClick={() => this.handleCrop(this.state.servicePhotos[id])}>Editer</div>
                 </div>
             );
         }
-
-        console.log(this.state.serviceClosingTime)
 
         return (
 

@@ -28,6 +28,11 @@ import DonationScreen from './components/Screens/DonationScreen/DonationScreen'
 
 import EnclosureList from './components/Screens/EnclosureScreens/EnclosureScreen/EnclosuresListScreen/EnclosureListScreen'
 
+import BlogPost from './components/Screens/Blog/BlogPost'
+import ArticlesListView from './components/Screens/Blog/ArticlesListView/ArticlesListView'
+
+
+
 import LoginPage from './components/Login/LoginPage'
 
 import DashboardV1 from './components/Dashboard/DashboardV1';
@@ -110,11 +115,6 @@ import EcommerceProduct from './components/Ecommerce/EcommerceProducts';
 import EcommerceProductView from './components/Ecommerce/EcommerceProductView';
 import EcommerceCheckout from './components/Ecommerce/EcommerceCheckout';
 
-import BlogList from './components/Blog/BlogList';
-import BlogPost from './components/Blog/BlogPost';
-import BlogArticle from './components/Blog/BlogArticles';
-import BlogArticleView from './components/Blog/BlogArticleView';
-
 import ForumCategories from './components/Forum/ForumCategories';
 import ForumTopic from './components/Forum/ForumTopics';
 import ForumDiscussion from './components/Forum/ForumDiscussion';
@@ -194,10 +194,12 @@ const Routes = ({ location }) => {
                                 <Route path="/AnimalScreen" component={AnimalScreen} />
 
                                 <Route path="/EnclosureScreen" component={EnclosureScreen} />
+                                <Route path="/EnclosureList" component={EnclosureList} />
 
                                 <Route path="/DonationScreen" component={DonationScreen} />
 
-                                <Route path="/EnclosureList" component={EnclosureList} />
+                                <Route path="/BlogPost" component={BlogPost} />
+                                <Route path="/ArticlesListView" component={ArticlesListView} />
 
 
         
@@ -265,10 +267,7 @@ const Routes = ({ location }) => {
                                 <Route path="/ecommerce-products" component={EcommerceProduct} />
                                 <Route path="/ecommerce-product-view" component={EcommerceProductView} />
                                 <Route path="/ecommerce-checkout" component={EcommerceCheckout} />
-                                <Route path="/blog-list" component={BlogList} />
-                                <Route path="/blog-post" component={BlogPost} />
-                                <Route path="/blog-articles" component={BlogArticle} />
-                                <Route path="/blog-article-view" component={BlogArticleView} />
+                          
                                 <Route path="/forum-categories" component={ForumCategories} />
                                 <Route path="/forum-topics" component={ForumTopic} />
                                 <Route path="/forum-discussion" component={ForumDiscussion} />

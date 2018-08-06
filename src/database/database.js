@@ -550,7 +550,7 @@ export function addNewAnimationToDatabase(animationData) {
                 showCancelButton: false
             }, function (nextState, replaceState) {
                 //Redirect the user
-                window.location.href = nav.akongoURL + 'animationsList';        
+                window.location.href = nav.akongoURL + 'AnimationsListScreen';        
             })
         })
         .catch(function (error) {
@@ -592,7 +592,7 @@ export function editAnimationInDatabase(animationData) {
                 showCancelButton: false
             }, function () {
                 // Redirect the user
-                window.location.href = nav.akongoURL + 'animationsList';
+                window.location.href = nav.akongoURL + 'AnimationsListScreen';
             })
         })
         .catch(function (error) {
@@ -668,7 +668,7 @@ export function addNewEventToDatabase(eventData) {
                 showCancelButton: false
             }, function () {
                 // Redirect the user
-                window.location.href = nav.akongoURL + 'eventsList';
+                window.location.href = nav.akongoURL + 'EventsListScreen';
             })
         })
         .catch(function (error) {
@@ -708,7 +708,7 @@ export function editEventInDatabase(eventData) {
                 showCancelButton: false
             }, function () {
                 // Redirect the user
-                window.location.href = nav.akongoURL + 'EventsList';
+                window.location.href = nav.akongoURL + 'EventsListScreen';
             })
         })
         .catch(function (error) {
@@ -772,6 +772,7 @@ export function addNewServiceToDatabase(serviceData) {
         serviceDescription: serviceData.serviceDescription,
         servicePhotos: serviceData.servicePhotos,
         serviceName: serviceData.serviceName,
+        serviceType: serviceData.serviceType,
         serviceOpeningTime: serviceData.serviceOpeningTime,
         serviceClosingTime: serviceData.serviceClosingTime,
         dataType: 'service',
@@ -787,7 +788,7 @@ export function addNewServiceToDatabase(serviceData) {
                 showCancelButton: false
             }, function () {
                 // Redirect the user
-                window.location.href = nav.akongoURL + 'servicesList';
+                window.location.href = nav.akongoURL + 'ServicesListScreen';
             })
         })
         .catch(function (error) {
@@ -812,6 +813,7 @@ export function editServiceInDatabase(serviceData) {
         serviceDescription: serviceData.serviceDescription,
         servicePhotos: serviceData.servicePhotos,
         serviceName: serviceData.serviceName,
+        serviceType: serviceData.serviceType,
         serviceOpeningTime: serviceData.serviceOpeningTime,
         serviceClosingTime: serviceData.serviceClosingTime,
         dataType: 'service',
@@ -828,7 +830,7 @@ export function editServiceInDatabase(serviceData) {
                 showCancelButton: false
             }, function () {
                 // Redirect the user
-                window.location.href = nav.akongoURL + 'servicesList';
+                window.location.href = nav.akongoURL + 'ServicesListScreen';
             })
         })
         .catch(function (error) {
@@ -855,6 +857,122 @@ export function deleteServiceInDatabase(serviceData) {
             swal({
                 title: "Good job!",
                 text: "Le service " + serviceData.serviceName + " a été correctement supprimé",
+                type: "success",
+                showCancelButton: false
+            }, function () {
+                // Redirect the user
+                window.location.href = nav.akongoURL + 'servicesList';
+            })
+        })
+        .catch(function (error) {
+            console.error("Error writing document: ", error);
+        });
+
+
+}
+
+/// Gestion des services ///
+
+export function addNewArticleToDatabase(articleData) {
+
+    // ********************
+    // Ajout dans firebase 
+    // ********************
+
+    let articleUID = articleData.articleTitle.toUpperCase().replace(/ /g, "") + (Math.floor(Date.now() / 1000))
+    let reference = (userData.zooName + '/articlesData/' + articleUID);
+
+    if (articleData.articleProfilePicture === '') {
+        articleData.articleProfilePicture = 'http://thedroideffect.com/wp-content/themes/thedroideffect/images/missing-image-640x360.png'
+    }
+
+    firebase.database().ref(reference).set({
+        dataVersion: 1,
+        articleId: articleUID,
+        //articleProfilePicture: articleData.articleProfilePicture,
+        articleTitle: articleData.articleTitle,
+        articleContentHTML: articleData.articleContentHTML,
+        zooName: userData.zooName,
+    })
+        .catch(function (error) {
+            console.error("Error writing document: ", error);
+        }).then(function () {
+            swal({
+                title: "Good job!",
+                text: "L'article " + articleData.articleTitle + " a été ajoutée à votre Zoo",
+                type: "success",
+                showCancelButton: false
+            }, function () {
+                // Redirect the user
+                window.location.href = nav.akongoURL + 'ServicesListScreen';
+            })
+        })
+        .catch(function (error) {
+            console.error("Error writing document: ", error);
+        });
+
+
+}
+
+export function editArticleInDatabase(articleData) {
+
+    let reference = (userData.zooName + '/servicesData/' + articleData.serviceId);
+
+    if (articleData.serviceProfilePicture === '') {
+        articleData.serviceProfilePicture = 'http://thedroideffect.com/wp-content/themes/thedroideffect/images/missing-image-640x360.png'
+    }
+
+    firebase.database().ref(reference).set({
+        dataVersion: 1,
+        serviceId: articleData.serviceId,
+        serviceProfilePicture: articleData.serviceProfilePicture,
+        serviceDescription: articleData.serviceDescription,
+        servicePhotos: articleData.servicePhotos,
+        serviceName: articleData.serviceName,
+        serviceType: articleData.serviceType,
+        serviceOpeningTime: articleData.serviceOpeningTime,
+        serviceClosingTime: articleData.serviceClosingTime,
+        dataType: 'service',
+        zooName: userData.zooName,
+    })
+
+        .catch(function (error) {
+            console.error("Error writing document: ", error);
+        }).then(function () {
+            swal({
+                title: "Good job!",
+                text: "Le service " + articleData.serviceName + " a été correctement édité",
+                type: "success",
+                showCancelButton: false
+            }, function () {
+                // Redirect the user
+                window.location.href = nav.akongoURL + 'ServicesListScreen';
+            })
+        })
+        .catch(function (error) {
+            console.error("Error writing document: ", error);
+        });
+
+
+}
+
+export function deleteArticleInDatabase(articleData) {
+
+
+    let reference = (userData.zooName + '/servicesData/' + articleData.serviceId);
+
+    if (articleData.serviceProfilePicture === '') {
+        articleData.serviceProfilePicture = 'http://thedroideffect.com/wp-content/themes/thedroideffect/images/missing-image-640x360.png'
+    }
+
+    firebase.database().ref(reference).remove()
+
+        .catch(function (error) {
+            console.error("Error writing document: ", error);
+        }).then(function () {
+            swal({
+                title: "Good job!",
+                text: "Le service " + articleData.serviceName + " a été correctement supprimé",
                 type: "success",
                 showCancelButton: false
             }, function () {
