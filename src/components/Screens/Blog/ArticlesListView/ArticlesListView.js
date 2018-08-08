@@ -80,6 +80,7 @@ class ArticlesListView extends React.Component {
                                 <ArticlesList articlesList={this.state.articlesList} />
                             </table>
                         </Datatable>
+                        
                     </CardBody>
                 </Card>
             </ContentWrapper>

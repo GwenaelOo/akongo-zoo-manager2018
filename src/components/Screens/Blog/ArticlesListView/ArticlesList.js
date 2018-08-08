@@ -20,11 +20,13 @@ class ArticlesList extends React.Component {
             let articleData = {
                 articleId: articles[article].articleId,
                 articleTitle: articles[article].articleTitle,
+                articleCreatedBy: articles[article].articleCreatedBy,
+                articleCreationDate: articles[article].articleCreationDate,
+                articleStatus: articles[article].articleStatus,
+                articleCreatedByNameToDisplay: articles[article].articleCreatedByNameToDisplay 
+
             };
-
-
-            list.push(articleData);
-            
+            list.push(articleData);      
         }
 
         return (

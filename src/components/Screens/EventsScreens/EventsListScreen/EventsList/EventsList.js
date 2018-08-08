@@ -16,6 +16,8 @@ class EventsList extends React.Component {
 
         const list = [];
 
+        console.log(events)
+
         for (let event in events) {
 
             let eventData = {

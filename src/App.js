@@ -15,6 +15,7 @@ import $ from 'jquery';
 
 import { initDatabase } from './config/config'
 
+
 // App Routes
 import Routes from './Routes';
 import nav from './Nav/Nav'

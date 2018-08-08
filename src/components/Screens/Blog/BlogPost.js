@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import ContentWrapper from '../../Layout/ContentWrapper';
-import { Row, Col, Card, Table, Alert } from 'reactstrap';
+import { Row, Col, Card, Table, Alert, Button } from 'reactstrap';
 // React Select
 import Select from 'react-select';
 import 'react-select/dist/react-select.css';
@@ -12,14 +12,18 @@ import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import draftToHtml from 'draftjs-to-html';
 import htmlToDraft from 'html-to-draftjs';
 
-import { addNewArticleToDatabase } from '../../../database/database'
+import swal from 'sweetalert'
+
+import { addNewArticleToDatabase, editArticleInDatabase, deleteArticleFromDatabase } from '../../../database/database'
 import moment from 'moment';
 import firebase from 'firebase';
+
+import axios from 'axios'
 
 const userData = JSON.parse(localStorage.getItem('user'))
 
 const CATEGORIES = [
-    { value: 'coding', label: 'coding' },
+    { value: 'enclosure', label: 'enclosure' },
     { value: 'less', label: 'less' },
     { value: 'sass', label: 'sass' },
     { value: 'angularjs', label: 'angularjs' },
@@ -56,21 +60,24 @@ const initialEditorContent = ContentState.createFromBlockArray(
 class BlogArticleView extends React.Component {
     constructor(props) {
         super(props);
-    this.state = {
-        categories: [],
-        tags: [],
-        reviewers: [],
-        editorState: EditorState.createWithContent(initialEditorContent),
+        this.state = {
+            articleId: '',
+            articleCategories: [],
+            articleTags: [],
+            articleReviewers: [],
+            articleEnclosureList: [],
+            editorState: EditorState.createWithContent(initialEditorContent),
 
-        articleTitle: '',
-        EditMode: false
+            articleTitle: '',
+            EditMode: false
 
-       
-    };
-    this.handleChange = this.handleChange.bind(this);
-    this.handleClick = this.handleClick.bind(this);
 
-}
+        };
+        this.handleChange = this.handleChange.bind(this);
+        this.handleClick = this.handleClick.bind(this);
+        this.handleDraftClick = this.handleDraftClick.bind(this);
+        this.handleDelete = this.handleDelete.bind(this);
+    }
 
     handleChangeSelect = (name, newVal) => {
         this.setState({
@@ -83,15 +90,67 @@ class BlogArticleView extends React.Component {
         this.setState({ [name]: input.target.value });
     }
 
-    handleClick(){
-        let blogArticleData = {
-           articleTitle: this.state.articleTitle,
-           articleContentHTML: draftToHtml(convertToRaw(this.state.editorState.getCurrentContent())),
-           editorState: this.state.editorState
+    handleDelete() {
+
+        let articleData = {
+            articleId: this.state.articleId,
+            articleTitle: this.state.articleTitle
         }
 
+        swal({
+            title: "Êtes-vous sûr ?",
+            text: "La suppression est irréversible, vous ne serez plus en mesure de récupérer ces données!",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Oui, supprimez tout!",
+            closeOnConfirm: false
+        },
+            function () {
+                deleteArticleFromDatabase(articleData)
+            });
+    }
+
+    handleClick() {
+
+        let blogArticleData = {
+            articleId: this.state.articleId,
+            articleTitle: this.state.articleTitle,
+            articleCategories: this.state.articleCategories,
+            articleTags: this.state.articleTags,
+            articleReviewer: this.state.articleReviewers,
+            articleEnclosureList: this.state.articleEnclosureList,
+            articleStatus: {
+                prod: true,
+                fr: "Production"
+            },
+            articleContentHTML: draftToHtml(convertToRaw(this.state.editorState.getCurrentContent())),
+        }
         if (this.state.EditMode === true) {
-            console.log(blogArticleData)
+            editArticleInDatabase(blogArticleData);
+        }
+        else {
+            addNewArticleToDatabase(blogArticleData);
+        }
+    }
+
+    handleDraftClick() {
+
+        let blogArticleData = {
+            articleId: this.state.articleId,
+            articleTitle: this.state.articleTitle,
+            articleCategories: this.state.articleCategories,
+            articleTags: this.state.articleTags,
+            articleReviewer: this.state.articleReviewer,
+            articleEnclosureList: this.state.articleEnclosureList,
+            articleStatus: {
+                prod: false,
+                fr: "Brouillon"
+            },
+            articleContentHTML: draftToHtml(convertToRaw(this.state.editorState.getCurrentContent())),
+        }
+        if (this.state.EditMode === true) {
+            editArticleInDatabase(blogArticleData);
         }
         else {
             addNewArticleToDatabase(blogArticleData);
@@ -105,29 +164,116 @@ class BlogArticleView extends React.Component {
         return firebase.database().ref(reference).once('value').then(function (snapshot) {
             let data = snapshot.val()
 
-            console.log(data.articleContentHTML)
+            const html = data.articleContentHTML
+            let editorState
+            if (html) {
+                const contentBlock = htmlToDraft(html)
+                if (contentBlock) {
+                    const contentState = ContentState.createFromBlockArray(contentBlock.contentBlocks)
+                    editorState = EditorState.createWithContent(contentState)
+                } else {
+                    editorState = EditorState.createEmpty()
+                }
+            } else {
+                editorState = EditorState.createEmpty()
+            }
 
             self.setState({
-                articleTitle: data.articleTitle,
-                //editorState: htmlToDraft(data.articleContentHTML),
+                articleId: data.articleId || '',
+                articleCategories: data.articleCategories || [],
+                articleTags: data.articleTags || [],
+                articleReviewer: data.articleReviewer || [],
+                articleTitle: data.articleTitle || '',
+                editorState: editorState,
                 EditMode: true,
             });
         })
 
+        this.state.enclosuresList.map(function (enclosure) {
+            if (this.enclosure.articleEnclosureList.value === this.state.articleEnclosureList) {
+
+            }
+        })
     }
-    
+
+    readEnclosureFromDatabase() {
+
+        var self = this;
+
+        let reference = (userData.zooName + '/enclosuresData/');
+        firebase.database().ref(reference).once('value').
+            then(function (result) {
+                let enclosures = result.val()
+                const list = [];
+
+                for (let enclosure in enclosures) {
+                    let enclosureData = {
+                        label: enclosures[enclosure].enclosureName,
+                        value: enclosures[enclosure].enclosureId
+                    };
+                    list.push(enclosureData);
+
+                }
+                self.setState({
+                    enclosuresList: list
+                })
+            })
+    }
+
     onEditorStateChange = editorState => {
         this.setState({ editorState })
+    }
+
+    uploadImageCallBack(file) {
+        return new Promise(
+            (resolve, reject) => {
+                const xhr = new XMLHttpRequest();
+                xhr.open('POST', 'https://api.imgur.com/3/image');
+                xhr.setRequestHeader('Authorization', 'Client-ID f1d8a5d1e525584');
+                const data = new FormData();
+                data.append('image', file);
+                xhr.send(data);
+                xhr.addEventListener('load', () => {
+                    const response = JSON.parse(xhr.responseText);
+                    resolve(response);
+                });
+                xhr.addEventListener('error', () => {
+                    const error = JSON.parse(xhr.responseText);
+                    reject(error);
+                });
+            }
+        );
     }
 
     componentWillMount() {
         if (this.props.location.state != undefined) {
             this.readServiceFromFirebase(this.props.location.state.articleId);
         }
+        this.readEnclosureFromDatabase()
     }
 
-
     render() {
+
+
+        const enclosureListTitle = (<p className="mt-2">Choix de l'enclos</p>);
+        const enclosureListChoice = (
+            <Select
+                name="articleEnclosureList"
+                multi
+                simpleValue
+                value={this.state.articleEnclosureList}
+                onChange={this.handleChangeSelect.bind(this, 'articleEnclosureList')}
+                options={this.state.enclosuresList}
+            />);
+
+        const deleteButton = (
+            <div className="float-right">
+                <button type="button" className="btn btn-danger" onClick={this.handleDelete}>
+                    <em className="fas fa-trash-alt fa-fw"></em>Remove</button>
+            </div>
+
+        );
+
         return (
             <ContentWrapper>
                 <div className="content-heading">New Article</div>
@@ -148,142 +294,29 @@ class BlogArticleView extends React.Component {
                                     editorClassName="form-control"
                                     editorStyle={{ height: 300 }}
                                     onEditorStateChange={this.onEditorStateChange}
+                                    toolbar={{
+                                        inline: { inDropdown: true },
+                                        list: { inDropdown: true },
+                                        textAlign: { inDropdown: true },
+                                        link: { inDropdown: true },
+                                        history: { inDropdown: true },
+                                        image: { uploadCallback: this.uploadImageCallBack, alt: { present: true, mandatory: true } },
+                                    }}
+
                                 />
                                 <br />
                                 <p>Notes</p>
                                 <textarea cols="6" className="mb-3 form-control"></textarea>
                                 <div className="clearfix">
                                     <div className="float-left">
-                                        <button type="button" className="btn btn-secondary">
+                                        <button type="button" className="btn btn-secondary" onClick={this.handleDraftClick}>
                                             <em className="fa fa-edit fa-fw"></em>Draft</button>
                                         <button type="button" className="btn btn-primary m-t-10" onClick={this.handleClick}>
                                             <em className="fa fa-check fa-fw"></em>Save</button>
                                     </div>
-                                    <div className="float-right">
-                                        <button type="button" className="btn btn-danger">
-                                            <em className="fas fa-trash-alt fa-fw"></em>Remove</button>
-                                    </div>
+                                    {this.state.EditMode ? deleteButton : null}
                                 </div>
                             </form>
-                        </Card>
-                        <p className="lead">List of Comments</p>
-                        <Card>
-                            {/* debug mode */}
-                            <textarea
-                                readOnly
-                                className="rdw-storybook-textarea"
-                                value={draftToHtml(convertToRaw(this.state.editorState.getCurrentContent()))}
-                            />
-                            <Table responsive hover>
-                                <thead>
-                                    <tr>
-                                        <th>
-                                            <strong>Comment ID</strong>
-                                        </th>
-                                        <th>
-                                            <strong>Date</strong>
-                                        </th>
-                                        <th>
-                                            <strong>Username</strong>
-                                        </th>
-                                        <th>
-                                            <strong>Comment excerpt</strong>
-                                        </th>
-                                        <th className="text-center">
-                                            <strong>Current status</strong>
-                                        </th>
-                                        <th style={{ width: "130px" }} className="text-right">
-                                            <strong>Actions</strong>
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>123</td>
-                                        <td>10/05/2015</td>
-                                        <td><a href="">Jack Jordan</a>
-                                        </td>
-                                        <td>Sed quis eros libero, a euismod nisl....</td>
-                                        <td className="text-center">
-                                            <span className="badge badge-success">Approved</span>
-                                        </td>
-                                        <td className="text-right">
-                                            <button type="button" className="btn btn-sm btn-secondary">
-                                                <em className="fas fa-pencil-alt"></em>
-                                            </button>
-                                            <button type="button" className="btn btn-sm btn-danger">
-                                                <em className="fas fa-trash-alt"></em>
-                                            </button>
-                                            <button type="button" className="btn btn-sm btn-success">
-                                                <em className="fa fa-check"></em>
-                                            </button>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>456</td>
-                                        <td>10/07/2015</td>
-                                        <td><a href="">Hailey Mckinney</a>
-                                        </td>
-                                        <td>Nulla facilisi.</td>
-                                        <td className="text-center">
-                                            <span className="badge badge-success">Approved</span>
-                                        </td>
-                                        <td className="text-right">
-                                            <button type="button" className="btn btn-sm btn-secondary">
-                                                <em className="fas fa-pencil-alt"></em>
-                                            </button>
-                                            <button type="button" className="btn btn-sm btn-danger">
-                                                <em className="fas fa-trash-alt"></em>
-                                            </button>
-                                            <button type="button" className="btn btn-sm btn-success">
-                                                <em className="fa fa-check"></em>
-                                            </button>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>789</td>
-                                        <td>11/05/2015</td>
-                                        <td><a href="">Peyton Reyes</a>
-                                        </td>
-                                        <td>Quisque enim nisi, semper non pulvinar et, aliquam id lorem...</td>
-                                        <td className="text-center">
-                                            <span className="badge badge-warning">Pending</span>
-                                        </td>
-                                        <td className="text-right">
-                                            <button type="button" className="btn btn-sm btn-secondary">
-                                                <em className="fas fa-pencil-alt"></em>
-                                            </button>
-                                            <button type="button" className="btn btn-sm btn-danger">
-                                                <em className="fas fa-trash-alt"></em>
-                                            </button>
-                                            <button type="button" className="btn btn-sm btn-success">
-                                                <em className="fa fa-check"></em>
-                                            </button>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>999</td>
-                                        <td>10/06/2015</td>
-                                        <td><a href="">Darryl Harper</a>
-                                        </td>
-                                        <td>Nulla facilisi.</td>
-                                        <td className="text-center">
-                                            <span className="badge badge-danger">Rejected</span>
-                                        </td>
-                                        <td className="text-right">
-                                            <button type="button" className="btn btn-sm btn-secondary">
-                                                <em className="fas fa-pencil-alt"></em>
-                                            </button>
-                                            <button type="button" disabled="" className="btn btn-sm btn-danger">
-                                                <em className="fas fa-trash-alt"></em>
-                                            </button>
-                                            <button type="button" className="btn btn-sm btn-success">
-                                                <em className="fa fa-check"></em>
-                                            </button>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </Table>
                         </Card>
                     </Col>
                     { /* Article sidebar */}
@@ -292,44 +325,35 @@ class BlogArticleView extends React.Component {
                             <p className="lead">Article Data</p>
                             <p>Categories</p>
                             <Select
-                                name="categories"
+                                name="articleCategories"
                                 multi
                                 simpleValue
-                                value={this.state.categories}
-                                onChange={this.handleChangeSelect.bind(this, 'categories')}
+                                value={this.state.articleCategories}
+                                onChange={this.handleChangeSelect.bind(this, 'articleCategories')}
                                 options={CATEGORIES}
                             />
+
+                            {this.state.articleCategories === "enclosure" ? enclosureListTitle : null}
+                            {this.state.articleCategories === "enclosure" ? enclosureListChoice : null}
+
                             <p className="mt-2">Tags</p>
                             <Select
-                                name="tags"
+                                name="articleTags"
                                 multi
                                 simpleValue
-                                value={this.state.tags}
-                                onChange={this.handleChangeSelect.bind(this, 'tags')}
+                                value={this.state.articleTags}
+                                onChange={this.handleChangeSelect.bind(this, 'articleTags')}
                                 options={TAGS}
                             />
                             <p className="mt-2">Reviewers</p>
                             <Select
-                                name="reviewers"
+                                name="articleReviewers"
                                 multi
                                 simpleValue
-                                value={this.state.reviewers}
-                                onChange={this.handleChangeSelect.bind(this, 'reviewers')}
+                                value={this.state.articleReviewers}
+                                onChange={this.handleChangeSelect.bind(this, 'articleReviewers')}
                                 options={REVIEWERS}
                             />
-                            <p className="lead mt-3">SEO Metadata</p>
-                            <div className="form-group">
-                                <p>Title</p>
-                                <input type="text" placeholder="Brief description.." className="form-control" />
-                            </div>
-                            <div className="form-group">
-                                <p>Description</p>
-                                <textarea rows="5" placeholder="Max 255 characters..." className="form-control"></textarea>
-                            </div>
-                            <div className="form-group">
-                                <p>Keywords</p>
-                                <textarea rows="5" placeholder="Max 1000 characters..." className="form-control"></textarea>
-                            </div>
                         </Card>
                     </Col>
                 </Row>

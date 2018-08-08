@@ -845,10 +845,6 @@ export function deleteServiceInDatabase(serviceData) {
 
     let reference = (userData.zooName + '/servicesData/' + serviceData.serviceId);
 
-    if (serviceData.serviceProfilePicture === '') {
-        serviceData.serviceProfilePicture = 'http://thedroideffect.com/wp-content/themes/thedroideffect/images/missing-image-640x360.png'
-    }
-
     firebase.database().ref(reference).remove()
 
         .catch(function (error) {
@@ -879,6 +875,8 @@ export function addNewArticleToDatabase(articleData) {
     // Ajout dans firebase 
     // ********************
 
+    console.log(userData)
+
     let articleUID = articleData.articleTitle.toUpperCase().replace(/ /g, "") + (Math.floor(Date.now() / 1000))
     let reference = (userData.zooName + '/articlesData/' + articleUID);
 
@@ -892,6 +890,15 @@ export function addNewArticleToDatabase(articleData) {
         //articleProfilePicture: articleData.articleProfilePicture,
         articleTitle: articleData.articleTitle,
         articleContentHTML: articleData.articleContentHTML,
+        articleCreatedBy: userData.userId,
+        articleCreatedByNameToDisplay: userData.firstname,
+        articleCreationDate: Date(),
+        articleCategories: articleData.articleCategories,
+        articleTags: articleData.articleTags,
+        articleReviewer: articleData.articleReviewer,
+        articleEnclosureList : articleData.articleEnclosureList,
+        articleStatus: articleData.articleStatus,
+        dataType: 'article',
         zooName: userData.zooName,
     })
         .catch(function (error) {
@@ -916,32 +923,41 @@ export function addNewArticleToDatabase(articleData) {
 
 export function editArticleInDatabase(articleData) {
 
-    let reference = (userData.zooName + '/servicesData/' + articleData.serviceId);
+       // ********************
+    // Ajout dans firebase 
+    // ********************
 
-    if (articleData.serviceProfilePicture === '') {
-        articleData.serviceProfilePicture = 'http://thedroideffect.com/wp-content/themes/thedroideffect/images/missing-image-640x360.png'
+    console.log(articleData)
+
+    let reference = (userData.zooName + '/articlesData/' + articleData.articleId);
+
+    if (articleData.articleProfilePicture === '') {
+        articleData.articleProfilePicture = 'http://thedroideffect.com/wp-content/themes/thedroideffect/images/missing-image-640x360.png'
     }
 
     firebase.database().ref(reference).set({
         dataVersion: 1,
-        serviceId: articleData.serviceId,
-        serviceProfilePicture: articleData.serviceProfilePicture,
-        serviceDescription: articleData.serviceDescription,
-        servicePhotos: articleData.servicePhotos,
-        serviceName: articleData.serviceName,
-        serviceType: articleData.serviceType,
-        serviceOpeningTime: articleData.serviceOpeningTime,
-        serviceClosingTime: articleData.serviceClosingTime,
-        dataType: 'service',
+        articleId: articleData.articleId,
+        //articleProfilePicture: articleData.articleProfilePicture,
+        articleTitle: articleData.articleTitle,
+        articleContentHTML: articleData.articleContentHTML,
+        articleCreatedBy: userData.userId,
+        articleCreatedByNameToDisplay: userData.firstname,
+        articleCreationDate: Date(),
+        articleCategories: articleData.articleCategories,
+        articleTags: articleData.articleTags,
+        articleReviewer: articleData.articleReviewer,
+        articleEnclosureList :articleData.articleEnclosureList,
+        articleStatus: articleData.articleStatus,
+        dataType: 'article',
         zooName: userData.zooName,
     })
-
         .catch(function (error) {
             console.error("Error writing document: ", error);
         }).then(function () {
             swal({
                 title: "Good job!",
-                text: "Le service " + articleData.serviceName + " a été correctement édité",
+                text: "L'article " + articleData.articleTitle + " a été correctement édité à votre Zoo",
                 type: "success",
                 showCancelButton: false
             }, function () {
@@ -956,14 +972,9 @@ export function editArticleInDatabase(articleData) {
 
 }
 
-export function deleteArticleInDatabase(articleData) {
+export function deleteArticleFromDatabase(articleData) {
 
-
-    let reference = (userData.zooName + '/servicesData/' + articleData.serviceId);
-
-    if (articleData.serviceProfilePicture === '') {
-        articleData.serviceProfilePicture = 'http://thedroideffect.com/wp-content/themes/thedroideffect/images/missing-image-640x360.png'
-    }
+    let reference = (userData.zooName + '/articlesData/' + articleData.articleId);
 
     firebase.database().ref(reference).remove()
 
@@ -972,17 +983,17 @@ export function deleteArticleInDatabase(articleData) {
         }).then(function () {
             swal({
                 title: "Good job!",
-                text: "Le service " + articleData.serviceName + " a été correctement supprimé",
+                text: "L'article " + articleData.articleTitle + " a été correctement supprimé",
                 type: "success",
                 showCancelButton: false
             }, function () {
                 // Redirect the user
-                window.location.href = nav.akongoURL + 'servicesList';
+                window.location.href = nav.akongoURL + 'articlesList';
             })
         })
         .catch(function (error) {
             console.error("Error writing document: ", error);
-        });
+        })
 
 
 }
