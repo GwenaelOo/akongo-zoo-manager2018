@@ -1,30 +1,40 @@
-import React from 'react';
-import { Grid, Row, Col, Panel, Button } from 'react-bootstrap';
+import React, { Component } from 'react';
 import { Router, Route, Link, History, Redirect, } from 'react-router-dom';
 import firebase from 'firebase';
 import nav from '../../Nav/Nav'
 
-class LoginPage extends React.Component {
+class Login extends Component {
     constructor(props) {
         super(props);
-    this.state =({
-        url: 'http://www.akongo.fr/assets/background/Background-',
-        email: 'gwenael.leroutier@gmail.com',
-        password: ''
-    });
-        this.handleInputChange = this.handleInputChange.bind(this);   
+        this.state = ({
+            url: 'http://www.akongo.fr/assets/background/Background-',
+            email: 'gwenael.leroutier@gmail.com',
+            password: ''
+        });
+        this.handleInputChange = this.handleInputChange.bind(this);
+        this.handlePasswordChange = this.handlePasswordChange.bind(this);
         this.handleClick = this.handleClick.bind(this);
     }
-    
+
     handleInputChange(event) {
+        console.log(event.target.value)
         let name = event.target.name
-        this.setState({ [name]: event.target.value });
-        console.log(this.state.email, this.state.password)   
+        console.log(name)
+        // this.setState({ [name]: event.target.value });
+        this.setState({ [event.target.name]: event.target.value });
+        console.log(this.state.email, this.state.password)
     }
 
-    handleClick(){
+    handlePasswordChange(event) {
+        console.log(event.target.value)
+        let name = event.target.name
+        console.log(name)
+        // this.setState({ [name]: event.target.value });
+        this.setState({ password: event.target.value });
+        console.log(this.state.email, this.state.password)
+    }
 
-
+    handleClick() {
 
         firebase.auth().signInWithEmailAndPassword(this.state.email, this.state.password).catch(function (error) {
             // Handle Errors here.
@@ -51,10 +61,10 @@ class LoginPage extends React.Component {
                 // ...
             }
         });
-       
+
     }
 
-    generateRandomBackground(){
+    generateRandomBackground() {
         let imageNumber = Math.floor(Math.random() * 3) + 1,
             newUrl = this.state.url + imageNumber + '.jpg'
         this.setState({
@@ -63,7 +73,7 @@ class LoginPage extends React.Component {
 
     }
 
-    signout(){
+    signout() {
         firebase.auth().signOut().then(function () {
             console.log('Signed Out');
         }, function (error) {
@@ -72,61 +82,76 @@ class LoginPage extends React.Component {
         });
     }
 
-    componentWillMount(){
+    componentWillMount() {
         console.log(nav)
         this.signout()
         this.generateRandomBackground();
-       
+
     }
+
     render() {
-        console.log('v0.0.1')
         return (
             <div style={{
-                'padding-top': '-100px',
-                'height': '745px',
-                'margin-top': '-40px',
-                'backgroundImage': `url(${this.state.url})`
+                'height': '100%',
+                'width': '100%',
+                'overflow': 'hidden',
+                'backgroundImage': `url(${this.state.url})`,
+                'position':'fixed'
             }}>
-            
-            <div className="block-center mt-xl wd-xl">
-                { /* START panel */}
-                <div className="panel panel-dark panel-flat">
-                    <div className="panel-heading text-center">
-                        <Link to="Dashboard">
-                            <img src="img/logo.png" alt="Image" className="block-center img-rounded" />
-                        </Link>
+                <div className="block-center mt-4 wd-xl">
+                    <div className="card card-flat">
+                        <div className="card-header text-center bg-dark">
+                            <a href="">
+                                <img className="block-center rounded" src="img/logo.png" alt="Logo" />
+                            </a>
+                        </div>
+                        <div className="card-body">
+                            <p className="text-center py-2">SIGN IN TO CONTINUE.</p>
+                            <form className="mb-3" id="LoginForm" noValidate>
+                                <div className="form-group">
+                                    <div className="input-group with-focus">
+                                        <input className="form-control border-right-0" id="exampleInputEmail1" type="email" placeholder="Enter email" autoComplete="off" name="email" value={this.state.email} onChange={this.handleInputChange} required />
+                                        <div className="input-group-append">
+                                            <span className="input-group-text fa fa-envelope text-muted bg-transparent border-left-0"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="form-group">
+                                    <div className="input-group with-focus">
+                                        <input className="form-control border-right-0" id="exampleInputPassword1" type="password" placeholder="password" name="password " value={this.state.password} onChange={this.handlePasswordChange} required />
+                                        <div className="input-group-append">
+                                            <span className="input-group-text fa fa-lock text-muted bg-transparent border-left-0"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="clearfix">
+                                    <div className="checkbox c-checkbox float-left mt-0">
+                                        <label>
+                                            <input type="checkbox" value="" name="remember" />
+                                            <span className="fa fa-check"></span>Remember Me</label>
+                                    </div>
+                                    <div className="float-right">
+                                        <Link to="recover" className="text-muted">Forgot your password?</Link>
+                                    </div>
+                                </div>
+                                <button className="btn btn-block btn-primary mt-3" type="button" onClick={this.handleClick}>Login</button>
+                            </form>
+                            <p className="pt-3 text-center">Need to Signup?</p>
+                            <Link to="register" className="btn btn-block btn-secondary">Register Now</Link>
+                        </div>
                     </div>
-                    <div className="panel-body">
-                        <p className="text-center pv">SIGN IN TO CONTINUE.</p>
-                                <form role="form" data-parsley-validate="" noValidate className="mb-lg">
-                            <div className="form-group has-feedback">
-                                    <input id="exampleInputEmail1" type="email" placeholder="Enter email" autoComplete="off" required="required" name="email" className="form-control" value={this.state.email} onChange={this.handleInputChange} />
-                                <span className="fa fa-envelope form-control-feedback text-muted"></span>
-                            </div>
-                            <div className="form-group has-feedback">
-                                    <input id="exampleInputPassword1" type="password" placeholder="Password" required="required" name="password" className="form-control" value={this.state.password} onChange={this.handleInputChange} />
-                                <span className="fa fa-lock form-control-feedback text-muted"></span>
-                            </div>
-                            <div className="clearfix">
-                                <div className="checkbox c-checkbox pull-left mt0">
-                                    <label>
-                                        <input type="checkbox" value="" name="remember" />
-                                        <em className="fa fa-check"></em>Remember Me</label>
-                                </div>
-                                <div className="pull-right">
-                                    <Link to="recover" className="text-muted">Forgot your password?</Link>
-                                </div>
-                            </div>   
-                        </form>
-                            <button onClick={this.handleClick} className="btn btn-block btn-primary mt-lg">Login</button>
+                    <div className="p-3 text-center">
+                        <span className="mr-2">&copy;</span>
+                        <span>2018</span>
+                        <span className="mx-2">-</span>
+                        <span>Angle</span>
+                        <br />
+                        <span>Bootstrap Admin Template</span>
                     </div>
                 </div>
-                { /* END panel */}
             </div>
-        </div>
         );
     }
-
 }
 
-export default LoginPage;
+export default Login;

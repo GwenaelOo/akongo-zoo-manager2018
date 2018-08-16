@@ -159,6 +159,7 @@ class ServiceScreen extends React.Component {
         else {
             addNewServiceToDatabase(serviceData);
         }
+
     }
 
     readServiceFromFirebase(serviceId) {
@@ -185,7 +186,7 @@ class ServiceScreen extends React.Component {
                 servicePhotos: newGallery,
                 serviceDescription: data.serviceDescription,
                 serviceType: data.serviceType,
-                serviceOpeningTime: moment(data. serviceOpeningTime),
+                serviceOpeningTime: moment(data.serviceOpeningTime),
                 serviceClosingTime: moment(data.serviceClosingTime),
                 EditMode: true,
             });

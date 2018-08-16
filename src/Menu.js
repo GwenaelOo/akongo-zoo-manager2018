@@ -124,6 +124,24 @@ const Menu = [
         },]
     },
 
+    {
+        name: 'Gestion des Profil',
+        icon: 'icon-speedometer',
+        submenu: [{
+            name: 'Gérer Mon Profil',
+            path: 'UserScreen'
+        },]
+    },
+
+    {
+        name: 'Gestion de la carte',
+        icon: 'icon-speedometer',
+        label: { value: maValeure, color: 'success' },
+        submenu: [{
+            name: 'Gérer les Dons',
+            path: 'MapScreen'
+        },]
+    },
 
     // Menu du thème
 

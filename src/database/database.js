@@ -998,5 +998,138 @@ export function deleteArticleFromDatabase(articleData) {
 
 }
 
+/// Gestion des services ///
+
+export function addNewUserToDatabase(userData) {
+
+    // ********************
+    // Ajout dans firebase 
+    // ********************
+
+    let userUID = userData.userLastname.toUpperCase().replace(/ /g, "") + (Math.floor(Date.now() / 1000))
+    let reference = (userData.zooName + '/users/' + userUID);
+
+    if (userData.userProfilePicture === '') {
+        userData.userProfilePicture = 'http://thedroideffect.com/wp-content/themes/thedroideffect/images/missing-image-640x360.png'
+    }
+
+    firebase.database().ref(reference).set({
+        dataVersion: 1,
+        userId: userUID,
+        userFirstName: userData.userFirstName,
+        userLastname: userData.userLastname,
+        userBirthday: userData.userBirthday,
+        userBiography: userData.userBiography,
+        userPassword: userData.userPassword,
+
+        userFacebook: userData.userFacebook,
+        userLinkedin: userData.userLinkedin,
+        userTwitter: userData.userTwitter,
+        userSnapchat: userData.userSnapchat,
+
+        userProfilePicture: userData.userProfilePicture,
+
+        dataType: 'user',
+        zooName: userData.zooName,
+    })
+        .catch(function (error) {
+            console.error("Error writing document: ", error);
+        }).then(function () {
+            swal({
+                title: "Good job!",
+                text: "L'utilisateur " + userData.userName + '' + userData.userLastname + " a été ajoutée à votre Zoo",
+                type: "success",
+                showCancelButton: false
+            }, function () {
+                // Redirect the user
+                window.location.href = nav.akongoURL + 'ServicesListScreen';
+            })
+        })
+        .catch(function (error) {
+            console.error("Error writing document: ", error);
+        });
+
+
+}
+
+export function editUserInDatabase(userInfos) {
+
+    // ********************
+    // Ajout dans firebase 
+    // ********************
+
+    console.log(userInfos)
+
+    let reference = (userData.zooName + '/usersInfos/' + userInfos.userId);
+
+    if (userInfos.userProfilePicture === '') {
+        userInfos.userProfilePicture = 'http://thedroideffect.com/wp-content/themes/thedroideffect/images/missing-image-640x360.png'
+    }
+
+    firebase.database().ref(reference).set({
+        dataVersion: 1,
+        userId: userInfos.userId,
+        userFirstname: userInfos.userFirstname,
+        userLastname: userInfos.userLastname,
+        userBirthday: userInfos.userBirthday,
+        userBiography: userInfos.userBiography,
+        userPassword: userInfos.userPassword,
+
+        userFacebook: userInfos.userFacebook,
+        userLinkedin: userInfos.userLinkedin,
+        userTwitter: userInfos.userTwitter,
+        userInstagram: userInfos.userInstagram,
+        userSnapchat: userInfos.userSnapchat,
+
+        userProfilePicture: userInfos.userProfilePicture,
+
+        dataType: 'user',
+        zooName: userData.zooName,
+    })
+        .catch(function (error) {
+            console.error("Error writing document: ", error);
+        }).then(function () {
+            swal({
+                title: "Good job!",
+                text: "L'utilisateur " + userInfos.userFirstname + ' ' + userInfos.userLastname + " a été correctement édité à votre Zoo",
+                type: "success",
+                showCancelButton: false
+            }, function () {
+                // Redirect the user
+                window.location.href = nav.akongoURL + 'ServicesListScreen';
+            })
+        })
+        .catch(function (error) {
+            console.error("Error writing document: ", error);
+        });
+
+
+}
+
+export function deleteUserFromDatabase(articleData) {
+
+    let reference = (userData.zooName + '/articlesData/' + articleData.articleId);
+
+    firebase.database().ref(reference).remove()
+
+        .catch(function (error) {
+            console.error("Error writing document: ", error);
+        }).then(function () {
+            swal({
+                title: "Good job!",
+                text: "L'article " + articleData.articleTitle + " a été correctement supprimé",
+                type: "success",
+                showCancelButton: false
+            }, function () {
+                // Redirect the user
+                window.location.href = nav.akongoURL + 'articlesList';
+            })
+        })
+        .catch(function (error) {
+            console.error("Error writing document: ", error);
+        })
+
+
+}
 
 

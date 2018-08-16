@@ -3,7 +3,7 @@ import { withRouter, Switch, Route, Redirect } from 'react-router-dom';
 import { TransitionGroup, CSSTransition } from 'react-transition-group';
 
 
- 
+
 import Base from './components/Layout/Base';
 import BasePage from './components/Layout/BasePage';
 // import BaseHorizontal from './components/Layout/BaseHorizontal';
@@ -31,9 +31,14 @@ import EnclosureList from './components/Screens/EnclosureScreens/EnclosureScreen
 import BlogPost from './components/Screens/Blog/BlogPost'
 import ArticlesListView from './components/Screens/Blog/ArticlesListView/ArticlesListView'
 
+import MapScreen from './components/Screens/MapScreen/MapScreen'
 
+import UserScreen from './components/Screens/UserScreen/UserScreen'
 
 import LoginPage from './components/Login/LoginPage'
+
+
+
 
 import DashboardV1 from './components/Dashboard/DashboardV1';
 import DashboardV2 from './components/Dashboard/DashboardV2';
@@ -125,6 +130,7 @@ import InitialLoading from './components/Login/InitialLoading';
 // listed here to Switch between layouts
 // depending on the current pathname
 const listofPages = [
+    '/loginPage2',
     '/loginPage',
     '/register',
     '/recover',
@@ -201,8 +207,10 @@ const Routes = ({ location }) => {
                                 <Route path="/BlogPost" component={BlogPost} />
                                 <Route path="/ArticlesListView" component={ArticlesListView} />
 
+                                <Route path="/MapSreen" component={MapScreen} />
 
-        
+                                <Route path="/UserScreen" component={UserScreen} />
+
                                 {/*Dashboard*/}
                                 <Route path="/dashboard" component={DashboardV1} />
                                 <Route path="/dashboardv2" component={DashboardV2} />
@@ -267,7 +275,7 @@ const Routes = ({ location }) => {
                                 <Route path="/ecommerce-products" component={EcommerceProduct} />
                                 <Route path="/ecommerce-product-view" component={EcommerceProductView} />
                                 <Route path="/ecommerce-checkout" component={EcommerceCheckout} />
-                          
+
                                 <Route path="/forum-categories" component={ForumCategories} />
                                 <Route path="/forum-topics" component={ForumTopic} />
                                 <Route path="/forum-discussion" component={ForumDiscussion} />
@@ -285,8 +293,8 @@ const Routes = ({ location }) => {
                                 <Route path="/social-board" component={SocialBoard} />
                                 <Route path="/team-viewer" component={TeamViewer} />
                                 <Route path="/vote-links" component={VoteLinks} />
-                                
-                             
+
+
                                 <Redirect to="/loginPage" />
 
                             </Switch>
