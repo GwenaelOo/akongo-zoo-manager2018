@@ -10,6 +10,9 @@ class SidebarUserBlock extends Component {
 
     getUserData() {
         let userData = JSON.parse(localStorage.getItem('user'))
+
+        console.log(userData)
+        
         this.setState({
             userData: userData
         })

@@ -126,6 +126,7 @@ class BlogArticleView extends React.Component {
             },
             articleContentHTML: draftToHtml(convertToRaw(this.state.editorState.getCurrentContent())),
         }
+        
         if (this.state.EditMode === true) {
             editArticleInDatabase(blogArticleData);
         }

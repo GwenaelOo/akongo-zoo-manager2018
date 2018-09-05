@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Router, Route, Link, History, Redirect, } from 'react-router-dom';
+import swal from 'sweetalert';
 import firebase from 'firebase';
 import nav from '../../Nav/Nav'
 
@@ -37,6 +38,18 @@ class Login extends Component {
     handleClick() {
 
         firebase.auth().signInWithEmailAndPassword(this.state.email, this.state.password).catch(function (error) {
+
+            swal({
+                title: "Mot de passe incorrect!",
+                text: "Veuillez réesayer",
+                type: "warning",
+                timer: 1000,
+                showCancelButton: false
+            }, function () {
+                // Redirect the user
+               // window.location.href = nav.akongoURL + '';
+            })
+
             // Handle Errors here.
             var errorCode = error.code;
             var errorMessage = error.message;
@@ -57,8 +70,6 @@ class Login extends Component {
                 window.location.href = nav.akongoURL + 'lock';
 
             } else {
-                // User is signed out.
-                // ...
             }
         });
 
@@ -102,7 +113,7 @@ class Login extends Component {
                     <div className="card card-flat">
                         <div className="card-header text-center bg-dark">
                             <a href="">
-                                <img className="block-center rounded" src="img/logo.png" alt="Logo" />
+                                <img className="block-center rounded" src="http://www.akongo.eu/assets/img/logo/bravana-default.png" alt="Logo" />
                             </a>
                         </div>
                         <div className="card-body">
