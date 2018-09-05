@@ -360,7 +360,8 @@ export function addNewEnclosureToDatabase(enclosureData) {
         enclosureDescription: enclosureData.enclosureDescription,
         enclosureProfilePicture: enclosureData.enclosureProfilePicture,
         enclosureWishListStatus: enclosureData.enclosureWishListStatus,
-        enclosureWishListURL: enclosureData.enclosureWishListStatus,
+        enclosureWishListURL: enclosureData.enclosureWishListURL,
+        enclosureWishListDescription: enclosureData.enclosureWishListDescription,
         enclosurePhotos: enclosureData.enclosurePhotos,
         enclosureCreatedBy: userData.userId,
         enclosureCreationDate: Date(),
@@ -377,7 +378,7 @@ export function addNewEnclosureToDatabase(enclosureData) {
                 showCancelButton: false
             }, function () {
                 // Redirect the user
-                window.location.href = nav.akongoURL + 'enclosuresList';
+                window.location.href = nav.akongoURL + 'EnclosureList';
             })
         })
         .catch(function (error) {
@@ -397,7 +398,7 @@ export function editEnclosureInDatabase(enclosureData) {
         enclosureData.enclosureProfilePicture = 'http://thedroideffect.com/wp-content/themes/thedroideffect/images/missing-image-640x360.png'
     }
 
-    console.log(enclosureData.enclosurePhotos)
+    console.log(enclosureData)
 
     firebase.database().ref(reference).update({
         dataVersion: 1,
@@ -407,7 +408,8 @@ export function editEnclosureInDatabase(enclosureData) {
         enclosureDescription: enclosureData.enclosureDescription,
         enclosureProfilePicture: enclosureData.enclosureProfilePicture,
         enclosureWishListStatus: enclosureData.enclosureWishListStatus,
-        enclosureWishListURL: enclosureData.enclosureWishListStatus,
+        enclosureWishListURL: enclosureData.enclosureWishListURL,
+        enclosureWishListDescription: enclosureData.enclosureWishListDescription,
         enclosurePhotos: enclosureData.enclosurePhotos,
         enclosureCreatedBy: userData.userId,
         enclosureCreationDate: Date(),
@@ -424,7 +426,7 @@ export function editEnclosureInDatabase(enclosureData) {
                 showCancelButton: false
             }, function () {
                 // Redirect the user
-                window.location.href = nav.akongoURL + 'enclosuresList';
+                window.location.href = nav.akongoURL + 'EnclosureList';
             })
         })
         .catch(function (error) {

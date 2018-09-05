@@ -142,6 +142,8 @@ class EnclosureScreen extends React.Component {
             log: this.state.logId + 1
         }
 
+        console.log(enclosureData)
+
         enclosureData.enclosurePhotos.shift()
 
         if (this.state.EditMode === true) {
@@ -176,6 +178,8 @@ class EnclosureScreen extends React.Component {
                     enclosureSpeciesList: data.enclosureSpeciesList,
                     enclosureDescription: data.enclosureDescription,
                     enclosureProfilePicture: data.enclosureProfilePicture,
+                    enclosureWishListDescription: data.enclosureWishListDescription,
+                    enclosureWishListURL: data.enclosureWishListURL,
                     enclosurePhotos: newGallery,
                     EditMode: true,
                 });
@@ -304,7 +308,7 @@ class EnclosureScreen extends React.Component {
                                     <div className="col-md-6">
                                         <label htmlFor="userName">Description de la wishlist</label>
                                         <Panel>
-                                            <textarea name="enclosureDescription" rows="12" className="form-control note-editor" value={this.state.enclosureDescription} onChange={this.handleChange}>
+                                            <textarea name="enclosureWishListDescription" rows="12" className="form-control note-editor" value={this.state.enclosureWishListDescription} onChange={this.handleChange}>
                                             </textarea>
                                         </Panel>
                                     </div>

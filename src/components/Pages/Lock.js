@@ -28,6 +28,7 @@ class Lock extends React.Component {
 
                     let dataToStore = {
                         userId: user.uid,
+                        userProfilePicture: userInfos.userProfilePicture,
                         city: userInfos.city,
                         zooName: userInfos.zooName,
                         firstname: userInfos.firstname,
