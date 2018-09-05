@@ -35,6 +35,7 @@ class EnclosureScreen extends React.Component {
             enclosureWishListURL: '',
             enclosureWishListStatus: '',
             enclosureWishListDescription: '',
+            enclosureDisplayWishlist: false,
             enclosureDescription: '',
             enclosureProfilePicture: {
                 fullPhoto: 'https://www.cmsabirmingham.org/stuff/2017/01/default-placeholder.png',
@@ -46,26 +47,21 @@ class EnclosureScreen extends React.Component {
             EditMode: false,
         };
         this.handleChange = this.handleChange.bind(this);
+        this.handleCheckBoxChange = this.handleCheckBoxChange.bind(this);
         this.handleReturnedUrl = this.handleReturnedUrl.bind(this);
     }
 
     handleChange(enclosure) {
-
         let name = enclosure.target.name
         this.setState({ [name]: enclosure.target.value });
+    }
 
-        let enclosureData = {
-            enclosureId: this.state.enclosureId,
-            enclosureName: this.state.enclosureName,
-            enclosureSex: this.state.enclosureSex,
-            enclosureProfilePicture: this.state.enclosureProfilePicture,
-            enclosureWishListStatus: this.state.enclosureWishListStatus,
-            enclosureWishListDescription: this.state.enclosureWishListDescription,
-            enclosureWishListURL: this.state.enclosureWishListURL,
-            enclosurePhotos: this.state.enclosurePhotos,
-        }
+    handleCheckBoxChange(enclosure) {
 
-        console.log(enclosureData)
+        let value = enclosure.target.checked
+        let name = enclosure.target.name
+
+        this.setState({ [name]: value });
     }
 
     handleReturnedUrl(returnedUrl, photoId) {
@@ -123,9 +119,9 @@ class EnclosureScreen extends React.Component {
             closeOnConfirm: false
         },
             function () {
-               deleteEnclosureInDatabase(enclosureData)
+                deleteEnclosureInDatabase(enclosureData)
             });
-            
+
     }
 
     handleClick() {
@@ -141,8 +137,6 @@ class EnclosureScreen extends React.Component {
             enclosurePhotos: this.state.enclosurePhotos,
             log: this.state.logId + 1
         }
-
-        console.log(enclosureData)
 
         enclosureData.enclosurePhotos.shift()
 
@@ -165,7 +159,7 @@ class EnclosureScreen extends React.Component {
             .then(function (snapshot) {
                 let data = snapshot.val()
 
-                for (let item in data.enclosurePhotos){
+                for (let item in data.enclosurePhotos) {
                     let photo = data.enclosurePhotos[item]
                     photo.newUpload = false
                     newGallery.push(photo)
@@ -180,6 +174,7 @@ class EnclosureScreen extends React.Component {
                     enclosureProfilePicture: data.enclosureProfilePicture,
                     enclosureWishListDescription: data.enclosureWishListDescription,
                     enclosureWishListURL: data.enclosureWishListURL,
+                    enclosureDisplayWishlist: data.enclosureDisplayWishlist || false,
                     enclosurePhotos: newGallery,
                     EditMode: true,
                 });
@@ -197,10 +192,8 @@ class EnclosureScreen extends React.Component {
 
                 for (let specie in speciesList) {
                     if (speciesList[specie].specieEnclosure.enclosureId != enclosureId)
-
                         delete speciesList[specie]
                 }
-
                 self.setState({
                     enclosureSpeciesList: speciesList
                 })
@@ -213,7 +206,6 @@ class EnclosureScreen extends React.Component {
             this.getSpeciesInThisEnclosure(this.props.location.state.enclosureId);
         }
     }
-
 
     componentWillMount() {
         //this.getLogLenght();
@@ -234,6 +226,33 @@ class EnclosureScreen extends React.Component {
         const innerRadio = <input type="radio" aria-label="..." />;
         const innerCheckbox = <input type="checkbox" aria-label="..." />;
 
+        // Module Wishlist
+
+        const wishListModule = (
+            <div style={{ display: 'flex', flexDirection: "row" }} >
+                <div className="col-md-6" >
+                    <fieldset>
+                        <FormGroup>
+                            <label className="col-sm-12 control-label">Adresse de la wishlist</label>
+                            <Col sm={10}>
+                                <FormControl type="text" name="enclosureWishListURL" placeholder="HTTP:// ..." value={this.state.enclosureWishListURL} onChange={this.handleChange} className="form-control" />
+                            </Col>
+                        </FormGroup>
+                    </fieldset>
+                </div>
+
+                <div className="col-md-6">
+                    <label htmlFor="userName">Description de la wishlist</label>
+                    <Panel>
+                        <textarea name="enclosureWishListDescription" rows="12" className="form-control note-editor" value={this.state.enclosureWishListDescription} onChange={this.handleChange}>
+                        </textarea>
+                    </Panel>
+                </div>
+            </div>
+        )
+
+        // Module Gestion 
+
         const deleteButton = (
             <Button color="danger" className="btn-labeled" bsSize="large" onClick={() => { this.handleDelete() }}>
                 <span className="btn-label"><i className="fa fa-trash"></i></span> Supprimer l'enclos
@@ -246,7 +265,7 @@ class EnclosureScreen extends React.Component {
         var rows = [];
         for (var i = 0; i < this.state.enclosurePhotos.length; i++) {
             rows.push(
-                <div style={{ display: 'flex', flexDirection: "row", flexWrap: 'wrap', justifyContent: 'space-around'}}>
+                <div style={{ display: 'flex', flexDirection: "row", flexWrap: 'wrap', justifyContent: 'space-around' }}>
                     <DropzonePhoto size='300px' enclosureName={this.state.enclosureName} background={this.state.enclosurePhotos[i].largeThumb} id={"Photo" + i} methodToReturnUrl={this.handleReturnedUrl} />
                 </div>
             );
@@ -293,25 +312,23 @@ class EnclosureScreen extends React.Component {
                                     </div>
 
                                 </div>
-                                <div style={{ display: 'flex', flexDirection: "row" }} >
-                                    <div className="col-md-6" >
-                                        <fieldset>
-                                            <FormGroup>
-                                                <label className="col-sm-12 control-label">Adresse de la wishlist</label>
-                                                <Col sm={10}>
-                                                    <FormControl type="text" name="enclosureWishListURL" placeholder="HTTP:// ..." value={this.state.enclosureWishListURL} onChange={this.handleChange} className="form-control" />
-                                                </Col>
-                                            </FormGroup>
-                                        </fieldset>
-                                    </div>
 
-                                    <div className="col-md-6">
-                                        <label htmlFor="userName">Description de la wishlist</label>
-                                        <Panel>
-                                            <textarea name="enclosureWishListDescription" rows="12" className="form-control note-editor" value={this.state.enclosureWishListDescription} onChange={this.handleChange}>
-                                            </textarea>
-                                        </Panel>
-                                    </div>
+                            </fieldset>
+
+                            <fieldset>
+
+                                <legend>WishList</legend>
+                                {this.state.enclosureDisplayWishlist ? wishListModule : null}
+                                <div className="form-group row align-items-center">      
+                                    <label className="col-md-3 col-form-label">Activer une wishlist pour l'enclos</label>
+                                    <Col md={9}>
+                                        <label className="switch">
+                                            <input type="checkbox" name="enclosureDisplayWishlist"
+                                                checked={this.state.enclosureDisplayWishlist}
+                                                onClick={this.handleCheckBoxChange} />
+                                            <span></span>
+                                        </label>
+                                    </Col>
                                 </div>
 
                             </fieldset>
@@ -327,13 +344,8 @@ class EnclosureScreen extends React.Component {
                                 </FormGroup>
                             </fieldset>
                         </form>
-
-                        {/* <form className="form-horizontal" onSubmit={this.handleSubmit}>
-                            <legend>Espèces dans l'enclos</legend>
-                            <SpecieList speciesList={this.state.enclosureSpeciesList} />
-                        </form> */}
                     </CardWithHeader>
-                </Panel>
+                </Panel >
                 <CardWithHeader header="Validation" >
 
                     <Button color="success" className="btn-labeled" bsSize="large" style={{ marginRight: 20 }} onClick={() => { this.handleClick() }}>
