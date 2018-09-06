@@ -8,6 +8,7 @@ import { Row, Col, Card, CardHeader, CardTitle, CardBody, Button, ButtonGroup, B
 import TextInput from '../../../customComponents/TextInput/TextInput';
 import IUCNSelector from '../../../customComponents/IUCNSelector/IUCNSelector';
 import DropzonePhoto from '../../../customComponents/Dropzone/DropzonePhoto';
+import Dropdown from '../../../Elements/DropDown'
 import swal from 'sweetalert'
 import { Typeahead } from 'react-bootstrap-typeahead';
 import firebase from 'firebase';
@@ -513,7 +514,7 @@ class SpecieScreen extends React.Component {
     }
 
     initPage() {
-
+        var self = this
 
         if (this.props.location.state != undefined) {
             if (this.props.location.state.cropped === true) {
