@@ -50,6 +50,7 @@ class ServiceScreen extends React.Component {
             serviceOpeningTime: '',
             serviceClosingTime: '',
             serviceProfilePicture: {
+                basePhoto: 'https://www.cmsabirmingham.org/stuff/2017/01/default-placeholder.png',
                 fullPhoto: 'https://www.cmsabirmingham.org/stuff/2017/01/default-placeholder.png',
                 largeThumb: 'https://www.cmsabirmingham.org/stuff/2017/01/default-placeholder.png',
                 smallThumb: 'https://www.cmsabirmingham.org/stuff/2017/01/default-placeholder.png'
@@ -64,6 +65,8 @@ class ServiceScreen extends React.Component {
         this.handleOpeningTimeChange = this.handleOpeningTimeChange.bind(this);
         this.handleClosingTimeChange = this.handleClosingTimeChange.bind(this);
         this.handleCrop = this.handleCrop.bind(this);
+        this.updateFromLocalStorage = this.updateFromLocalStorage.bind(this);
+        this.localStorageSync = this.localStorageSync.bind(this);
     }
 
     handleChange(service) {
@@ -71,13 +74,7 @@ class ServiceScreen extends React.Component {
         let name = service.target.name
         this.setState({ [name]: service.target.value });
 
-        let serviceData = {
-            serviceName: this.state.serviceName,
-            serviceId: this.state.serviceId,
-            serviceProfilePicture: this.state.serviceProfilePicture,
-            servicePhotos: this.state.servicePhotos,
-            serviceDescription: this.state.serviceDescription,
-        }
+        this.localStorageSync()
     }
 
     handleReturnedUrl(returnedUrl, photoId) {
@@ -90,6 +87,7 @@ class ServiceScreen extends React.Component {
             this.setState({
                 serviceProfilePicture: {
                     edited: false,
+                    basePhoto: returnedUrl,
                     fullPhoto: returnedUrl,
                     largeThumb: returnedUrl,
                     smallThumb: returnedUrl,
@@ -105,6 +103,7 @@ class ServiceScreen extends React.Component {
             edited: false,
             photoId: photoId,
             photoURL: returnedUrl,
+            basePhoto: returnedUrl,
             fullPhoto: returnedUrl,
             largeThumb: returnedUrl,
             smallThumb: returnedUrl,
@@ -116,6 +115,8 @@ class ServiceScreen extends React.Component {
             servicePhotos: photosArray
 
         });
+
+        this.localStorageSync()
     }
 
     handleDelete() {
@@ -200,13 +201,15 @@ class ServiceScreen extends React.Component {
     handleOpeningTimeChange(moment) {
         this.setState({
             serviceOpeningTime: moment
-        })
+        })     
+        this.localStorageSync()   
     }
 
     handleClosingTimeChange(moment) {
         this.setState({
             serviceClosingTime: moment
         })
+        this.localStorageSync()
     }
 
     handleServiceType(newValue) {
@@ -215,15 +218,84 @@ class ServiceScreen extends React.Component {
         })
     }
 
+    updateFromLocalStorage() {
+        let sessionData = JSON.parse(localStorage.getItem('serviceSession'))
+
+        console.log(sessionData)
+       
+        sessionData = this.updateAfterCropped(sessionData) 
+    
+        console.log(sessionData)
+
+        this.setState({
+            serviceId: sessionData.serviceId,
+            serviceName: sessionData.serviceName,
+            serviceDescription: sessionData.serviceDescription,
+            serviceType: sessionData.serviceType,
+            serviceOpeningTime: moment(sessionData.serviceOpeningTime),
+            serviceClosingTime: moment(sessionData.serviceClosingTime),
+            serviceProfilePicture: sessionData.serviceProfilePicture,
+            servicePhotos: sessionData.servicePhotos,
+        });
+    }
+
+    updateAfterCropped(sessionData) {
+    
+        let initialPhoto = this.props.location.state.initialPhoto
+        let croppedPhoto = this.props.location.state.croppedPhoto
+        let photoIndex = this.props.location.state.photoIndex
+
+
+        sessionData.servicePhotos[photoIndex] = {
+            basePhoto: initialPhoto,
+            fullPhoto: croppedPhoto,
+            largeThumb: croppedPhoto,
+            smallThumb: croppedPhoto
+        }
+
+        return sessionData
+
+
+    }
+
     componentWillMount() {
         if (this.props.location.state != undefined) {
-            this.readServiceFromFirebase(this.props.location.state.serviceId);
+            if (this.props.location.state.cropped === true) {
+                this.updateFromLocalStorage()
+            } else {
+                this.readServiceFromFirebase(this.props.location.state.serviceId)
+            }
         }
     }
 
-    handleCrop(){
-        this.props.history.push("/UserScreen");
-        
+    localStorageSync(){
+        let serviceData = {
+            serviceId: this.state.serviceId,
+            serviceName: this.state.serviceName,
+            serviceDescription: this.state.serviceDescription,
+            serviceType: this.state.serviceType,
+            serviceOpeningTime: this.state.serviceOpeningTime,
+            serviceClosingTime: this.state.serviceClosingTime,
+            serviceProfilePicture: this.state.serviceProfilePicture,
+            servicePhotos: this.state.servicePhotos,
+           // logId: 0,
+           // dataVersion: 0,
+           // EditMode: false,
+        }
+        localStorage.setItem('serviceSession', JSON.stringify(serviceData))     
+    }
+
+    handleCrop(photoIndex) {
+        let id = photoIndex - 1
+        this.props.history.push({
+            pathname: '/Cropper',
+            state: {
+                photoIndex: id,
+                photo: this.state.servicePhotos[id].basePhoto,
+                previousScreen: 'ServiceScreen',
+                localStorage: 'serviceSession'
+            }
+        })
     }
 
     render() {
@@ -250,9 +322,9 @@ class ServiceScreen extends React.Component {
         for (var i = 0; i < this.state.servicePhotos.length; i++) {
             let id = i
             rows.push(
-                <div style={{ display: 'flex', flexDirection: "column", flexWrap: 'wrap', justifyContent: 'space-between' }}> 
+                <div style={{ display: 'flex', flexDirection: "column", flexWrap: 'wrap', justifyContent: 'space-between' }}>
                     <DropzonePhoto serviceName={this.state.serviceName} background={this.state.servicePhotos[i].largeThumb} id={"Photo" + i} methodToReturnUrl={this.handleReturnedUrl} />
-                   {i > 0 ? <Dropdown handleCrop={this.handleCrop}/> : null} 
+                    {i > 0 ? <Dropdown handleCrop={() => this.handleCrop(i)} /> : null}
                 </div>
             );
         }
@@ -303,7 +375,7 @@ class ServiceScreen extends React.Component {
                                                     <Datetime inputProps={{ className: 'form-control' }} value={this.state.serviceOpeningTime} onChange={this.handleOpeningTimeChange} dateFormat={false} timeFormat="HH:mm" />
                                                 </Panel>
                                             </div>
-                                            <div style={{marginLeft: '1em'}}>
+                                            <div style={{ marginLeft: '1em' }}>
 
                                                 <label htmlFor="userName"><i class="fa fa-clock-o" aria-hidden="true"></i> Heure de fermeture </label>
                                                 <Panel>

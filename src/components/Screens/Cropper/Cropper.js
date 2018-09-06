@@ -1,13 +1,25 @@
 import React, { Component } from 'react';
-import ContentWrapper from '../Layout/ContentWrapper';
+import ContentWrapper from '../../Layout/ContentWrapper';
 import { Container, Row, Col } from 'reactstrap';
+import axios from 'axios'
 import $ from 'jquery';
 // Image Cropper
 import 'cropper/dist/cropper.css';
 import 'cropper/dist/cropper.js';
 
 class Cropper extends Component {
-
+    constructor(props) {
+        super(props);
+        this.state = {
+           localStorage: this.props.location.state.localStorage,
+           photoToCrop: this.props.location.state.photo,
+           photoIndex: this.props.location.state.photoIndex,
+           previousScreen: this.props.location.state.previousScreen
+        };
+        this.handleClick = this.handleClick.bind(this);
+        this.updloadCroppedImage = this.updloadCroppedImage.bind(this);
+        this.goingBack = this.goingBack.bind(this);
+    }
     componentDidMount() {
         var self = this;
 
@@ -32,9 +44,46 @@ class Cropper extends Component {
     }
 
     handleClick() {
-        console.log(JSON.parse(localStorage.getItem('croppedImage')))
+       this.updloadCroppedImage(JSON.parse(localStorage.getItem('croppedImage')))
     }
 
+    updloadCroppedImage(url) {
+            const formData = new FormData();
+            formData.append("file", url);
+            formData.append("tags", `specie.name, specie.zoo`);
+            formData.append("folder", "test");
+            formData.append("upload_preset", "esbpefvx"); // Replace the preset name with your own
+            formData.append("api_key", "247372227977832"); // Replace API key with your own Cloudinary key
+            formData.append("timestamp", (Date.now() / 1000) | 0);
+
+            // Make an AJAX upload request using Axios (replace Cloudinary URL below with your own)
+            return axios.post("https://api.cloudinary.com/v1_1/akongo/image/upload/", formData, {
+                headers: { "X-Requested-With": "XMLHttpRequest" },
+            }).then(response => {
+                const data = response.data;
+                const fileURL = data.secure_url // You should store this URL for future references in your app
+
+                this.setState({   
+                    returnedUrl: data.url,  
+                    hasBeenUploaded: true
+                });
+            }).then(() => {
+            this.goingBack(this.state.returnedUrl)   
+           // return(this.state.returnedUrl, this.props.id);
+        });
+    }
+
+    goingBack(croppedImageURL){
+        this.props.history.push({
+            pathname: '/' + this.state.previousScreen,
+            state: {
+                initialPhoto: this.state.photoToCrop,
+                croppedPhoto: croppedImageURL,
+                cropped: true,
+                photoIndex: this.state.photoIndex
+            }})
+    }
+  
     handleNewImage() {
         var self = this;
         var URL = window.URL || window.webkitURL,
@@ -84,7 +133,7 @@ class Cropper extends Component {
                     <Row>
                         <Col lg={ 8 }>
                             <div className="img-container mb-lg">
-                                <img ref="cropperImage" src="http://res.cloudinary.com/akongo/image/upload/v1533554854/temp/h5jp1lhqb7g3neovnth3.jpg" alt="Sample" />
+                                <img ref="cropperImage" src={this.state.photoToCrop} alt="Sample" />
                             </div>
                         </Col>
                         <Col lg={ 4 }>
