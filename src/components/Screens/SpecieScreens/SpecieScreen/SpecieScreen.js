@@ -217,7 +217,7 @@ class SpecieScreen extends React.Component {
         
         console.log(newValue)
         this.setState({
-            specieFamily: newValue
+            specieFamilly: newValue
         })
     }
 
@@ -291,6 +291,8 @@ class SpecieScreen extends React.Component {
             specieClass2: this.state.specieClass2,
             specieFamily: this.state.specieFamily
         }
+
+        console.log(specieData)
 
       
         specieData.speciePhotos.shift()
@@ -368,11 +370,19 @@ class SpecieScreen extends React.Component {
             .then(function (snapshot) {
                 lists = snapshot.val()
 
-                self.setState({
-                    ordersList: lists.ordersList,
-                    classesList: lists.classesList,
-                    familiesList: lists.familiesList
-                })
+                if(lists !== null){
+                    self.setState({
+                        ordersList: lists.ordersList,
+                        classesList: lists.classesList,
+                        familiesList: lists.familliesList
+                    })
+                }else{
+                    self.setState({
+                        ordersList: [],
+                        classesList: [],
+                        familliesList: [],
+                    })
+                }           
             })
     }
 
@@ -609,7 +619,7 @@ class SpecieScreen extends React.Component {
                                                     <Creatable
                                                         options={this.state.familiesList}
                                                         onChange={(newValue) => this.handleFamilyChoice(newValue)}
-                                                        value={this.state.specieFamily}
+                                                        value={this.state.specieFamilly}
                                                         placeholder='Ex. hominidés'
                                                     />
                                                 </FormGroup>

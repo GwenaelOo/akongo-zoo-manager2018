@@ -4,16 +4,14 @@ import firebase from 'firebase';
 
 // Gestion des espèces /// 
 
-export function manageInputs(newOrder, newClass, newFamily) {
-
-    console.log(newFamily)
+export function manageInputs(newOrder, newClass, newFamilly) {
 
 
     // initClasses(newClass)
-    // initFamilies(newFamily)
+    // initFamilies(newFamilly)
     // initOrder(newOrder)
     getClassesList(newClass)
-    getFamiliesList(newFamily)
+    getFamilliesList(newFamilly)
     getOrdersList(newOrder)
 
 }
@@ -23,44 +21,41 @@ export function manageInputs(newOrder, newClass, newFamily) {
 function getOrdersList(order) {
     return firebase.database().ref('/inputLists/ordersList').once('value')
         .then(function (snapshot) {
-            manageOrder(snapshot.val(), order)
+            if (snapshot.val() === null) {
+                initOrder(order)
+            } else {
+                manageOrder(snapshot.val(), order)
+            }
+
         })
 }
 
 function manageOrder(ordersList, order) {
+    let detected = false
 
-    if (order !== "") {
-
-        for (let index = 0; index < ordersList.length; index++) {
-
-            if (ordersList[index].label === order.label) {
-                console.log('osef')
-            }
-            else {
-                order.id = Date.now()
-                ordersList.push(order)
-
-                firebase.database().ref('/inputLists/').update({
-                    ['ordersList']: ordersList
-                })
-                    .catch(function (error) {
-                        console.error("Error writing document: ", error);
-                    });
-                return
-            }
-
+    for (let index = 0; index < ordersList.length; index++) { 
+        if (ordersList[index].label === order.label) {
+            detected = true
         }
+    }
 
+    if (detected === false) {
+        order.id = Date.now()
+        ordersList.push(order)
+
+        firebase.database().ref('/inputLists/').update({
+            ordersList
+        })
+            .catch(function (error) {
+                console.error("Error writing document: ", error);
+            });
+        return
     }
 }
 
 function initOrder(order) {
-
-
     let ordersList = []
     ordersList.push(order)
-
-    console.log(ordersList)
 
     firebase.database().ref('/inputLists/').update({
         ordersList
@@ -73,49 +68,48 @@ function initOrder(order) {
 // Gestion des listes de classe
 
 
-function getClassesList(newClass) {
+function getClassesList(classe) {
     return firebase.database().ref('/inputLists/classesList').once('value')
         .then(function (snapshot) {
-            manageClasses(snapshot.val(), newClass)
+            if (snapshot.val() === null) {
+                initClass(classe)
+            } else {
+                manageClass(snapshot.val(), classe)
+            }
+
         })
 }
 
-function manageClasses(classesList, newClass) {
+function manageClass(classesList, classe) {
+    let detected = false
 
-    if (newClass === '') {
-        return
+    for (let index = 0; index < classesList.length; index++) { 
+        if (classesList[index].label === classe.label) {
+            detected = true
+        }
     }
 
+    if (detected === false) {
+        classe.id = Date.now()
+        classesList.push(classe)
 
-    for (let index = 0; index < classesList.length; index++) {
-
-        if (classesList[index].label === newClass.label) {
-            console.log('osef')
-        }
-        else {
-            newClass.id = Date.now()
-            classesList.push(newClass)
-
-            firebase.database().ref('/inputLists/').update({
-                ['classesList']: classesList
-            })
-                .catch(function (error) {
-                    console.error("Error writing document: ", error);
-                });
-            return
-        }
-
+        firebase.database().ref('/inputLists/').update({
+            classesList
+        })
+            .catch(function (error) {
+                console.error("Error writing document: ", error);
+            });
+        return
     }
 }
 
-function initClasses(newClass) {
-
+function initClass(classe) {
+    console.log(classe)
     let classesList = []
-    classesList.push(newClass)
+   // classe.id = Date.now()
+    classesList.push(classe)
 
-    console.log(classesList)
-
-    firebase.database().ref('/inputLists/').set({
+    firebase.database().ref('/inputLists/').update({
         classesList
     })
         .catch(function (error) {
@@ -123,55 +117,57 @@ function initClasses(newClass) {
         });
 }
 
-// Gestion des listes de classe
+
+// Gestion des listes de Familles
 
 
-function getFamiliesList(newFamily) {
-    return firebase.database().ref('/inputLists/familiesList').once('value')
+function getFamilliesList(familly) {
+    return firebase.database().ref('/inputLists/familliesList').once('value')
         .then(function (snapshot) {
-            manageFamilies(snapshot.val(), newFamily)
+            if (snapshot.val() === null) {
+                initFamilly(familly)
+            } else {
+                manageFamillies(snapshot.val(), familly)
+            }
+
         })
 }
 
-function manageFamilies(familiesList, newFamily) {
+function manageFamillies(familliesList, familly) {
+    let detected = false
 
-    if (newFamily === '') {
-        return
+    for (let index = 0; index < familliesList.length; index++) { 
+        if (familliesList[index].label === familly.label) {
+            detected = true
+        }
     }
 
-    for (let index = 0; index < familiesList.length; index++) {
+    if (detected === false) {
+        familly.id = Date.now()
+        familliesList.push(familly)
 
-        if (familiesList[index].label === newFamily.label) {
-            console.log('osef')
-        }
-        else {
-
-            newFamily.id = Date.now()
-            familiesList.push(newFamily)
-            firebase.database().ref('/inputLists/').update({
-                ['familiesList']: familiesList
-            })
-                .catch(function (error) {
-                    console.error("Error writing document: ", error);
-                });
-            return
-        }
-
+        firebase.database().ref('/inputLists/').update({
+            familliesList
+        })
+            .catch(function (error) {
+                console.error("Error writing document: ", error);
+            });
+        return
     }
 }
 
-function initFamilies(newFamily) {
+function initFamilly(familly) {
 
-    let familiesList = []
-    familiesList.push(newFamily)
+    console.log(familly)
+    let familliesList = []
+    //familly.id = Date.now()
+    familliesList.push(familly)
 
-    console.log(familiesList)
-
+    console.log(familliesList)
     firebase.database().ref('/inputLists/').update({
-        familiesList
+        familliesList
     })
         .catch(function (error) {
             console.error("Error writing document: ", error);
         });
 }
-
