@@ -81,6 +81,7 @@ class AnimationScreen extends React.Component {
             this.setState({
                 animationProfilePicture: {
                     edited: false,
+                    basePhoto: returnedUrl,
                     fullPhoto: returnedUrl,
                     largeThumb: returnedUrl,
                     smallThumb: returnedUrl,
@@ -95,6 +96,7 @@ class AnimationScreen extends React.Component {
         let newObject = {
             edited: false,
             photoId: photoId,
+            basePhoto: returnedUrl,
             photoURL: returnedUrl,
             fullPhoto: returnedUrl,
             largeThumb: returnedUrl,
@@ -108,7 +110,6 @@ class AnimationScreen extends React.Component {
         });
 
         this.localStorageSync()
-
     }
 
     handleDelete() {
@@ -167,7 +168,7 @@ class AnimationScreen extends React.Component {
             // dataVersion: 0,
             // EditMode: false,
         }
-        localStorage.setItem('serviceSession', JSON.stringify(animationData))     
+        localStorage.setItem('animationSession', JSON.stringify(animationData))     
     }
 
     readAnimationFromFirebase(animationId) {
@@ -209,12 +210,12 @@ class AnimationScreen extends React.Component {
     }
 
     handleCrop(photoIndex) {
-        let id = photoIndex - 1
+       let id = photoIndex - 1
         this.props.history.push({
             pathname: '/Cropper',
             state: {
                 photoIndex: id,
-                photo: this.state.servicePhotos[id].basePhoto,
+                photo: this.state.animationPhotos[id].basePhoto,
                 previousScreen: 'AnimationScreen',
                 localStorage: 'serviceSession'
             }
@@ -232,7 +233,7 @@ class AnimationScreen extends React.Component {
                 animationProfilePicture: sessionData.animationProfilePicture,
                 animationPhotos: sessionData.animationPhotos,
                 animationDescription: sessionData.animationDescription,
-                animationStartTime: sessionData.animationStartTime,
+                animationStartTime: moment(sessionData.animationStartTime),
              
         });
     }
@@ -244,7 +245,7 @@ class AnimationScreen extends React.Component {
         let photoIndex = this.props.location.state.photoIndex
 
 
-        sessionData.servicePhotos[photoIndex] = {
+        sessionData.animationPhotos[photoIndex] = {
             basePhoto: initialPhoto,
             fullPhoto: croppedPhoto,
             largeThumb: croppedPhoto,
@@ -256,6 +257,7 @@ class AnimationScreen extends React.Component {
     componentWillMount() {
         if (this.props.location.state != undefined) {
             if (this.props.location.state.cropped === true) {
+              
                 this.updateFromLocalStorage()
             } else {
                 this.readAnimationFromFirebase(this.props.location.state.animationId);

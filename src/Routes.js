@@ -213,7 +213,7 @@ const Routes = ({ location }) => {
 
                                 <Route path="/UserScreen" component={UserScreen} />
 
-                                 <Route path="/Cropper" component={Cropper} />
+                                <Route path="/Cropper" component={Cropper} />
 
 
                                 {/*Dashboard*/}
