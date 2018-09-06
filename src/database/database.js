@@ -552,6 +552,7 @@ export function addNewAnimationToDatabase(animationData) {
                 showCancelButton: false
             }, function (nextState, replaceState) {
                 //Redirect the user
+                localStorage.removeItem('animationSession');
                 window.location.href = nav.akongoURL + 'AnimationsListScreen';        
             })
         })

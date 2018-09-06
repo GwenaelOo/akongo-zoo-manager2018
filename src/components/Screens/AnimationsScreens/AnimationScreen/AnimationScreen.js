@@ -199,6 +199,8 @@ class AnimationScreen extends React.Component {
                     EditMode: true,
                 });
             })
+
+            this.localStorageSync()
     }
 
     handleTimeChange(moment) {
@@ -295,6 +297,8 @@ class AnimationScreen extends React.Component {
                 </div>
             );
         }
+
+        console.log(this.state.EditMode)
 
         return (
 
