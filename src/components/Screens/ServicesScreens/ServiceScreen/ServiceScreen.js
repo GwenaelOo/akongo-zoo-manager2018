@@ -93,6 +93,7 @@ class ServiceScreen extends React.Component {
                     smallThumb: returnedUrl,
                 },
             });
+            this.localStorageSync() 
             return
         }
 
@@ -220,13 +221,9 @@ class ServiceScreen extends React.Component {
 
     updateFromLocalStorage() {
         let sessionData = JSON.parse(localStorage.getItem('serviceSession'))
-
-        console.log(sessionData)
        
         sessionData = this.updateAfterCropped(sessionData) 
     
-        console.log(sessionData)
-
         this.setState({
             serviceId: sessionData.serviceId,
             serviceName: sessionData.serviceName,
@@ -252,10 +249,7 @@ class ServiceScreen extends React.Component {
             largeThumb: croppedPhoto,
             smallThumb: croppedPhoto
         }
-
         return sessionData
-
-
     }
 
     componentWillMount() {

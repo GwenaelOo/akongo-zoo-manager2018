@@ -8,6 +8,7 @@ import { Row, Col, Card, CardHeader, CardTitle, CardBody, Button, ButtonGroup, B
 import TextInput from '../../../customComponents/TextInput/TextInput';
 import IUCNSelector from '../../../customComponents/IUCNSelector/IUCNSelector';
 import DropzonePhoto from '../../../customComponents/Dropzone/DropzonePhoto';
+import Dropdown from '../../../Elements/DropDown'
 import swal from 'sweetalert'
 import { Typeahead } from 'react-bootstrap-typeahead';
 import firebase from 'firebase';
@@ -38,6 +39,7 @@ class AnimationScreen extends React.Component {
             animationId: '',
             animationName: '',
             animationProfilePicture: {
+                basePhoto: 'https://www.cmsabirmingham.org/stuff/2017/01/default-placeholder.png',
                 fullPhoto: 'https://www.cmsabirmingham.org/stuff/2017/01/default-placeholder.png',
                 largeThumb: 'https://www.cmsabirmingham.org/stuff/2017/01/default-placeholder.png',
                 smallThumb: 'https://www.cmsabirmingham.org/stuff/2017/01/default-placeholder.png'
@@ -68,7 +70,7 @@ class AnimationScreen extends React.Component {
             animationDescription: this.state.animationDescription,
         }
 
-        console.log(animationData)
+        this.localStorageSync()
     }
 
     handleReturnedUrl(returnedUrl, photoId) {
@@ -84,7 +86,7 @@ class AnimationScreen extends React.Component {
                     smallThumb: returnedUrl,
                 },
             });
-
+            this.localStorageSync()
             return
         }
 
@@ -104,6 +106,8 @@ class AnimationScreen extends React.Component {
         this.setState({
             animationPhotos: photosArray
         });
+
+        this.localStorageSync()
 
     }
 
@@ -151,6 +155,21 @@ class AnimationScreen extends React.Component {
         }
     }
 
+    localStorageSync(){
+        let animationData = {
+            animationId: this.state.animationId,
+            animationName: this.state.animationName,
+            animationProfilePicture: this.state.animationProfilePicture,
+            animationPhotos: this.state.animationPhotos,
+            animationDescription: this.state.animationDescription,
+            animationStartTime: this.state.animationStartTime,
+            // logId: 0,
+            // dataVersion: 0,
+            // EditMode: false,
+        }
+        localStorage.setItem('serviceSession', JSON.stringify(animationData))     
+    }
+
     readAnimationFromFirebase(animationId) {
         var self = this
         let newGallery = this.state.animationPhotos
@@ -185,11 +204,62 @@ class AnimationScreen extends React.Component {
       this.setState({
           animationStartTime: moment
       })
+
+      this.localStorageSync()
+    }
+
+    handleCrop(photoIndex) {
+        let id = photoIndex - 1
+        this.props.history.push({
+            pathname: '/Cropper',
+            state: {
+                photoIndex: id,
+                photo: this.state.servicePhotos[id].basePhoto,
+                previousScreen: 'AnimationScreen',
+                localStorage: 'serviceSession'
+            }
+        })
+    }
+
+    updateFromLocalStorage() {
+        let sessionData = JSON.parse(localStorage.getItem('animationSession'))
+       
+        sessionData = this.updateAfterCropped(sessionData) 
+    
+        this.setState({
+                animationId: sessionData.animationId,
+                animationName: sessionData.animationName,
+                animationProfilePicture: sessionData.animationProfilePicture,
+                animationPhotos: sessionData.animationPhotos,
+                animationDescription: sessionData.animationDescription,
+                animationStartTime: sessionData.animationStartTime,
+             
+        });
+    }
+
+    updateAfterCropped(sessionData) {
+    
+        let initialPhoto = this.props.location.state.initialPhoto
+        let croppedPhoto = this.props.location.state.croppedPhoto
+        let photoIndex = this.props.location.state.photoIndex
+
+
+        sessionData.servicePhotos[photoIndex] = {
+            basePhoto: initialPhoto,
+            fullPhoto: croppedPhoto,
+            largeThumb: croppedPhoto,
+            smallThumb: croppedPhoto
+        }
+        return sessionData
     }
 
     componentWillMount() {
         if (this.props.location.state != undefined) {
-            this.readAnimationFromFirebase(this.props.location.state.animationId);
+            if (this.props.location.state.cropped === true) {
+                this.updateFromLocalStorage()
+            } else {
+                this.readAnimationFromFirebase(this.props.location.state.animationId);
+            }
         }
     }
 
@@ -218,6 +288,7 @@ class AnimationScreen extends React.Component {
             rows.push(
                 <div className="col-md-3">
                     <DropzonePhoto animationName={this.state.animationName} background={this.state.animationPhotos[i].largeThumb} id={i} methodToReturnUrl={this.handleReturnedUrl} />
+                    {i > 0 ? <Dropdown handleCrop={() => this.handleCrop(i)} /> : null}
                 </div>
             );
         }

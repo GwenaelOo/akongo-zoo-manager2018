@@ -12,6 +12,7 @@ import { Typeahead } from 'react-bootstrap-typeahead';
 import firebase from 'firebase';
 import { addNewEventToDatabase, deleteEventInDatabase, editEventInDatabase } from '../../../../database/database'
 import DropzonePhotoDropDown from '../../../customComponents/Dropzone/DropzonePhotoDropDown';
+import Dropdown from '../../../Elements/DropDown'
 
 import Datetime from 'react-datetime';
 import 'react-datetime/css/react-datetime.css';
@@ -38,6 +39,7 @@ class EventScreen extends React.Component {
             eventId: '',
             eventName: '',
             eventProfilePicture: {
+                basePhoto: 'https://www.cmsabirmingham.org/stuff/2017/01/default-placeholder.png',
                 fullPhoto: 'https://www.cmsabirmingham.org/stuff/2017/01/default-placeholder.png',
                 largeThumb: 'https://www.cmsabirmingham.org/stuff/2017/01/default-placeholder.png',
                 smallThumb: 'https://www.cmsabirmingham.org/stuff/2017/01/default-placeholder.png'
@@ -52,7 +54,9 @@ class EventScreen extends React.Component {
         this.handleChange = this.handleChange.bind(this);
         this.handleReturnedUrl = this.handleReturnedUrl.bind(this);
         this.handleDateTimeChange = this.handleDateTimeChange.bind(this);
-        
+        this.handleCrop = this.handleCrop.bind(this);
+
+
     }
 
     handleChange(event) {
@@ -60,15 +64,7 @@ class EventScreen extends React.Component {
         let name = event.target.name
         this.setState({ [name]: event.target.value });
 
-        let eventData = {
-            eventName: this.state.eventName,
-            eventId: this.state.eventId,
-            eventProfilePicture: this.state.eventProfilePicture,
-            eventPhotos: this.state.eventPhotos,
-            eventDescription: this.state.eventDescription,
-        }
-
-        console.log(eventData)
+        this.localStorageSync()
     }
 
     handleReturnedUrl(returnedUrl, photoId) {
@@ -81,11 +77,14 @@ class EventScreen extends React.Component {
             this.setState({
                 eventProfilePicture: {
                     edited: false,
+                    basePhoto: returnedUrl,
                     fullPhoto: returnedUrl,
                     largeThumb: returnedUrl,
                     smallThumb: returnedUrl,
                 },
             });
+
+            this.localStorageSync()
 
             return
         }
@@ -100,6 +99,7 @@ class EventScreen extends React.Component {
         let newObject = {
             edited: false,
             photoId: photoId,
+            basePhoto: returnedUrl,
             photoURL: returnedUrl,
             fullPhoto: returnedUrl,
             largeThumb: returnedUrl,
@@ -113,7 +113,7 @@ class EventScreen extends React.Component {
 
         });
 
-        console.log(this.state.eventPhotos)
+        this.localStorageSync()
     }
 
     handleDelete() {
@@ -170,7 +170,7 @@ class EventScreen extends React.Component {
         return firebase.database().ref(reference).once('value').then(function (snapshot) {
             let data = snapshot.val()
 
-            for (let item in data.eventPhotos){
+            for (let item in data.eventPhotos) {
                 let photo = data.eventPhotos[item]
                 photo.newUpload = false
                 newGallery.push(photo)
@@ -190,18 +190,85 @@ class EventScreen extends React.Component {
 
     }
 
-    componentWillMount() {
-        if (this.props.location.state != undefined) {
-            this.readEventFromFirebase(this.props.location.state.eventId);
+    localStorageSync() {
+        let eventData = {
+            eventId: this.state.eventId,
+            eventName: this.state.eventName,
+            eventProfilePicture: this.state.eventProfilePicture,
+            eventPhotos: this.state.eventPhotos,
+            eventDescription: this.state.eventDescription,
+            eventDateTime: this.state.eventDateTime,
+            // logId: 0,
+            // dataVersion: 0,
+            // EditMode: false,
         }
+        localStorage.setItem('eventSession', JSON.stringify(eventData))
+    }
+
+    updateFromLocalStorage() {
+        let sessionData = JSON.parse(localStorage.getItem('eventSession'))
+       
+        sessionData = this.updateAfterCropped(sessionData) 
+    
+        this.setState({
+            eventId: sessionData.eventId,
+            eventName: sessionData.eventName,
+            eventProfilePicture: sessionData.eventProfilePicture,
+            eventPhotos: sessionData.eventPhotos,
+            eventDescription: sessionData.eventDescription,
+            eventDateTime: moment(sessionData.eventDateTime),
+        });
+    }
+
+    handleCrop(photoIndex) {
+        let id = photoIndex - 1
+        this.props.history.push({
+            pathname: '/Cropper',
+            state: {
+                photoIndex: id,
+                photo: this.state.eventPhotos[id].basePhoto,
+                previousScreen: 'EventScreen',
+                localStorage: 'eventSession'
+            }
+        })
+    }
+
+    updateAfterCropped(sessionData) {
+    
+        let initialPhoto = this.props.location.state.initialPhoto
+        let croppedPhoto = this.props.location.state.croppedPhoto
+        let photoIndex = this.props.location.state.photoIndex
+
+
+        sessionData.eventPhotos[photoIndex] = {
+            basePhoto: initialPhoto,
+            fullPhoto: croppedPhoto,
+            largeThumb: croppedPhoto,
+            smallThumb: croppedPhoto
+        }
+
+        return sessionData
+    }
+
+    componentWillMount() {
+
+        if (this.props.location.state != undefined) {
+            if (this.props.location.state.cropped === true) {
+                this.updateFromLocalStorage()
+            } else {
+                this.readEventFromFirebase(this.props.location.state.eventId);
+            }
+        }
+
     }
 
     handleDateTimeChange(moment) {
         this.setState({
             eventDateTime: moment
         })
+        this.localStorageSync()
     }
-   
+
     render() {
         const innerIcon = <em className="fa fa-check"></em>;
         const innerButton = <Button>Before</Button>;
@@ -225,8 +292,9 @@ class EventScreen extends React.Component {
         var rows = [];
         for (var i = 0; i < this.state.eventPhotos.length; i++) {
             rows.push(
-                <div style={{ display: 'flex', flexDirection: "row", flexWrap: 'wrap', justifyContent: 'space-around'}}>
+                <div style={{ display: 'flex', flexDirection: "column", flexWrap: 'wrap', justifyContent: 'space-between' }}>
                     <DropzonePhoto eventName={this.state.eventName} background={this.state.eventPhotos[i].largeThumb} id={"Photo" + i} methodToReturnUrl={this.handleReturnedUrl} />
+                    {i > 0 ? <Dropdown handleCrop={() => this.handleCrop(i)} /> : null}
                 </div>
             );
         }
@@ -259,8 +327,8 @@ class EventScreen extends React.Component {
 
                                         <label htmlFor="userName"><i class="fa fa-clock-o" aria-hidden="true"></i>  Date et heure de l'évènement</label>
                                         <Panel>
-                                                
-                                             <Datetime name="eventDateTime" inputProps={{className: 'form-control'}} value={this.state.eventDateTime} onChange={this.handleDateTimeChange} dateFormat={true} timeFormat="HH:mm"  />
+
+                                            <Datetime name="eventDateTime" inputProps={{ className: 'form-control' }} value={this.state.eventDateTime} onChange={this.handleDateTimeChange} dateFormat={true} timeFormat="HH:mm" />
                                         </Panel>
                                     </div>
 
