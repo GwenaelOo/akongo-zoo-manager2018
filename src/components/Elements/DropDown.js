@@ -12,20 +12,17 @@ class DropdownBox extends Component  {
     render() {
         const ddClass = classNames('animated', 'tada');
         return (
-            <div className="box-placeholder">
                 <Dropdown isOpen={this.state.ddOpen} toggle={this.toggle}>
                     <DropdownToggle>
                         dropdown
                     </DropdownToggle>
                     <DropdownMenu className={ddClass}>
-                        <DropdownItem>Action</DropdownItem>
-                        <DropdownItem>Another action</DropdownItem>
-                        <DropdownItem active>Active Item</DropdownItem>
+                        <DropdownItem onClick={this.props.handleCrop}>Cropper</DropdownItem>
+                        <DropdownItem >Modifier</DropdownItem>
                         <DropdownItem divider />
-                        <DropdownItem>Separated link</DropdownItem>
+                        <DropdownItem >Supprimer</DropdownItem>
                     </DropdownMenu>
                 </Dropdown>
-            </div>
         );
     }
 }

@@ -10,7 +10,7 @@
  */
 
 import React, { Component } from 'react';
-import { BrowserRouter, Redirect, Route } from 'react-router-dom';
+import { BrowserRouter, Redirect, Route, withRouter } from 'react-router-dom';
 import $ from 'jquery';
 
 import { initDatabase } from './config/config'

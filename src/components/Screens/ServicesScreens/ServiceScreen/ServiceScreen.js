@@ -1,5 +1,6 @@
 import React from 'react';
 import ContentWrapper from '../../../Layout/ContentWrapper';
+import { Router, Route, Link, History, withRouter } from 'react-router-dom';
 import { Panel, FormControl, FormGroup, InputGroup, DropdownButton, MenuItem } from 'react-bootstrap';
 import { Row, Col, Card, CardHeader, CardTitle, CardBody, Button, ButtonGroup, ButtonToolbar, ButtonDropdown, DropdownToggle, DropdownMenu, DropdownItem, Pagination, PaginationItem, PaginationLink } from 'reactstrap';
 
@@ -7,6 +8,7 @@ import { Row, Col, Card, CardHeader, CardTitle, CardBody, Button, ButtonGroup, B
 import TextInput from '../../../customComponents/TextInput/TextInput';
 import IUCNSelector from '../../../customComponents/IUCNSelector/IUCNSelector';
 import DropzonePhoto from '../../../customComponents/Dropzone/DropzonePhoto';
+import Dropdown from '../../../Elements/DropDown'
 import swal from 'sweetalert'
 import { Typeahead } from 'react-bootstrap-typeahead';
 import firebase from 'firebase';
@@ -61,6 +63,7 @@ class ServiceScreen extends React.Component {
         this.handleReturnedUrl = this.handleReturnedUrl.bind(this);
         this.handleOpeningTimeChange = this.handleOpeningTimeChange.bind(this);
         this.handleClosingTimeChange = this.handleClosingTimeChange.bind(this);
+        this.handleCrop = this.handleCrop.bind(this);
     }
 
     handleChange(service) {
@@ -195,7 +198,6 @@ class ServiceScreen extends React.Component {
     }
 
     handleOpeningTimeChange(moment) {
-
         this.setState({
             serviceOpeningTime: moment
         })
@@ -206,7 +208,6 @@ class ServiceScreen extends React.Component {
             serviceClosingTime: moment
         })
     }
-
 
     handleServiceType(newValue) {
         this.setState({
@@ -220,8 +221,9 @@ class ServiceScreen extends React.Component {
         }
     }
 
-    handleCrop(data){
-        console.log(data)
+    handleCrop(){
+        this.props.history.push("/UserScreen");
+        
     }
 
     render() {
@@ -248,10 +250,9 @@ class ServiceScreen extends React.Component {
         for (var i = 0; i < this.state.servicePhotos.length; i++) {
             let id = i
             rows.push(
-                <div style={{ display: 'flex', flexDirection: "column", flexWrap: 'wrap', justifyContent: 'space-around' }}>
+                <div style={{ display: 'flex', flexDirection: "column", flexWrap: 'wrap', justifyContent: 'space-between' }}> 
                     <DropzonePhoto serviceName={this.state.serviceName} background={this.state.servicePhotos[i].largeThumb} id={"Photo" + i} methodToReturnUrl={this.handleReturnedUrl} />
-                    
-                   <div style={{backgroundColor: 'grey', borderRadius: '5px', width: '60%'}} onClick={() => this.handleCrop(this.state.servicePhotos[id])}>Editer</div>
+                   {i > 0 ? <Dropdown handleCrop={this.handleCrop}/> : null} 
                 </div>
             );
         }
