@@ -200,6 +200,10 @@ class AnimationScreen extends React.Component {
                 });
             })
 
+
+
+            
+
             this.localStorageSync()
     }
 
