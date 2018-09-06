@@ -233,6 +233,7 @@ class ServiceScreen extends React.Component {
             serviceClosingTime: moment(sessionData.serviceClosingTime),
             serviceProfilePicture: sessionData.serviceProfilePicture,
             servicePhotos: sessionData.servicePhotos,
+            EditMode: sessionData.EditMode
         });
     }
 
@@ -274,7 +275,7 @@ class ServiceScreen extends React.Component {
             servicePhotos: this.state.servicePhotos,
            // logId: 0,
            // dataVersion: 0,
-           // EditMode: false,
+           EditMode: this.state.EditMode,
         }
         localStorage.setItem('serviceSession', JSON.stringify(serviceData))     
     }

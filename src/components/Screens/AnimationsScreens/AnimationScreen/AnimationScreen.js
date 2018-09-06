@@ -166,7 +166,7 @@ class AnimationScreen extends React.Component {
             animationStartTime: this.state.animationStartTime,
             // logId: 0,
             // dataVersion: 0,
-            // EditMode: false,
+            EditMode: this.state.EditMode,
         }
         localStorage.setItem('animationSession', JSON.stringify(animationData))     
     }
@@ -234,6 +234,7 @@ class AnimationScreen extends React.Component {
                 animationPhotos: sessionData.animationPhotos,
                 animationDescription: sessionData.animationDescription,
                 animationStartTime: moment(sessionData.animationStartTime),
+                EditMode: sessionData.eventDateTime,
              
         });
     }

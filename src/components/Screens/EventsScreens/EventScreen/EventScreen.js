@@ -200,7 +200,7 @@ class EventScreen extends React.Component {
             eventDateTime: this.state.eventDateTime,
             // logId: 0,
             // dataVersion: 0,
-            // EditMode: false,
+            EditMode: this.state.eventDateTime,
         }
         localStorage.setItem('eventSession', JSON.stringify(eventData))
     }
@@ -217,6 +217,7 @@ class EventScreen extends React.Component {
             eventPhotos: sessionData.eventPhotos,
             eventDescription: sessionData.eventDescription,
             eventDateTime: moment(sessionData.eventDateTime),
+            EditMode: sessionData.eventDateTime,
         });
     }
 
