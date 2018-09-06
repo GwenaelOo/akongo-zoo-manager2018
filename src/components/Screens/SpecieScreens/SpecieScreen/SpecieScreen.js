@@ -70,11 +70,11 @@ class SpecieScreen extends React.Component {
             speciePhotos: [{ largeThumb: 'https://www.cmsabirmingham.org/stuff/2017/01/default-placeholder.png' }],
             enclosureList: null,
             specieEnclosure: {
-                enclosureProfilePicture:{
-                    largeThumb : '',
-                    enlusoreName : '',
+                enclosureProfilePicture: {
+                    largeThumb: '',
+                    enlusoreName: '',
                 }
-            } ,
+            },
             specieEnclosurePhoto: 'https://www.cmsabirmingham.org/stuff/2017/01/default-placeholder.png',
 
             selectedEnclosure: null,
@@ -83,7 +83,7 @@ class SpecieScreen extends React.Component {
             classesList: orders,
             familiesList: orders,
             specieFamily: '',
-            specieIUCNClassification : '',
+            specieIUCNClassification: '',
             logId: 0,
             EditMode: false,
             zooFoodList: ['chargement']
@@ -131,7 +131,7 @@ class SpecieScreen extends React.Component {
             specieOrder2: this.state.specieOrder2
         }
 
-        console.log(specieData)
+        this.localStorageSync()
     }
 
     handleChangeTypehead(selected) {
@@ -143,7 +143,7 @@ class SpecieScreen extends React.Component {
             specieFood: this.state.specieFood,
         }
 
-        console.log(specieData)
+        this.localStorageSync()
     }
 
     handleReturnedUrl(returnedUrl, photoId) {
@@ -161,7 +161,7 @@ class SpecieScreen extends React.Component {
                     smallThumb: returnedUrl,
                 },
             });
-
+            this.localStorageSync()
             return
         }
 
@@ -188,37 +188,37 @@ class SpecieScreen extends React.Component {
 
         });
 
-        console.log(this.state.speciePhotos)
+        this.localStorageSync()
     }
 
     handleIUCNChoice(newValue) {
         this.setState({
             specieIUCNClassification: newValue
         })
+        this.localStorageSync()
     }
 
     handleOrderChoice(newValue) {
-        
-        console.log(newValue)
         this.setState({
             specieOrder: newValue
         })
+        this.localStorageSync()
     }
 
     handleClassChoice(newValue) {
-        
-        console.log(newValue)
+
         this.setState({
             specieClass: newValue
         })
+        this.localStorageSync()
     }
 
     handleFamilyChoice(newValue) {
-        
-        console.log(newValue)
+
         this.setState({
             specieFamilly: newValue
         })
+        this.localStorageSync()
     }
 
     handleEnclosureChoice(selectedEnclosureData) {
@@ -241,6 +241,7 @@ class SpecieScreen extends React.Component {
                 }
             }
         }
+        this.localStorageSync()
     }
 
     handleDelete() {
@@ -294,7 +295,7 @@ class SpecieScreen extends React.Component {
 
         console.log(specieData)
 
-      
+
         specieData.speciePhotos.shift()
 
         if (this.state.EditMode === true) {
@@ -370,20 +371,102 @@ class SpecieScreen extends React.Component {
             .then(function (snapshot) {
                 lists = snapshot.val()
 
-                if(lists !== null){
+                if (lists !== null) {
                     self.setState({
                         ordersList: lists.ordersList,
                         classesList: lists.classesList,
                         familiesList: lists.familliesList
                     })
-                }else{
+                } else {
                     self.setState({
                         ordersList: [],
                         classesList: [],
                         familliesList: [],
                     })
-                }           
+                }
             })
+    }
+
+    handleCrop(photoIndex) {
+        let id = photoIndex - 1
+        this.props.history.push({
+            pathname: '/Cropper',
+            state: {
+                photoIndex: id,
+                photo: this.state.speciePhotos[id].basePhoto,
+                previousScreen: 'SpecieScreen',
+                localStorage: 'specieSession'
+            }
+        })
+    }
+
+    localStorageSync() {
+        let specieData = {
+            dataVersion: this.state.dataVersion,
+            specieId: this.state.specieId,
+            specieName: this.state.specieName,
+            specieLatinName: this.state.specieLatinName,
+            specieEnglishName: this.state.specieEnglishName,
+            specieClass: this.state.specieClass,
+            specieOrder: this.state.specieOrder,
+            specieFamilly: this.state.specieFamilly,
+            specieThreat: this.state.specieThreat,
+            specieIUCNClassification: this.state.specieIUCNClassification,
+            specieDescription: this.state.specieDescription,
+            specieGestation: this.state.specieGestation,
+            specieWeight: this.state.specieWeight,
+            specieLifeExpectancy: this.state.specieLifeExpectancy,
+            specieProfilePicture: this.state.specieProfilePicture,
+            specieEnclosure: this.state.specieEnclosure,
+            specieAnimals: this.state.specieAnimals,
+            speciePhotos: this.state.specieAnimals,
+            EditMode: this.state.EditMode
+        }
+        localStorage.setItem('specieSession', JSON.stringify(specieData))
+    }
+
+    updateFromLocalStorage() {
+        let sessionData = JSON.parse(localStorage.getItem('specieSession'))
+       
+        sessionData = this.updateAfterCropped(sessionData) 
+    
+        this.setState({
+            dataVersion: sessionData.dataVersion,
+            specieId: sessionData.specieId,
+            specieName: sessionData.specieName,
+            specieLatinName: sessionData.specieLatinName,
+            specieEnglishName: sessionData.specieEnglishName,
+            specieClass: sessionData.specieClass,
+            specieOrder: sessionData.specieOrder,
+            specieFamilly: sessionData.specieFamilly,
+            specieThreat: sessionData.specieThreat,
+            specieIUCNClassification: sessionData.specieIUCNClassification,
+            specieDescription: sessionData.specieDescription,
+            specieGestation: sessionData.specieGestation,
+            specieWeight: sessionData.specieWeight,
+            specieLifeExpectancy: sessionData.specieLifeExpectancy,
+            specieProfilePicture: sessionData.specieProfilePicture,
+            specieEnclosure: sessionData.specieEnclosure,
+            specieAnimals: sessionData.specieAnimals,
+            speciePhotos: sessionData.specieAnimals,
+            EditMode: sessionData.EditMode
+        });
+    }
+
+    updateAfterCropped(sessionData) {
+    
+        let initialPhoto = this.props.location.state.initialPhoto
+        let croppedPhoto = this.props.location.state.croppedPhoto
+        let photoIndex = this.props.location.state.photoIndex
+
+
+        sessionData.speciePhotos[photoIndex] = {
+            basePhoto: initialPhoto,
+            fullPhoto: croppedPhoto,
+            largeThumb: croppedPhoto,
+            smallThumb: croppedPhoto
+        }
+        return sessionData
     }
 
     readSpecieFromFirebase(specieId) {
@@ -430,21 +513,33 @@ class SpecieScreen extends React.Component {
     }
 
     initPage() {
-       this.readLists()
+
+
         if (this.props.location.state != undefined) {
-            let self = this
-            this.readSpecieFromFirebase(this.props.location.state.specieId)
+            if (this.props.location.state.cropped === true) {
+                this.updateFromLocalStorage()
+                this.readEnclosureList();
+            } else {
+                this.readSpecieFromFirebase(this.props.location.state.specieId)
                 .then(function () {
                     self.readEnclosureList();
                 })
-        } else {
-            this.readEnclosureList();
+            }
         }
+        // this.readLists()
+        // if (this.props.location.state != undefined) {
+        //     let self = this
+        //     this.readSpecieFromFirebase(this.props.location.state.specieId)
+        //         .then(function () {
+        //             self.readEnclosureList();
+        //         })
+        // } else {
+        //     this.readEnclosureList();
+        // }
     }
 
     componentWillMount() {
         this.initPage()
-        console.log(this.state.specieEnclosure.enclosureProfilePicture)
     }
 
     render() {
@@ -494,13 +589,14 @@ class SpecieScreen extends React.Component {
         var rows = [];
         for (var i = 0; i < this.state.speciePhotos.length; i++) {
             rows.push(
-                <div style={{ display: 'flex', flexDirection: "row", flexWrap: 'wrap', justifyContent: 'space-around' }}>
+                <div style={{ display: 'flex', flexDirection: "column", flexWrap: 'wrap', justifyContent: 'space-between' }}>
                     <DropzonePhoto size='300px' specieName={this.state.specieName} editMode={this.state.EditMode} background={this.state.speciePhotos[i].largeThumb} id={"Photo" + i} methodToReturnUrl={this.handleReturnedUrl} handleDelete={'a faire'} />
+                    {i > 0 ? <Dropdown handleCrop={() => this.handleCrop(i)} /> : null}               
                 </div>
             );
         }
 
-        return (  
+        return (
             <ContentWrapper>
                 <Panel>
                     <CardWithHeader header="">
