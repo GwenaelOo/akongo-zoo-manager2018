@@ -35,6 +35,8 @@ import MapScreen from './components/Screens/MapScreen/MapScreen'
 
 import UserScreen from './components/Screens/UserScreen/UserScreen'
 
+import Cropper from './components/Screens/Cropper/Cropper'
+
 import LoginPage from './components/Login/LoginPage'
 
 
@@ -210,6 +212,9 @@ const Routes = ({ location }) => {
                                 <Route path="/MapSreen" component={MapScreen} />
 
                                 <Route path="/UserScreen" component={UserScreen} />
+
+                                 <Route path="/Cropper" component={Cropper} />
+
 
                                 {/*Dashboard*/}
                                 <Route path="/dashboard" component={DashboardV1} />
