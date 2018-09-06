@@ -21,7 +21,7 @@ export function addNewSpecieToDatabase(specieData) {
 
     console.log(specieData)
    
-    manageInputs(specieData.specieOrder, specieData.specieClass, specieData.specieFamily)
+    manageInputs(specieData.specieOrder, specieData.specieClass, specieData.specieFamilly)
 
     let specieUID
     
@@ -47,7 +47,7 @@ export function addNewSpecieToDatabase(specieData) {
         specieEnglishName: specieData.specieEnglishName,
         specieClass: specieData.specieClass,
         specieOrder: specieData.specieOrder,
-        specieFamily: specieData.specieFamily,
+        specieFamilly: specieData.specieFamilly,
         specieIUCNClassification: specieData.specieIUCNClassification,
         specieThreat: specieData.specieThreat,
         specieDescription: specieData.specieDescription,
@@ -82,7 +82,7 @@ export function addNewSpecieToDatabase(specieData) {
 
 export function editSpecieInDatabase(specieData) {
 
-    manageInputs(specieData.specieOrder, specieData.specieClass, specieData.specieFamily)
+    manageInputs(specieData.specieOrder, specieData.specieClass, specieData.specieFamilly)
 
     let reference = (userData.zooName + '/speciesData/' + specieData.specieId);
     let specieAnimals
@@ -105,7 +105,7 @@ export function editSpecieInDatabase(specieData) {
         specieEnglishName: specieData.specieEnglishName,
         specieClass: specieData.specieClass,
         specieOrder: specieData.specieOrder,
-        specieFamily: specieData.specieFamily,
+        specieFamilly: specieData.specieFamilly,
         specieThreat: specieData.specieThreat,
         specieAnimals: specieAnimals,
         specieIUCNClassification: specieData.specieIUCNClassification,
