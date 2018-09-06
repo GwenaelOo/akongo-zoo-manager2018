@@ -49,7 +49,10 @@ class AnimalScreen extends React.Component {
                 largeThumb: 'https://www.cmsabirmingham.org/stuff/2017/01/default-placeholder.png',
                 smallThumb: 'https://www.cmsabirmingham.org/stuff/2017/01/default-placeholder.png'
             },
-            animalPhotos: [{ largeThumb: 'https://www.cmsabirmingham.org/stuff/2017/01/default-placeholder.png' }],
+            animalPhotos: [{ 
+                basePhoto: 'https://www.cmsabirmingham.org/stuff/2017/01/default-placeholder.png',
+                largeThumb: 'https://www.cmsabirmingham.org/stuff/2017/01/default-placeholder.png'
+             }],
             logId: 0,
             EditMode: false,
         };
@@ -74,6 +77,7 @@ class AnimalScreen extends React.Component {
             animalProfilePicture: this.state.animalProfilePicture,
             animalPhotos: this.state.animalPhotos,
         }
+        this.localStorageSync()
     }
 
     handleChangeTypehead(selected) {
@@ -85,6 +89,8 @@ class AnimalScreen extends React.Component {
 
             animalFood: this.state.animalFood,
         }
+
+        this.localStorageSync()
     }
 
     handleReturnedUrl(returnedUrl, photoId) {
@@ -95,12 +101,13 @@ class AnimalScreen extends React.Component {
             this.setState({
                 animalProfilePicture: {
                     edited: false,
+                    basePhoto: returnedUrl,
                     fullPhoto: returnedUrl,
                     largeThumb: returnedUrl,
                     smallThumb: returnedUrl,
                 },
             });
-
+            this.localStorageSync()
             return
         }
 
@@ -109,6 +116,7 @@ class AnimalScreen extends React.Component {
         let newObject = {
             edited: false,
             photoId: photoId,
+            basePhoto: returnedUrl,
             photoURL: returnedUrl,
             fullPhoto: returnedUrl,
             largeThumb: returnedUrl,
@@ -121,6 +129,7 @@ class AnimalScreen extends React.Component {
             animalPhotos: photosArray
 
         });
+        this.localStorageSync()
 
     }
 
@@ -173,6 +182,19 @@ class AnimalScreen extends React.Component {
         }
     }
 
+    handleCrop(photoIndex) {
+        let id = photoIndex - 1
+        this.props.history.push({
+            pathname: '/Cropper',
+            state: {
+                photoIndex: id,
+                photo: this.state.animalPhotos[id].basePhoto,
+                previousScreen: 'AnimalScreen',
+                localStorage: 'animalSession'
+            }
+        })
+    }
+
     readAnimalFromFirebase(animalId, specieId) {
         //let userData = JSON.parse(localStorage.getItem('user'))
 
@@ -184,8 +206,6 @@ class AnimalScreen extends React.Component {
         return firebase.database().ref(reference).once('value')
             .then(function (snapshot) {
                 let data = snapshot.val()
-
-
 
                 for (let item in data.animalPhotos){
                     let photo = data.animalPhotos[item]
@@ -209,26 +229,60 @@ class AnimalScreen extends React.Component {
                     EditMode: true,
                 });
             })
-
     }
 
-    initPage() {
-        if ( this.props.location.state.animalId != undefined) {
-            this.readAnimalFromFirebase(this.props.location.state.animalId, this.props.location.state.specieId);
+    localStorageSync(){
+        let animalData = {
+            dataVersion: this.state.dataVersion,
+            animalId: this.state.animalId,
+            animalName: this.state.animalName,
+            animalAge: this.state.animalAge,
+            animalSex: this.state.animalSex,
+            animalBiography: this.state.animalBiography,
+            animalPopularity : this.state.animalPopularity,
+            animalSponsors: this.state.animalSponsors,
+            animalSpecieName: this.state.animalSpecieName,
+            animalProfilePicture: this.state.animalProfilePicture,
+            animalPhotos: this.state.animalPhotos,
+            specieId: this.state.specieId,
+            EditMode: this.state.EditMode,
         }
+        localStorage.setItem('animalSession', JSON.stringify(animalData))     
+    }
+
+    updateFromLocalStorage() {
+        let sessionData = JSON.parse(localStorage.getItem('animalSession'))
+       
+        sessionData = this.updateAfterCropped(sessionData) 
+    
+        this.setState({
+            dataVersion: sessionData.dataVersion,
+            animalId: sessionData.animalId,
+            animalName: sessionData.animalName,
+            animalAge: sessionData.animalAge,
+            animalSex: sessionData.animalSex,
+            animalBiography: sessionData.animalBiography,
+            animalPopularity : sessionData.animalPopularity,
+            animalSponsors: sessionData.animalSponsors,
+            animalSpecieName: sessionData.animalSpecieName,
+            animalProfilePicture: sessionData.animalProfilePicture,
+            animalPhotos: sessionData.animalPhotos,
+            specieId: sessionData.specieId,
+            EditMode: sessionData.EditMode,
+        });
     }
 
     componentWillMount() {
-        //this.getLogLenght();
-        //this.initFoodList();
-
-        this.initPage()
-
+        if (this.props.location.state != undefined) {
+            if (this.props.location.state.cropped === true) {
+                this.updateFromLocalStorage()
+            } else {
+                this.readAnimalFromFirebase(this.props.location.state.animalId, this.props.location.state.specieId);
+            }
+        }
     }
 
     render() {
-
-        console.log(this.state.animalProfilePicture)
 
         const innerIcon = <em className="fa fa-check"></em>;
         const innerButton = <Button>Before</Button>;
@@ -252,8 +306,9 @@ class AnimalScreen extends React.Component {
         var rows = [];
         for (var i = 0; i < this.state.animalPhotos.length; i++) {
             rows.push(
-                <div style={{ display: 'flex', flexDirection: "row", flexWrap: 'wrap', justifyContent: 'space-around'}}>
+                <div style={{ display: 'flex', flexDirection: "column", flexWrap: 'wrap', justifyContent: 'space-between'}}>
                     <DropzonePhoto size='300px' animalName={this.state.animalName} background={this.state.animalPhotos[i].largeThumb} id={"Photo" + i} methodToReturnUrl={this.handleReturnedUrl} />
+                    {i > 0 ? <Dropdown handleCrop={() => this.handleCrop(i)} /> : null}
                 </div>
             );
         }
