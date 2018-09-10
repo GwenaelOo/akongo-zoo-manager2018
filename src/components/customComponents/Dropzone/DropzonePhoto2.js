@@ -4,7 +4,7 @@ import axios from 'axios'
 import config from '../../../config/config'
 import DropzonePhotoDropDown from './DropzonePhotoDropDown';
 
-class DropzonePhoto extends React.Component {
+class DropzonePhoto2 extends React.Component {
     constructor(props) {
         super(props)
 
@@ -30,10 +30,8 @@ class DropzonePhoto extends React.Component {
     }
 
     onDrop(files) {
-        this.setState({
-            files,
-            background: 'http://www.akongo.fr/assets/ico/Spin.gif'
-        });
+        
+        this.props.handleDrop()
 
         const uploaders = files.map(file => {
             // Initial FormData
@@ -62,7 +60,7 @@ class DropzonePhoto extends React.Component {
         });
         // Once all the files are uploaded 
         axios.all(uploaders).then(() => {
-            this.props.methodToReturnUrl(this.state.returnedUrl, this.props.id, Math.floor(Date.now() / 1000));
+            this.props.handleResponse(this.state.returnedUrl, Math.floor(Date.now() / 1000));
         });
     }
 
@@ -107,7 +105,7 @@ class DropzonePhoto extends React.Component {
             <section>
                 <div className="dropzone">
                     <Dropzone onDrop={this.onDrop.bind(this)} style={style}>
-                        <DropzonePhotoDropDown displayEdit={this.state.displayEdit} />
+                    <DropzonePhotoDropDown displayEdit={this.state.displayEdit} />
                     </Dropzone>
                 </div>
 
@@ -116,4 +114,4 @@ class DropzonePhoto extends React.Component {
     }
 }
 
-export default DropzonePhoto;
+export default DropzonePhoto2;

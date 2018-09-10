@@ -18,7 +18,8 @@ import Datetime from 'react-datetime';
 import 'react-datetime/css/react-datetime.css';
 
 import moment from 'moment';
-  
+import CustomGalleryList from '../../../customComponents/customGallery/customGalleryList';
+
 // Create a single card with header text as attribute
 const CardWithHeader = props => (
     <Card className="card-default">
@@ -44,7 +45,7 @@ class AnimationScreen extends React.Component {
                 largeThumb: 'https://www.cmsabirmingham.org/stuff/2017/01/default-placeholder.png',
                 smallThumb: 'https://www.cmsabirmingham.org/stuff/2017/01/default-placeholder.png'
             },
-            animationPhotos: [{ largeThumb: 'https://www.cmsabirmingham.org/stuff/2017/01/default-placeholder.png' }],
+            animationPhotos: [],
             animationDescription: '',
             animationStartTime: moment(),
             logId: 0,
@@ -55,6 +56,8 @@ class AnimationScreen extends React.Component {
         this.handleChange = this.handleChange.bind(this);
         this.handleTimeChange = this.handleTimeChange.bind(this);
         this.handleReturnedUrl = this.handleReturnedUrl.bind(this);
+        this.handleSyncGallery = this.handleSyncGallery.bind(this);
+       // this.handleCrop = this.handleCrop.bind(this);
     }
 
     handleChange(animation) {
@@ -69,12 +72,9 @@ class AnimationScreen extends React.Component {
             animationPhotos: this.state.animationPhotos,
             animationDescription: this.state.animationDescription,
         }
-
-        this.localStorageSync()
     }
 
-    handleReturnedUrl(returnedUrl, photoId) {
-
+    handleReturnedUrl(returnedUrl, photoId, photoUID) {
         if (photoId === 'PhotoProfil') {
 
             let photoName = ('animation' + photoId)
@@ -91,11 +91,14 @@ class AnimationScreen extends React.Component {
             return
         }
 
-        let photoUID = photoId
         let photosArray = this.state.animationPhotos
+
+        console.log(photoUID)
+
         let newObject = {
             edited: false,
             photoId: photoId,
+            photoUID: photoUID,
             basePhoto: returnedUrl,
             photoURL: returnedUrl,
             fullPhoto: returnedUrl,
@@ -110,6 +113,12 @@ class AnimationScreen extends React.Component {
         });
 
         this.localStorageSync()
+    }
+
+    handleSyncGallery(photoList) {
+        this.setState({
+            animationPhotos: photoList
+        })  
     }
 
     handleDelete() {
@@ -134,6 +143,22 @@ class AnimationScreen extends React.Component {
             });
     }
 
+    handleCrop = (photoData) => {
+
+        this.localStorageSync()
+
+        this.props.history.push({
+            pathname: '/Cropper',
+            state: {
+                photoId: photoData.photoId,
+                photo: photoData.basePhoto,
+                previousScreen: 'AnimationScreen',
+                localStorage: 'serviceSession'
+            }
+        })
+
+    }
+
     handleClick() {
         let animationData = {
             dataVersion: this.state.dataVersion + 1,
@@ -146,8 +171,6 @@ class AnimationScreen extends React.Component {
             log: this.state.logId + 1
         }
 
-        animationData.animationPhotos.shift()
-
         if (this.state.EditMode === true) {
             editAnimationInDatabase(animationData)
         }
@@ -156,7 +179,7 @@ class AnimationScreen extends React.Component {
         }
     }
 
-    localStorageSync(){
+    localStorageSync() {
         let animationData = {
             animationId: this.state.animationId,
             animationName: this.state.animationName,
@@ -168,7 +191,7 @@ class AnimationScreen extends React.Component {
             // dataVersion: 0,
             EditMode: this.state.EditMode,
         }
-        localStorage.setItem('animationSession', JSON.stringify(animationData))     
+        localStorage.setItem('animationSession', JSON.stringify(animationData))
     }
 
     readAnimationFromFirebase(animationId) {
@@ -200,79 +223,74 @@ class AnimationScreen extends React.Component {
                 });
             })
 
-
-
-            
-
-            this.localStorageSync()
+        this.localStorageSync()
     }
 
     handleTimeChange(moment) {
-      this.setState({
-          animationStartTime: moment
-      })
-
-      this.localStorageSync()
-    }
-
-    handleCrop(photoIndex) {
-       let id = photoIndex - 1
-        this.props.history.push({
-            pathname: '/Cropper',
-            state: {
-                photoIndex: id,
-                photo: this.state.animationPhotos[id].basePhoto,
-                previousScreen: 'AnimationScreen',
-                localStorage: 'serviceSession'
-            }
+        this.setState({
+            animationStartTime: moment
         })
+
+        this.localStorageSync()
     }
 
     updateFromLocalStorage() {
         let sessionData = JSON.parse(localStorage.getItem('animationSession'))
-       
-        sessionData = this.updateAfterCropped(sessionData) 
-    
+
+        sessionData = this.updateAfterCropped(sessionData)
+
         this.setState({
-                animationId: sessionData.animationId,
-                animationName: sessionData.animationName,
-                animationProfilePicture: sessionData.animationProfilePicture,
-                animationPhotos: sessionData.animationPhotos,
-                animationDescription: sessionData.animationDescription,
-                animationStartTime: moment(sessionData.animationStartTime),
-                EditMode: sessionData.eventDateTime,
-             
+            animationId: sessionData.animationId,
+            animationName: sessionData.animationName,
+            animationProfilePicture: sessionData.animationProfilePicture,
+            animationPhotos: sessionData.animationPhotos,
+            animationDescription: sessionData.animationDescription,
+            animationStartTime: moment(sessionData.animationStartTime),
+            EditMode: sessionData.EditMode,
+
         });
     }
 
     updateAfterCropped(sessionData) {
-    
+
         let initialPhoto = this.props.location.state.initialPhoto
         let croppedPhoto = this.props.location.state.croppedPhoto
-        let photoIndex = this.props.location.state.photoIndex
+        let photoId = this.props.location.state.photoId
 
+        console.log(this.props.location.state.initialPhoto)
+        console.log(this.props.location.state.croppedPhoto)
+        console.log(this.props.location.state.photoId)
 
-        sessionData.animationPhotos[photoIndex] = {
+        console.log(sessionData)
+
+        var indexOfCroppedPhoto = sessionData.animationPhotos.findIndex(i => i.photoId === photoId);
+
+     
+        sessionData.animationPhotos[indexOfCroppedPhoto] = {
             basePhoto: initialPhoto,
             fullPhoto: croppedPhoto,
             largeThumb: croppedPhoto,
-            smallThumb: croppedPhoto
+            smallThumb: croppedPhoto,
+            photoId: photoId
         }
+
         return sessionData
+
+
     }
 
     componentWillMount() {
         if (this.props.location.state != undefined) {
             if (this.props.location.state.cropped === true) {
-              
-                this.updateFromLocalStorage()
+               this.updateFromLocalStorage()
             } else {
-                this.readAnimationFromFirebase(this.props.location.state.animationId);
+               this.readAnimationFromFirebase(this.props.location.state.animationId);
             }
         }
     }
 
     render() {
+
         const innerIcon = <em className="fa fa-check"></em>;
         const innerButton = <Button>Before</Button>;
         const innerDropdown = (
@@ -291,18 +309,6 @@ class AnimationScreen extends React.Component {
             </Button>
 
         );
-
-        var rows = [];
-        for (var i = 0; i < this.state.animationPhotos.length; i++) {
-            rows.push(
-                <div className="col-md-3">
-                    <DropzonePhoto animationName={this.state.animationName} background={this.state.animationPhotos[i].largeThumb} id={i} methodToReturnUrl={this.handleReturnedUrl} />
-                    {i > 0 ? <Dropdown handleCrop={() => this.handleCrop(i)} /> : null}
-                </div>
-            );
-        }
-
-        console.log(this.state.EditMode)
 
         return (
 
@@ -331,7 +337,7 @@ class AnimationScreen extends React.Component {
 
                                         <label htmlFor="userName"><i class="fa fa-clock-o" aria-hidden="true"></i>  Heure de début l'animation</label>
                                         <Panel>
-                                             <Datetime name="animationStartTime" inputProps={{className: 'form-control'}} value={this.state.animationStartTime} onChange={this.handleTimeChange} dateFormat={false} timeFormat="HH:mm"  />
+                                            <Datetime name="animationStartTime" inputProps={{ className: 'form-control' }} value={this.state.animationStartTime} onChange={this.handleTimeChange} dateFormat={false} timeFormat="HH:mm" />
                                         </Panel>
                                     </div>
 
@@ -347,7 +353,7 @@ class AnimationScreen extends React.Component {
                                 <FormGroup>
                                     <div className="col-md-12" >
                                         <div className="row" style={{ display: 'flex', flexDirection: "row", flexWrap: 'wrap', justifyContent: 'flex-start' }}>
-                                            {rows}
+                                            <CustomGalleryList photosList={this.state.animationPhotos} syncGallery={this.handleSyncGallery} handleCrop={this.handleCrop}/>
                                         </div>
                                     </div>
                                 </FormGroup>

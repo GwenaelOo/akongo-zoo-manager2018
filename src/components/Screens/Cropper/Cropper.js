@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import ContentWrapper from '../../Layout/ContentWrapper';
+import { Router, Route, Link, History, withRouter } from 'react-router-dom';
 import { Container, Row, Col } from 'reactstrap';
 import axios from 'axios'
 import $ from 'jquery';
@@ -13,9 +14,10 @@ class Cropper extends Component {
         this.state = {
            localStorage: this.props.location.state.localStorage,
            photoToCrop: this.props.location.state.photo,
-           photoIndex: this.props.location.state.photoIndex,
+           photoId: this.props.location.state.photoId,
            previousScreen: this.props.location.state.previousScreen
         };
+        
         this.handleClick = this.handleClick.bind(this);
         this.updloadCroppedImage = this.updloadCroppedImage.bind(this);
         this.goingBack = this.goingBack.bind(this);
@@ -44,7 +46,7 @@ class Cropper extends Component {
     }
 
     handleClick() {
-       this.updloadCroppedImage(JSON.parse(localStorage.getItem('croppedImage')))
+           this.updloadCroppedImage(JSON.parse(localStorage.getItem('croppedImage')))
     }
 
     updloadCroppedImage(url) {
@@ -74,13 +76,15 @@ class Cropper extends Component {
     }
 
     goingBack(croppedImageURL){
+        
         this.props.history.push({
-            pathname: '/' + this.state.previousScreen,
+            //pathname: '/' + this.state.previousScreen,
+            pathname: '/AnimationScreen',
             state: {
                 initialPhoto: this.state.photoToCrop,
                 croppedPhoto: croppedImageURL,
                 cropped: true,
-                photoIndex: this.state.photoIndex
+                photoId: this.state.photoId
             }})
     }
   
