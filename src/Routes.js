@@ -37,7 +37,7 @@ import UserScreen from './components/Screens/UserScreen/UserScreen'
 
 import LoginPage from './components/Login/LoginPage'
 
-
+import CoursesBookingForm from './components/Screens/CoursesBooking/CoursesBookingForm/CoursesBookingForm'
 
 
 import DashboardV1 from './components/Dashboard/DashboardV1';
@@ -210,6 +210,9 @@ const Routes = ({ location }) => {
                                 <Route path="/MapSreen" component={MapScreen} />
 
                                 <Route path="/UserScreen" component={UserScreen} />
+
+                                <Route path="/CoursesBookingForm" component={CoursesBookingForm} />
+
 
                                 {/*Dashboard*/}
                                 <Route path="/dashboard" component={DashboardV1} />

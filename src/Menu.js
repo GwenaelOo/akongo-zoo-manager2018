@@ -143,6 +143,24 @@ const Menu = [
         },]
     },
 
+    {
+        heading: "Gestion des formations",
+    },
+
+    {
+        name: 'Gestion Planning',
+        icon: 'icon-speedometer',
+        label: { value: maValeure, color: 'success' },
+        submenu: [{
+            name: 'Créer une date',
+            path: 'CoursesBookingForm'
+        },{
+            name: 'Modifier une date',
+            path: 'CoursesBookingForm'
+        },]
+    },
+
+
     // Menu du thème
 
 

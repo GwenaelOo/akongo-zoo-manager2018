@@ -1134,4 +1134,44 @@ export function deleteUserFromDatabase(articleData) {
 
 }
 
+// Gestion des formations 
+
+export function addNewCourseDateToDatabase(courseData) {
+
+    // ********************
+    // Ajout dans firebase 
+    // ********************
+
+    let courseUID = (Math.floor(Date.now() / 1000))
+    let reference = ('/courses/coursesPlanning/' + courseUID);
+
+    firebase.database().ref(reference).set({
+        selectedCourse: courseData.selectedCourse,
+        selectedPlace: courseData.selectedPlace,
+        capacity: courseData.capacity,
+        dateTime: courseData.dateTime,
+        courseId: courseData.courseId,
+        placeId: courseData.placeId
+    })
+        .catch(function (error) {
+            console.error("Error writing document: ", error);
+        }).then(function () {
+            swal({
+                title: "Good job!",
+                text: "La formation a été crée et est disponible sur akongo.fr",
+                type: "success",
+                showCancelButton: false
+            }, function () {
+                // Redirect the user
+                window.location.href = nav.akongoURL + 'ServicesListScreen';
+            })
+        })
+        .catch(function (error) {
+            console.error("Error writing document: ", error);
+        });
+
+
+}
+
+
 
